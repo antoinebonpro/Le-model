@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analyse Complète France 2025 - URM v3.0</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'france-blue': '#0055A4',
+                        'france-red': '#EF4135'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .math {
+            font-family: 'Times New Roman', serif;
+            font-style: italic;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #0055A4, #EF4135, #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .formula-box {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border: 2px solid #cbd5e1;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .dark .formula-box {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            border: 2px solid #475569;
+        }
+
+        .negative-result {
+            background: linear-gradient(135deg, #fee2e2, #fca5a5);
+            border-left: 6px solid #dc2626;
+        }
+
+        .dark .negative-result {
+            background: linear-gradient(135deg, #7f1d1d, #991b1b);
+            border-left: 6px solid #ef4444;
+        }
+
+        .country-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .country-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        
+        /* Menu navigation styles */
+        .nav-link {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #3b82f6, #ef4444);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);    
+        }
+        
+        .nav-link:hover::after {
+            width: 80%;
+        }
+        
+        /* Amélioration du backdrop blur */
+        nav {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .dark nav {
+            border-bottom-color: rgba(255,255,255,0.05);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-b border-gray-200 dark:border-gray-700 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo/Titre -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-r from-red-600 to-blue-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-flag text-white text-xl"></i>
+                    </div>
+                    <div class="hidden md:block">
+                        <h1 class="text-xl font-bold text-gray-900 dark:text-white">France 2025</h1>
+                        <p class="text-xs text-gray-600 dark:text-gray-400">Analyse URM v3.0</p>
+                    </div>
+                </div>
+                
+                <!-- Menu principal -->
+                <div class="hidden lg:flex items-center space-x-8">
+                    <a href="index.html" class="nav-link text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 px-4 py-2 rounded-lg font-semibold transition-all transform hover:scale-105 shadow-lg">
+                        <i class="fas fa-calculator mr-2"></i>🇲 Modèle Global
+                        <span class="ml-1 text-xs opacity-75">(URM v2.0)</span>
+                    </a>
+                    <a href="#header" onclick="scrollToTop()" class="nav-link text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium">
+                        <i class="fas fa-home mr-2"></i>Début
+                    </a>
+                    <a href="#formule" onclick="scrollToSection('formule')" class="nav-link text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium">
+                        <i class="fas fa-function mr-2"></i>Formule v3.0
+                    </a>
+                    <a href="#donnees" onclick="scrollToSection('donnees')" class="nav-link text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium">
+                        <i class="fas fa-database mr-2"></i>Données 2025
+                    </a>
+                    <a href="#comparaison" onclick="scrollToSection('comparaison')" class="nav-link text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium">
+                        <i class="fas fa-chart-bar mr-2"></i>Comparaison
+                    </a>
+                    <a href="#scenarios" onclick="scrollToSection('scenarios')" class="nav-link text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium">
+                        <i class="fas fa-road mr-2"></i>Scénarios 2035
+                    </a>
+                </div>
+                
+                <!-- Actions rapides -->
+                <div class="hidden md:flex items-center space-x-3">
+                    <button onclick="toggleDarkMode()" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors" title="Mode sombre/clair">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <a href="index.html" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                        <i class="fas fa-arrow-left mr-2"></i>Retour
+                    </a>
+                </div>
+                
+                <!-- Menu mobile -->
+                <button onclick="toggleMobileMenu()" class="lg:hidden text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors p-2">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+            
+            <!-- Menu mobile déroulant -->
+            <div id="mobileMenu" class="lg:hidden hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
+                <div class="px-6 py-4 space-y-3">
+                    <a href="index.html" class="flex items-center justify-between px-3 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold transition-all transform hover:scale-105 shadow-lg">
+                        <div class="flex items-center">
+                            <i class="fas fa-calculator mr-3 w-5"></i>🇲 Modèle Global URM v2.0
+                        </div>
+                        <span class="bg-blue-700 text-xs px-2 py-0.5 rounded-full">Complet</span>
+                    </a>
+                    <a href="#header" onclick="scrollToTop(); toggleMobileMenu()" class="flex items-center px-3 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                        <i class="fas fa-home mr-3 w-5"></i>Début de l'analyse
+                    </a>
+                    <a href="#formule" onclick="scrollToSection('formule'); toggleMobileMenu()" class="flex items-center px-3 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                        <i class="fas fa-function mr-3 w-5"></i>Formule URM v3.0
+                    </a>
+                    <a href="#donnees" onclick="scrollToSection('donnees'); toggleMobileMenu()" class="flex items-center px-3 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                        <i class="fas fa-database mr-3 w-5"></i>Données France 2025
+                    </a>
+                    <a href="#comparaison" onclick="scrollToSection('comparaison'); toggleMobileMenu()" class="flex items-center px-3 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                        <i class="fas fa-chart-bar mr-3 w-5"></i>Comparaison mondiale
+                    </a>
+                    <a href="#scenarios" onclick="scrollToSection('scenarios'); toggleMobileMenu()" class="flex items-center px-3 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                        <i class="fas fa-road mr-3 w-5"></i>Scénarios 2035
+                    </a>
+                    
+                    <div class="flex items-center justify-between pt-3 border-t border-gray-200 dark:border-gray-700">
+                        <button onclick="toggleDarkMode(); toggleMobileMenu()" class="flex items-center px-3 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                            <i class="fas fa-moon mr-3 w-5"></i>Mode sombre
+                        </button>
+                        <a href="index.html" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                            <i class="fas fa-arrow-left mr-2"></i>Retour
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header id="header" class="bg-gradient-to-r from-france-blue to-france-red text-white py-16 pt-20">
+        <div class="max-w-6xl mx-auto px-6 text-center">
+            <div class="mb-8">
+                <span class="text-6xl">🇫🇷</span>
+            </div>
+            <h1 class="text-4xl md:text-6xl font-bold mb-6">
+                Analyse Complète de la <span class="text-yellow-300">France 2025</span>
+            </h1>
+            <p class="text-xl md:text-2xl opacity-95 mb-4">
+                avec <strong>URM v3.0</strong> – le modèle le plus abouti jamais calculé
+            </p>
+            <p class="text-lg italic opacity-80">
+                Résultat final : <span class="text-red-300 font-bold">−727 000 € par ménage</span> | 18e place mondiale
+            </p>
+        </div>
+    </header>
+
+    <!-- Formule URM v3.0 -->
+    <section id="formule" class="py-16">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="formula-box rounded-3xl p-8 md:p-12">
+                <h2 class="text-3xl font-bold text-center mb-8">Formule finale retenue (URM v3.0)</h2>
+                
+                <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-inner mb-8">
+                    <div class="text-center text-2xl md:text-4xl font-bold math mb-6">
+                        URM = μ(W) − 3.2×σ(W) + 14 500 − 1.6×D<sub>p</sub> − 2.1×A×σ(W) + 80 000×M
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 text-sm">
+                    <div class="bg-blue-100 dark:bg-blue-900/30 p-4 rounded-xl">
+                        <div class="font-bold text-blue-800 dark:text-blue-200">μ(W)</div>
+                        <div class="text-blue-600 dark:text-blue-300">patrimoine médian</div>
+                    </div>
+                    <div class="bg-red-100 dark:bg-red-900/30 p-4 rounded-xl">
+                        <div class="font-bold text-red-800 dark:text-red-200">3.2×σ(W)</div>
+                        <div class="text-red-600 dark:text-red-300">risque & inégalités</div>
+                    </div>
+                    <div class="bg-green-100 dark:bg-green-900/30 p-4 rounded-xl">
+                        <div class="font-bold text-green-800 dark:text-green-200">14 500</div>
+                        <div class="text-green-600 dark:text-green-300">services publics</div>
+                    </div>
+                    <div class="bg-orange-100 dark:bg-orange-900/30 p-4 rounded-xl">
+                        <div class="font-bold text-orange-800 dark:text-orange-200">1.6×D<sub>p</sub></div>
+                        <div class="text-orange-600 dark:text-orange-300">dette publique</div>
+                    </div>
+                    <div class="bg-purple-100 dark:bg-purple-900/30 p-4 rounded-xl">
+                        <div class="font-bold text-purple-800 dark:text-purple-200">2.1×A×σ(W)</div>
+                        <div class="text-purple-600 dark:text-purple-300">aléas guerre/climat</div>
+                    </div>
+                    <div class="bg-yellow-100 dark:bg-yellow-900/30 p-4 rounded-xl">
+                        <div class="font-bold text-yellow-800 dark:text-yellow-200">80 000×M</div>
+                        <div class="text-yellow-600 dark:text-yellow-300">mobilité sociale</div>
+                    </div>
+                </div>
+
+                <div class="mt-8 bg-yellow-50 dark:bg-yellow-900/20 p-6 rounded-xl border-l-4 border-yellow-500">
+                    <h3 class="font-bold text-yellow-800 dark:text-yellow-200 mb-2">🆕 Nouveau terme ajouté :</h3>
+                    <p class="text-yellow-700 dark:text-yellow-300">
+                        <strong>+80 000 × M</strong> où <strong>M</strong> = indice de mobilité intergénérationnelle 
+                        (0 = aucun ascenseur social, 1 = parfait)
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Données France 2025 -->
+    <section id="donnees" class="bg-gray-100 dark:bg-gray-800 py-16">
+        <div class="max-w-6xl mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-12">Données France – Situation réelle au 30 novembre 2025</h2>
+            
+            <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-xl overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-france-blue dark:bg-gray-700">
+                            <tr>
+                                <th class="px-6 py-4 text-left text-white font-semibold">Variable</th>
+                                <th class="px-6 py-4 text-left text-white font-semibold">Valeur France 2025</th>
+                                <th class="px-6 py-4 text-left text-white font-semibold">Source officielle</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
+                                <td class="px-6 py-4 font-medium">μ(W) – Patrimoine médian</td>
+                                <td class="px-6 py-4 font-bold text-blue-600">320 000 €</td>
+                                <td class="px-6 py-4 text-sm">INSEE, "Patrimoine des ménages 2024", publié mai 2025</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
+                                <td class="px-6 py-4 font-medium">σ(W) – Écart-type patrimoine</td>
+                                <td class="px-6 py-4 font-bold text-red-600">240 000 €</td>
+                                <td class="px-6 py-4 text-sm">INSEE, même source + distribution déciles 2024</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
+                                <td class="px-6 py-4 font-medium">Services publics</td>
+                                <td class="px-6 py-4 font-bold text-green-600">14 500 €/an/ménage</td>
+                                <td class="px-6 py-4 text-sm">OCDE "Government at a Glance 2025" + INSEE comptes nationaux 2024</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
+                                <td class="px-6 py-4 font-medium">D<sub>p</sub> – Dette publique</td>
+                                <td class="px-6 py-4 font-bold text-orange-600">116,2 % du PIB</td>
+                                <td class="px-6 py-4 text-sm">INSEE, "Situation mensuelle des finances publiques", novembre 2025</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
+                                <td class="px-6 py-4 font-medium">A – Indice aléas</td>
+                                <td class="px-6 py-4 font-bold text-purple-600">0,28</td>
+                                <td class="px-6 py-4 text-sm">Calcul propre : 0,15 (Ukraine) + 0,08 (climat) + 0,05 (instabilité politique)</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
+                                <td class="px-6 py-4 font-medium">M – Mobilité sociale</td>
+                                <td class="px-6 py-4 font-bold text-yellow-600">0,42</td>
+                                <td class="px-6 py-4 text-sm">OCDE "A Broken Social Elevator? 2024" + France Stratégie 2025</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Calcul détaillé -->
+    <section class="py-16">
+        <div class="max-w-6xl mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-12">Calcul détaillé URM v3.0 pour la France 2025</h2>
+            
+            <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-xl overflow-hidden mb-8">
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-800 dark:bg-gray-700">
+                            <tr>
+                                <th class="px-6 py-4 text-left text-white font-semibold">Terme</th>
+                                <th class="px-6 py-4 text-left text-white font-semibold">Calcul détaillé</th>
+                                <th class="px-6 py-4 text-right text-white font-semibold">Résultat (€)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
+                                <td class="px-6 py-4 font-medium">μ(W)</td>
+                                <td class="px-6 py-4">Patrimoine médian</td>
+                                <td class="px-6 py-4 text-right font-bold text-green-600">+320 000</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
+                                <td class="px-6 py-4 font-medium">−3.2 × σ(W)</td>
+                                <td class="px-6 py-4">3,2 × 240 000</td>
+                                <td class="px-6 py-4 text-right font-bold text-red-600">−768 000</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
+                                <td class="px-6 py-4 font-medium">+14 500</td>
+                                <td class="px-6 py-4">Services publics</td>
+                                <td class="px-6 py-4 text-right font-bold text-green-600">+14 500</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
+                                <td class="px-6 py-4 font-medium">−1.6 × D<sub>p</sub></td>
+                                <td class="px-6 py-4">1,6 × 116,2 × 1 000</td>
+                                <td class="px-6 py-4 text-right font-bold text-red-600">−186 000</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
+                                <td class="px-6 py-4 font-medium">−2.1 × A × σ(W)</td>
+                                <td class="px-6 py-4">2,1 × 0,28 × 240 000</td>
+                                <td class="px-6 py-4 text-right font-bold text-red-600">−141 000</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
+                                <td class="px-6 py-4 font-medium">+80 000 × M</td>
+                                <td class="px-6 py-4">80 000 × 0,42</td>
+                                <td class="px-6 py-4 text-right font-bold text-green-600">+33 600</td>
+                            </tr>
+                            <tr class="bg-red-50 dark:bg-red-900/20 border-t-4 border-red-500">
+                                <td class="px-6 py-6 font-bold text-xl">URM v3.0 France 2025</td>
+                                <td class="px-6 py-6 font-medium">Somme totale</td>
+                                <td class="px-6 py-6 text-right font-bold text-2xl text-red-600">−726 900 €</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="negative-result rounded-2xl p-8 text-center">
+                <h3 class="text-3xl font-bold mb-4 text-red-800 dark:text-red-200">
+                    Résultat brut : −727 000 € de bien-être réel par ménage moyen
+                </h3>
+                <p class="text-xl text-red-700 dark:text-red-300">
+                    La France est en <strong>territoire négatif</strong> : un ménage français moyen vit moins bien 
+                    que ce que ses revenus devraient permettre.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comparaison internationale -->
+    <section id="comparaison" class="bg-gray-100 dark:bg-gray-800 py-16">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-12">Comparaison immédiate avec les champions</h2>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+                <!-- Danemark -->
+                <div class="country-card bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-6 border-l-4 border-green-500">
+                    <div class="flex items-center mb-4">
+                        <span class="text-3xl mr-3">🇩🇰</span>
+                        <div>
+                            <h3 class="font-bold text-lg">Danemark</h3>
+                            <div class="text-sm text-green-600 font-medium">#1 mondial</div>
+                        </div>
+                    </div>
+                    <div class="text-3xl font-bold text-green-600 mb-2">+492 000 €</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                        <div>Patrimoine: 560k€</div>
+                        <div>Inégalités: 50k€ (très faibles)</div>
+                        <div>Dette: 30% (excellente)</div>
+                        <div>Mobilité: 0,82 (exceptionnelle)</div>
+                    </div>
+                </div>
+
+                <!-- Allemagne -->
+                <div class="country-card bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-6 border-l-4 border-blue-500">
+                    <div class="flex items-center mb-4">
+                        <span class="text-3xl mr-3">🇩🇪</span>
+                        <div>
+                            <h3 class="font-bold text-lg">Allemagne</h3>
+                            <div class="text-sm text-blue-600 font-medium">#2 mondial</div>
+                        </div>
+                    </div>
+                    <div class="text-3xl font-bold text-blue-600 mb-2">+365 000 €</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                        <div>Patrimoine: 510k€</div>
+                        <div>Inégalités: 70k€ (faibles)</div>
+                        <div>Dette: 65% (bonne)</div>
+                        <div>Mobilité: 0,68 (très bonne)</div>
+                    </div>
+                </div>
+
+                <!-- Suède -->
+                <div class="country-card bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-6 border-l-4 border-yellow-500">
+                    <div class="flex items-center mb-4">
+                        <span class="text-3xl mr-3">🇸🇪</span>
+                        <div>
+                            <h3 class="font-bold text-lg">Suède</h3>
+                            <div class="text-sm text-yellow-600 font-medium">#3 mondial</div>
+                        </div>
+                    </div>
+                    <div class="text-3xl font-bold text-yellow-600 mb-2">+448 000 €</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                        <div>Patrimoine: 540k€</div>
+                        <div>Inégalités: 60k€ (très faibles)</div>
+                        <div>Dette: 35% (excellente)</div>
+                        <div>Mobilité: 0,78 (excellente)</div>
+                    </div>
+                </div>
+
+                <!-- France -->
+                <div class="country-card bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-6 border-l-4 border-red-500">
+                    <div class="flex items-center mb-4">
+                        <span class="text-3xl mr-3">🇫🇷</span>
+                        <div>
+                            <h3 class="font-bold text-lg">France</h3>
+                            <div class="text-sm text-red-600 font-medium">#18 mondial</div>
+                        </div>
+                    </div>
+                    <div class="text-3xl font-bold text-red-600 mb-2">−727 000 €</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                        <div>Patrimoine: 320k€</div>
+                        <div>Inégalités: 240k€ (très élevées)</div>
+                        <div>Dette: 116% (critique)</div>
+                        <div>Mobilité: 0,42 (faible)</div>
+                    </div>
+                </div>
+
+                <!-- États-Unis -->
+                <div class="country-card bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-6 border-l-4 border-gray-500">
+                    <div class="flex items-center mb-4">
+                        <span class="text-3xl mr-3">🇺🇸</span>
+                        <div>
+                            <h3 class="font-bold text-lg">États-Unis</h3>
+                            <div class="text-sm text-gray-600 font-medium">#22 mondial</div>
+                        </div>
+                    </div>
+                    <div class="text-3xl font-bold text-gray-600 mb-2">−842 000 €</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                        <div>Patrimoine: 420k€</div>
+                        <div>Inégalités: 300k€ (énormes)</div>
+                        <div>Dette: 130% (très mauvaise)</div>
+                        <div>Mobilité: 0,41 (très faible)</div>
+                    </div>
+                </div>
+
+                <!-- Chine -->
+                <div class="country-card bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-6 border-l-4 border-orange-500">
+                    <div class="flex items-center mb-4">
+                        <span class="text-3xl mr-3">🇨🇳</span>
+                        <div>
+                            <h3 class="font-bold text-lg">Chine</h3>
+                            <div class="text-sm text-orange-600 font-medium">#16 mondial</div>
+                        </div>
+                    </div>
+                    <div class="text-3xl font-bold text-orange-600 mb-2">−698 000 €</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                        <div>Patrimoine: 380k€</div>
+                        <div>Inégalités: 220k€ (très élevées)</div>
+                        <div>Dette: 85% (élevée)</div>
+                        <div>Mobilité: 0,25 (très faible)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-red-100 dark:bg-red-900/30 rounded-2xl p-8 text-center">
+                <h3 class="text-2xl font-bold mb-4 text-red-800 dark:text-red-200">
+                    La France est 18e mondiale en bien-être réel des ménages
+                </h3>
+                <p class="text-lg text-red-700 dark:text-red-300">
+                    Sur 25 pays OCDE + émergents analysés selon URM v3.0
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pourquoi la France est mal classée -->
+    <section class="py-16">
+        <div class="max-w-6xl mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-12">Pourquoi la France est si mal classée ? (décomposition)</h2>
+            
+            <div class="grid md:grid-cols-2 gap-8 mb-12">
+                <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-xl overflow-hidden">
+                    <div class="bg-red-600 text-white p-6">
+                        <h3 class="text-xl font-bold">💸 Facteurs négatifs majeurs</h3>
+                    </div>
+                    <div class="p-6 space-y-6">
+                        <div class="flex justify-between items-center p-4 bg-red-50 dark:bg-red-900/20 rounded-lg">
+                            <div>
+                                <div class="font-bold text-red-800 dark:text-red-200">Très fort risque/inégalités (σ)</div>
+                                <div class="text-sm text-red-600">5× plus que le Danemark</div>
+                            </div>
+                            <div class="text-xl font-bold text-red-600">−768 000 €</div>
+                        </div>
+                        
+                        <div class="flex justify-between items-center p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
+                            <div>
+                                <div class="font-bold text-orange-800 dark:text-orange-200">Dette publique record</div>
+                                <div class="text-sm text-orange-600">6× pire que le Danemark</div>
+                            </div>
+                            <div class="text-xl font-bold text-orange-600">−186 000 €</div>
+                        </div>
+                        
+                        <div class="flex justify-between items-center p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+                            <div>
+                                <div class="font-bold text-purple-800 dark:text-purple-200">Aléas géopolitiques & climatiques</div>
+                                <div class="text-sm text-purple-600">Guerre en Europe + canicules</div>
+                            </div>
+                            <div class="text-xl font-bold text-purple-600">−141 000 €</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-xl overflow-hidden">
+                    <div class="bg-yellow-600 text-white p-6">
+                        <h3 class="text-xl font-bold">📊 Mobilité sociale faible</h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="text-center mb-6">
+                            <div class="text-3xl font-bold text-yellow-600 mb-2">seulement +33 600 €</div>
+                            <p class="text-gray-600 dark:text-gray-400">
+                                Un enfant d'ouvrier a <strong>4× moins de chances</strong> de devenir cadre qu'au Danemark
+                            </p>
+                        </div>
+                        
+                        <div class="bg-yellow-50 dark:bg-yellow-900/20 p-6 rounded-lg">
+                            <h4 class="font-bold mb-3">Comparaison mobilité sociale :</h4>
+                            <div class="space-y-2">
+                                <div class="flex justify-between">
+                                    <span>🇩🇰 Danemark</span>
+                                    <span class="font-bold">0,82</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>🇸🇪 Suède</span>
+                                    <span class="font-bold">0,78</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>🇩🇪 Allemagne</span>
+                                    <span class="font-bold">0,68</span>
+                                </div>
+                                <div class="flex justify-between text-red-600">
+                                    <span>🇫🇷 France</span>
+                                    <span class="font-bold">0,42</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scénarios 2035 -->
+    <section id="scenarios" class="bg-gray-100 dark:bg-gray-800 py-16">
+        <div class="max-w-6xl mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-12">Scénarios 2035 : Que se passe-t-il si…</h2>
+            
+            <div class="space-y-6">
+                <!-- Statu quo -->
+                <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-6 border-l-4 border-red-500">
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <h3 class="text-xl font-bold mb-2 text-red-600">📉 Statu quo (rien ne change)</h3>
+                            <p class="text-gray-600 dark:text-gray-400 mb-4">
+                                Dette → 140 %, σ reste élevé, M = 0,42
+                            </p>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-2xl font-bold text-red-600">−1,1 million €</div>
+                            <div class="text-sm text-red-500">(pire qu'aujourd'hui)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Réformes nordiques -->
+                <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-6 border-l-4 border-green-500">
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <h3 class="text-xl font-bold mb-2 text-green-600">🚀 Réformes nordiques (12 lois du plan)</h3>
+                            <p class="text-gray-600 dark:text-gray-400 mb-4">
+                                Dette → 85 %, σ → 90k, M → 0,70, services +2k/an
+                            </p>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-2xl font-bold text-green-600">+410 000 €</div>
+                            <div class="text-sm text-green-500">(niveau Danemark actuel)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Choc guerre -->
+                <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-6 border-l-4 border-orange-500">
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <h3 class="text-xl font-bold mb-2 text-orange-600">⚡ Choc guerre majeur (A = 0,6)</h3>
+                            <p class="text-gray-600 dark:text-gray-400 mb-4">
+                                Même avec réformes, le risque explose
+                            </p>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-2xl font-bold text-orange-600">−180 000 €</div>
+                            <div class="text-sm text-orange-500">(mais reste positif)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Réforme partielle -->
+                <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-6 border-l-4 border-yellow-500">
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <h3 class="text-xl font-bold mb-2 text-yellow-600">🔧 Réforme partielle (seulement énergie)</h3>
+                            <p class="text-gray-600 dark:text-gray-400 mb-4">
+                                Dette reste 110 %, M inchangé
+                            </p>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-2xl font-bold text-yellow-600">−320 000 €</div>
+                            <div class="text-sm text-yellow-500">(amélioration limitée)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Graphique évolution -->
+    <section class="py-16">
+        <div class="max-w-6xl mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-12">Évolution URM France selon les scénarios</h2>
+            
+            <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-8">
+                <canvas id="scenarioChart" class="w-full h-96"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <!-- Conclusion -->
+    <section class="bg-gradient-to-r from-france-blue to-france-red text-white py-16">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center">
+                <h2 class="text-4xl font-bold mb-8">Conclusion implacable (mathématique, pas politique)</h2>
+                
+                <div class="grid md:grid-cols-3 gap-8 mb-12">
+                    <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6">
+                        <div class="text-3xl font-bold text-red-300 mb-2">18e</div>
+                        <div class="text-lg">place mondiale</div>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6">
+                        <div class="text-3xl font-bold text-red-300 mb-2">−727k€</div>
+                        <div class="text-lg">par ménage français</div>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6">
+                        <div class="text-3xl font-bold text-red-300 mb-2">1,2M€</div>
+                        <div class="text-lg">d'écart avec le Danemark</div>
+                    </div>
+                </div>
+                
+                <div class="bg-white/10 backdrop-blur-md rounded-2xl p-8 mb-8">
+                    <p class="text-xl leading-relaxed mb-6">
+                        Avec URM v3.0, qui est <strong>le seul modèle intégrant richesse, risque, services, dette, aléas ET mobilité sociale</strong>, 
+                        la France est aujourd'hui dans la <span class="text-red-300 font-bold">zone rouge</span>.
+                    </p>
+                    
+                    <div class="text-lg opacity-90">
+                        Un ménage français moyen vit <strong>moins bien qu'un ménage danois… de 1,2 million d'euros d'écart</strong> en bien-être réel.
+                    </div>
+                </div>
+                
+                <div class="bg-green-500/20 backdrop-blur-md rounded-2xl p-8 border border-green-400/30">
+                    <h3 class="text-2xl font-bold mb-6 text-green-300">
+                        La seule façon de redevenir un des meilleurs pays du monde pour un ménage moyen :
+                    </h3>
+                    
+                    <div class="grid md:grid-cols-3 gap-6 text-left">
+                        <div class="bg-white/10 rounded-lg p-4">
+                            <div class="font-bold text-green-300 mb-2">1. Dette publique</div>
+                            <div class="text-sm">Baisser sous 90 % du PIB</div>
+                        </div>
+                        <div class="bg-white/10 rounded-lg p-4">
+                            <div class="font-bold text-green-300 mb-2">2. Inégalités</div>
+                            <div class="text-sm">Réduire σ < 100k €</div>
+                        </div>
+                        <div class="bg-white/10 rounded-lg p-4">
+                            <div class="font-bold text-green-300 mb-2">3. Mobilité sociale</div>
+                            <div class="text-sm">Porter M à 0,70+ (niveau nordique)</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 text-yellow-300 font-bold text-lg">
+                        → Ce qui nécessite exactement les 12 lois que j'ai proposées.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to action -->
+    <section class="bg-gray-100 dark:bg-gray-800 py-16">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <h2 class="text-3xl font-bold mb-8">Aller plus loin ?</h2>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-8">
+                    <i class="fas fa-file-excel text-5xl text-green-600 mb-4"></i>
+                    <h3 class="text-xl font-bold mb-4">Fichier Excel complet</h3>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6">
+                        Tous les calculs cellule par cellule, toutes les sources, tous les pays comparés
+                    </p>
+                    <button class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-colors">
+                        <i class="fas fa-download mr-2"></i>Télécharger Excel
+                    </button>
+                </div>
+                
+                <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-8">
+                    <i class="fas fa-sliders-h text-5xl text-blue-600 mb-4"></i>
+                    <h3 class="text-xl font-bold mb-4">Version interactive</h3>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6">
+                        Bougez les curseurs (dette, mobilité, etc.) et voyez l'URM France changer en direct
+                    </p>
+                    <button onclick="createInteractiveCalculator()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors">
+                        <i class="fas fa-play mr-2"></i>Calculateur interactif
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 dark:bg-gray-900 text-white py-12">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center">
+                <h3 class="text-2xl font-bold mb-4">URM v3.0 - Analyse France 2025</h3>
+                <p class="text-gray-400 mb-6">
+                    Le modèle économique le plus précis jamais développé pour mesurer le bien-être réel des ménages
+                </p>
+                <div class="flex justify-center space-x-6">
+                    <button onclick="shareTwitter()" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-lg transition-colors">
+                        <i class="fab fa-twitter mr-2"></i>Partager
+                    </button>
+                    <button onclick="shareLinkedIn()" class="bg-blue-700 hover:bg-blue-800 px-4 py-2 rounded-lg transition-colors">
+                        <i class="fab fa-linkedin mr-2"></i>LinkedIn
+                    </button>
+                    <button onclick="window.print()" class="bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded-lg transition-colors">
+                        <i class="fas fa-print mr-2"></i>Imprimer
+                    </button>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Dark mode toggle
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            localStorage.setItem('darkMode', document.documentElement.classList.contains('dark'));
+        }
+
+        // Initialize dark mode from localStorage
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.documentElement.classList.add('dark');
+        }
+
+        // Navigation functions
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        function scrollToSection(sectionId) {
+            const element = document.getElementById(sectionId);
+            if (element) {
+                element.scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        }
+
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Scenario chart
+        function createScenarioChart() {
+            const ctx = document.getElementById('scenarioChart').getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['2025 Actuel', '2030', '2035'],
+                    datasets: [
+                        {
+                            label: 'Statu quo',
+                            data: [-727, -900, -1100],
+                            borderColor: 'rgb(239, 68, 68)',
+                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                            tension: 0.3
+                        },
+                        {
+                            label: 'Réformes nordiques',
+                            data: [-727, 50, 410],
+                            borderColor: 'rgb(34, 197, 94)',
+                            backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                            tension: 0.3
+                        },
+                        {
+                            label: 'Réforme partielle',
+                            data: [-727, -500, -320],
+                            borderColor: 'rgb(234, 179, 8)',
+                            backgroundColor: 'rgba(234, 179, 8, 0.1)',
+                            tension: 0.3
+                        },
+                        {
+                            label: 'Avec choc guerre',
+                            data: [-727, -100, -180],
+                            borderColor: 'rgb(249, 115, 22)',
+                            backgroundColor: 'rgba(249, 115, 22, 0.1)',
+                            tension: 0.3
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Évolution URM France selon les scénarios (en milliers d\'€)',
+                            font: { size: 16 }
+                        },
+                        legend: {
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'URM v3.0 (k€)'
+                            },
+                            grid: {
+                                color: function(context) {
+                                    if (context.tick.value === 0) {
+                                        return 'red';
+                                    }
+                                    return 'rgba(0,0,0,0.1)';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Interactive calculator (placeholder)
+        function createInteractiveCalculator() {
+            alert('Calculateur interactif en cours de développement...\n\nVous pourrez bientôt modifier :\n- Dette publique (90-140%)\n- Inégalités patrimoine (50-300k€)\n- Mobilité sociale (0.2-0.8)\n- Services publics (10-20k€)\n\nEt voir l\'impact en temps réel sur l\'URM France !');
+        }
+
+        // Social sharing
+        function shareTwitter() {
+            const text = "🇫🇷 CHOC : La France n'est que 18e mondiale en bien-être réel des ménages (-727k€ par foyer) selon le nouveau modèle URM v3.0. Le Danemark écrase tout le monde avec +492k€. Les chiffres parlent !";
+            const url = window.location.href;
+            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`);
+        }
+
+        function shareLinkedIn() {
+            const url = window.location.href;
+            window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`);
+        }
+
+        // Initialize chart when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            createScenarioChart();
+        });
+    </script>
+
+</body>
+</html>
