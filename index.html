@@ -76,31 +76,29 @@
         </div>
 
         <!-- Menu Desktop -->
-        <div class="hidden lg:flex items-center space-x-8">
-          <a href="#intro" onclick="scrollToSection('intro')" class="nav-link text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium">
-            <i class="fas fa-home mr-2"></i>Accueil
-          </a>
-          <a href="#formula" onclick="scrollToSection('formula')" class="nav-link text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium">
-            <i class="fas fa-function mr-2"></i>Formule
-          </a>
-          <a href="#results" onclick="scrollToSection('results')" class="nav-link text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium">
-            <i class="fas fa-chart-bar mr-2"></i>Résultats
-          </a>
-          <a href="#analyses" onclick="scrollToSection('analyses')" class="nav-link text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium">
-            <i class="fas fa-analytics mr-2"></i>Analyses
-          </a>
-          <a href="simulateur.html" class="nav-link text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium">
-            <i class="fas fa-sliders-h mr-2"></i>Simulateur
-          </a>
-          <a href="comparateur.html" class="nav-link text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium">
-            <i class="fas fa-balance-scale mr-2"></i>Comparateur
-          </a>
-          <a href="france2025.html" class="nav-link text-white bg-gradient-to-r from-red-600 to-blue-600 hover:from-red-700 hover:to-blue-700 px-4 py-2 rounded-lg font-semibold transition-all transform hover:scale-105 shadow-lg">
-            <i class="fas fa-flag mr-2"></i>🇫🇷 France 2025
-          </a>
-          <a href="calculateur.html" class="nav-link text-white bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 px-4 py-2 rounded-lg font-semibold transition-all transform hover:scale-105 shadow-lg">
-            <i class="fas fa-globe mr-2"></i>🌍 Calculateur
-          </a>
+        <div class="hidden lg:flex items-center space-x-4">
+          <a href="index.html" class="nav-link text-blue-600 dark:text-blue-400 font-semibold px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/30">🏠 Accueil</a>
+          <a href="france2025.html" class="nav-link text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors px-3 py-2">🇫🇷 France</a>
+          <a href="calculateur.html" class="nav-link text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors px-3 py-2">🌍 Calculateur</a>
+          <a href="simulateur.html" class="nav-link text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors px-3 py-2">🎛️ Simulateur</a>
+          <a href="comparateur.html" class="nav-link text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors px-3 py-2">⚖️ Comparateur</a>
+          <a href="classement.html" class="nav-link text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors px-3 py-2">🏆 Classement</a>
+          <a href="carte.html" class="nav-link text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors px-3 py-2">🗺️ Carte</a>
+          <a href="timeline.html" class="nav-link text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors px-3 py-2">📅 Timeline</a>
+          
+          <!-- Dropdown Plus -->
+          <div class="relative group">
+            <button class="text-gray-700 dark:text-gray-300 hover:text-blue-600 px-3 py-2 rounded-lg transition-colors flex items-center">
+              Plus <i class="fas fa-chevron-down ml-1 text-xs"></i>
+            </button>
+            <div class="absolute top-full right-0 mt-1 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+              <a href="quiz.html" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-t-xl">🎯 Quiz</a>
+              <a href="export.html" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">📥 Export</a>
+              <a href="ressources.html" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">📚 Ressources</a>
+              <a href="methodologie.html" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">📖 Méthodologie</a>
+              <a href="contact.html" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-b-xl">📧 Contact</a>
+            </div>
+          </div>
         </div>
 
         <!-- Boutons action -->
@@ -121,42 +119,20 @@
     </div>
 
     <!-- Menu Mobile -->
-    <div id="mobileMenu" class="lg:hidden hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
-      <div class="px-6 py-4 space-y-3">
-        <a href="#intro" onclick="scrollToSection('intro'); toggleMobileMenu()" class="flex items-center px-3 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-          <i class="fas fa-home mr-3 w-5"></i>Accueil
-        </a>
-        <a href="#formula" onclick="scrollToSection('formula'); toggleMobileMenu()" class="flex items-center px-3 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-          <i class="fas fa-function mr-3 w-5"></i>Formule URM
-        </a>
-        <a href="#results" onclick="scrollToSection('results'); toggleMobileMenu()" class="flex items-center px-3 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-          <i class="fas fa-chart-bar mr-3 w-5"></i>Résultats 2025
-        </a>
-        <a href="simulateur.html" class="flex items-center px-3 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-          <i class="fas fa-sliders-h mr-3 w-5"></i>Simulateur Personnel
-        </a>
-        <a href="comparateur.html" class="flex items-center px-3 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-          <i class="fas fa-balance-scale mr-3 w-5"></i>Comparateur
-        </a>
-        <a href="france2025.html" class="flex items-center justify-between px-3 py-2 rounded-lg bg-gradient-to-r from-red-600 to-blue-600 text-white font-semibold transition-all shadow-lg">
-          <div class="flex items-center">
-            <i class="fas fa-flag mr-3 w-5"></i>🇫🇷 France 2025
-          </div>
-        </a>
-        <a href="calculateur.html" class="flex items-center justify-between px-3 py-2 rounded-lg bg-gradient-to-r from-green-600 to-teal-600 text-white font-semibold transition-all shadow-lg">
-          <div class="flex items-center">
-            <i class="fas fa-globe mr-3 w-5"></i>🌍 Calculateur Mondial
-          </div>
-        </a>
-        <div class="flex items-center justify-between pt-3 border-t border-gray-200 dark:border-gray-700">
-          <button onclick="toggleTheme()" class="flex items-center px-3 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-            <i id="themeIconMobile" class="fas fa-moon mr-3 w-5"></i>Mode sombre
-          </button>
-          <button onclick="shareTwitter(); toggleMobileMenu()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">
-            <i class="fab fa-twitter mr-2"></i>Partager
-          </button>
-        </div>
-      </div>
+    <div id="mobileMenu" class="lg:hidden hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 px-4 py-3 space-y-1 max-h-96 overflow-y-auto">
+      <a href="index.html" class="block px-3 py-2 rounded-lg bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400">🏠 Accueil</a>
+      <a href="france2025.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🇫🇷 France 2025</a>
+      <a href="calculateur.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🌍 Calculateur</a>
+      <a href="classement.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🏆 Classement</a>
+      <a href="carte.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🗺️ Carte</a>
+      <a href="simulateur.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🎛️ Simulateur</a>
+      <a href="comparateur.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">⚖️ Comparateur</a>
+      <a href="timeline.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">📅 Timeline</a>
+      <a href="quiz.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🎯 Quiz</a>
+      <a href="export.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">📥 Export</a>
+      <a href="ressources.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">📚 Ressources</a>
+      <a href="methodologie.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">📖 Méthodologie</a>
+      <a href="contact.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">📧 Contact</a>
     </div>
   </nav>
 

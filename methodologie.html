@@ -34,57 +34,63 @@
 
     <!-- Navigation -->
     <nav class="fixed top-0 w-full z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-b border-gray-200 dark:border-gray-700">
-        <div class="max-w-7xl mx-auto px-6">
+        <div class="max-w-7xl mx-auto px-4">
             <div class="flex items-center justify-between h-16">
-                <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-book text-white text-xl"></i>
+                <a href="index.html" class="flex items-center space-x-2">
+                    <div class="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-calculator text-white text-lg"></i>
                     </div>
-                    <div>
-                        <h1 class="text-xl font-bold">Méthodologie</h1>
-                        <p class="text-xs text-gray-500">Fondements scientifiques</p>
+                    <span class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent hidden sm:block">URM Model</span>
+                </a>
+                
+                <!-- Menu Desktop -->
+                <div class="hidden lg:flex items-center space-x-1">
+                    <a href="index.html" class="px-3 py-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition text-sm">🏠 Accueil</a>
+                    <a href="france2025.html" class="px-3 py-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition text-sm">🇫🇷 France</a>
+                    <a href="calculateur.html" class="px-3 py-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition text-sm">🌍 Calculateur</a>
+                    <a href="classement.html" class="px-3 py-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition text-sm">🏆 Classement</a>
+                    <a href="carte.html" class="px-3 py-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition text-sm">🗺️ Carte</a>
+                    <a href="simulateur.html" class="px-3 py-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition text-sm">🎛️ Simulateur</a>
+                    <a href="comparateur.html" class="px-3 py-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition text-sm">⚖️ Comparateur</a>
+                    <a href="timeline.html" class="px-3 py-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition text-sm">📅 Timeline</a>
+                    <div class="relative group">
+                        <button class="px-3 py-2 rounded-lg bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 transition text-sm">Plus ▼</button>
+                        <div class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                            <a href="quiz.html" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-t-xl">🎯 Quiz</a>
+                            <a href="export.html" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">📥 Export</a>
+                            <a href="ressources.html" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">📚 Ressources</a>
+                            <a href="methodologie.html" class="block px-4 py-2 bg-blue-50 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400">📖 Méthodologie</a>
+                            <a href="contact.html" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-b-xl">📧 Contact</a>
+                        </div>
                     </div>
                 </div>
                 
-                <div class="hidden md:flex items-center space-x-4">
-                    <a href="index.html" class="text-gray-600 dark:text-gray-400 hover:text-blue-600 px-3 py-2 rounded-lg transition-colors">
-                        <i class="fas fa-home mr-2"></i>Accueil
-                    </a>
-                    <a href="simulateur.html" class="text-gray-600 dark:text-gray-400 hover:text-blue-600 px-3 py-2 rounded-lg transition-colors">
-                        <i class="fas fa-sliders-h mr-2"></i>Simulateur
-                    </a>
-                    <a href="comparateur.html" class="text-gray-600 dark:text-gray-400 hover:text-blue-600 px-3 py-2 rounded-lg transition-colors">
-                        <i class="fas fa-balance-scale mr-2"></i>Comparateur
-                    </a>
-                    <a href="calculateur.html" class="text-gray-600 dark:text-gray-400 hover:text-blue-600 px-3 py-2 rounded-lg transition-colors">
-                        <i class="fas fa-globe mr-2"></i>Calculateur
-                    </a>
-                    <button onclick="toggleTheme()" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800">
+                <div class="flex items-center space-x-2">
+                    <button onclick="toggleTheme()" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:text-blue-600 transition">
                         <i id="themeIcon" class="fas fa-moon"></i>
                     </button>
+                    <button onclick="toggleMobileMenu()" class="lg:hidden p-2 rounded-lg text-gray-600 dark:text-gray-400">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
                 </div>
-                
-                <button onclick="toggleMobileMenu()" class="md:hidden p-2">
-                    <i class="fas fa-bars text-xl"></i>
-                </button>
             </div>
         </div>
         
-        <div id="mobileMenu" class="hidden md:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
-            <div class="px-6 py-4 space-y-2">
-                <a href="index.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
-                    <i class="fas fa-home mr-2"></i>Accueil
-                </a>
-                <a href="simulateur.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
-                    <i class="fas fa-sliders-h mr-2"></i>Simulateur
-                </a>
-                <a href="comparateur.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
-                    <i class="fas fa-balance-scale mr-2"></i>Comparateur
-                </a>
-                <a href="calculateur.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
-                    <i class="fas fa-globe mr-2"></i>Calculateur
-                </a>
-            </div>
+        <!-- Menu Mobile -->
+        <div id="mobileMenu" class="hidden lg:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 px-4 py-3 space-y-1 max-h-96 overflow-y-auto">
+            <a href="index.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🏠 Accueil</a>
+            <a href="france2025.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🇫🇷 France 2025</a>
+            <a href="calculateur.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🌍 Calculateur</a>
+            <a href="classement.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🏆 Classement</a>
+            <a href="carte.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🗺️ Carte</a>
+            <a href="simulateur.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🎛️ Simulateur</a>
+            <a href="comparateur.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">⚖️ Comparateur</a>
+            <a href="timeline.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">📅 Timeline</a>
+            <a href="quiz.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🎯 Quiz</a>
+            <a href="export.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">📥 Export</a>
+            <a href="ressources.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">📚 Ressources</a>
+            <a href="methodologie.html" class="block px-3 py-2 rounded-lg bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400">📖 Méthodologie</a>
+            <a href="contact.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">📧 Contact</a>
         </div>
     </nav>
 
