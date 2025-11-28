@@ -159,11 +159,347 @@
     </div>
   </section>
 
-  <!-- Graphique interactif -->
-  <section class="py-16 bg-gray-100 dark:bg-gray-900">
-    <div class="max-w-4xl mx-auto px-6">
-      <h2 class="text-4xl font-bold text-center mb-12">Visualisation : URM par pays</h2>
-      <canvas id="urmChart" height="100"></canvas>
+  <!-- Navigation interactive -->
+  <section class="py-16 bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+    <div class="max-w-6xl mx-auto px-6">
+      <h2 class="text-4xl font-bold text-center mb-12">Analyses Interactives Complètes</h2>
+      <div class="grid md:grid-cols-3 gap-8 text-center">
+        <button onclick="showSection('comparison')" id="btn-comparison" class="bg-white/20 hover:bg-white/30 backdrop-blur-md rounded-xl p-8 transition-all duration-300 transform hover:scale-105 border border-white/20">
+          <i class="fas fa-table text-5xl mb-4"></i>
+          <h3 class="text-2xl font-bold mb-2">Tableau Comparatif</h3>
+          <p>France vs Danemark vs USA</p>
+        </button>
+        <button onclick="showSection('simulation')" id="btn-simulation" class="bg-white/20 hover:bg-white/30 backdrop-blur-md rounded-xl p-8 transition-all duration-300 transform hover:scale-105 border border-white/20">
+          <i class="fas fa-calculator text-5xl mb-4"></i>
+          <h3 class="text-2xl font-bold mb-2">Simulation Ménage</h3>
+          <p>Un Français sous modèle danois</p>
+        </button>
+        <button onclick="showSection('charts')" id="btn-charts" class="bg-white/20 hover:bg-white/30 backdrop-blur-md rounded-xl p-8 transition-all duration-300 transform hover:scale-105 border border-white/20">
+          <i class="fas fa-chart-pie text-5xl mb-4"></i>
+          <h3 class="text-2xl font-bold mb-2">Visualisations</h3>
+          <p>Graphiques interactifs</p>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Tableau Comparatif -->
+  <section id="comparison-section" class="py-16 bg-white dark:bg-gray-900 hidden">
+    <div class="max-w-7xl mx-auto px-6">
+      <h2 class="text-4xl font-bold text-center mb-12">🏆 Comparatif Détaillé : France vs Danemark vs USA</h2>
+      
+      <div class="grid lg:grid-cols-3 gap-8 mb-12">
+        <div class="bg-blue-50 dark:bg-blue-900 p-6 rounded-xl">
+          <h3 class="text-2xl font-bold text-blue-700 dark:text-blue-300 mb-4">🇫🇷 France</h3>
+          <div class="space-y-3">
+            <div class="flex justify-between"><span>PIB/habitant</span><span class="font-bold">43 500 €</span></div>
+            <div class="flex justify-between"><span>Patrimoine médian</span><span class="font-bold">113 000 €</span></div>
+            <div class="flex justify-between"><span>Salaire médian net</span><span class="font-bold">1 940 €</span></div>
+            <div class="flex justify-between"><span>Taux chômage</span><span class="font-bold">7.3%</span></div>
+            <div class="flex justify-between"><span>Risque pauvreté</span><span class="font-bold text-orange-600">13.1%</span></div>
+            <div class="flex justify-between"><span>Bonheur (Gallup)</span><span class="font-bold">6.6/10</span></div>
+          </div>
+        </div>
+
+        <div class="bg-green-50 dark:bg-green-900 p-6 rounded-xl border-2 border-green-400">
+          <h3 class="text-2xl font-bold text-green-700 dark:text-green-300 mb-4">🇩🇰 Danemark 👑</h3>
+          <div class="space-y-3">
+            <div class="flex justify-between"><span>PIB/habitant</span><span class="font-bold">67 800 €</span></div>
+            <div class="flex justify-between"><span>Patrimoine médian</span><span class="font-bold text-green-600">165 000 €</span></div>
+            <div class="flex justify-between"><span>Salaire médian net</span><span class="font-bold text-green-600">2 850 €</span></div>
+            <div class="flex justify-between"><span>Taux chômage</span><span class="font-bold text-green-600">3.1%</span></div>
+            <div class="flex justify-between"><span>Risque pauvreté</span><span class="font-bold text-green-600">5.9%</span></div>
+            <div class="flex justify-between"><span>Bonheur (Gallup)</span><span class="font-bold text-green-600">7.8/10</span></div>
+          </div>
+        </div>
+
+        <div class="bg-red-50 dark:bg-red-900 p-6 rounded-xl">
+          <h3 class="text-2xl font-bold text-red-700 dark:text-red-300 mb-4">🇺🇸 USA</h3>
+          <div class="space-y-3">
+            <div class="flex justify-between"><span>PIB/habitant</span><span class="font-bold">76 300 €</span></div>
+            <div class="flex justify-between"><span>Patrimoine médian</span><span class="font-bold">79 000 €</span></div>
+            <div class="flex justify-between"><span>Salaire médian net</span><span class="font-bold">3 200 €</span></div>
+            <div class="flex justify-between"><span>Taux chômage</span><span class="font-bold">3.7%</span></div>
+            <div class="flex justify-between"><span>Risque pauvreté</span><span class="font-bold text-red-600">17.8%</span></div>
+            <div class="flex justify-between"><span>Bonheur (Gallup)</span><span class="font-bold">6.9/10</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Analyse approfondie -->
+      <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-8 mb-8">
+        <h3 class="text-3xl font-bold mb-6">🔬 Analyse : Pourquoi le Danemark écrase tout</h3>
+        
+        <div class="grid md:grid-cols-2 gap-8">
+          <div>
+            <h4 class="text-xl font-bold mb-4 text-green-600">✅ Avantages du modèle danois</h4>
+            <ul class="space-y-2">
+              <li><strong>Flexicurité :</strong> Facile de licencier ET généreuses allocations</li>
+              <li><strong>Services gratuits :</strong> Santé, éducation, crèches = 15k€/an économisés</li>
+              <li><strong>Syndicats forts :</strong> Négociation collective équilibrée</li>
+              <li><strong>Fiscalité progressive :</strong> Les riches paient, la classe moyenne respire</li>
+              <li><strong>Innovation :</strong> R&D = 3% du PIB vs 2.2% France</li>
+            </ul>
+          </div>
+          
+          <div>
+            <h4 class="text-xl font-bold mb-4 text-red-600">❌ Problèmes France/USA</h4>
+            <ul class="space-y-2">
+              <li><strong>France :</strong> Marché du travail rigide, chômage structurel</li>
+              <li><strong>USA :</strong> Inégalités folles, pas de filet social</li>
+              <li><strong>France :</strong> Dette publique 112% PIB vs 37% Danemark</li>
+              <li><strong>USA :</strong> Santé = 18% PIB, ruine les ménages moyens</li>
+              <li><strong>Tous :</strong> Polarisation politique vs consensus danois</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Coûts cachés -->
+      <div class="overflow-x-auto">
+        <h3 class="text-2xl font-bold mb-6">💰 Coûts cachés pour un ménage moyen (par an)</h3>
+        <table class="w-full border-collapse bg-white dark:bg-gray-800 rounded-xl overflow-hidden">
+          <thead class="bg-gray-200 dark:bg-gray-700">
+            <tr>
+              <th class="p-4 text-left">Poste de dépense</th>
+              <th class="p-4 text-center">🇫🇷 France</th>
+              <th class="p-4 text-center">🇩🇰 Danemark</th>
+              <th class="p-4 text-center">🇺🇸 USA</th>
+            </tr>
+          </thead>
+          <tbody class="text-lg">
+            <tr class="border-b border-gray-200 dark:border-gray-600">
+              <td class="p-4 font-bold">Santé privée</td>
+              <td class="p-4 text-center">2 300 €</td>
+              <td class="p-4 text-center text-green-600 font-bold">0 €</td>
+              <td class="p-4 text-center text-red-600">8 200 €</td>
+            </tr>
+            <tr class="border-b border-gray-200 dark:border-gray-600">
+              <td class="p-4 font-bold">Études supérieures (enfant)</td>
+              <td class="p-4 text-center">300 €</td>
+              <td class="p-4 text-center text-green-600 font-bold">0 €</td>
+              <td class="p-4 text-center text-red-600">15 000 €</td>
+            </tr>
+            <tr class="border-b border-gray-200 dark:border-gray-600">
+              <td class="p-4 font-bold">Garde d'enfant</td>
+              <td class="p-4 text-center">6 000 €</td>
+              <td class="p-4 text-center text-green-600 font-bold">1 200 €</td>
+              <td class="p-4 text-center text-red-600">12 000 €</td>
+            </tr>
+            <tr class="border-b border-gray-200 dark:border-gray-600">
+              <td class="p-4 font-bold">Transports</td>
+              <td class="p-4 text-center">4 500 €</td>
+              <td class="p-4 text-center text-green-600">2 800 €</td>
+              <td class="p-4 text-center text-red-600">6 500 €</td>
+            </tr>
+            <tr class="bg-gray-100 dark:bg-gray-700 font-bold text-xl">
+              <td class="p-4">TOTAL par an</td>
+              <td class="p-4 text-center">13 100 €</td>
+              <td class="p-4 text-center text-green-600">4 000 €</td>
+              <td class="p-4 text-center text-red-600">41 700 €</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Simulation -->
+  <section id="simulation-section" class="py-16 bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800 hidden">
+    <div class="max-w-6xl mx-auto px-6">
+      <h2 class="text-4xl font-bold text-center mb-12">🧮 Simulation : Un Ménage Français au Danemark</h2>
+      
+      <!-- Profil ménage -->
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 mb-12">
+        <h3 class="text-2xl font-bold mb-6 text-center">👨‍👩‍👧‍👦 Profil : Famille Dupont</h3>
+        <div class="grid md:grid-cols-4 gap-6 text-center">
+          <div class="bg-blue-50 dark:bg-blue-900 p-4 rounded-lg">
+            <i class="fas fa-user-tie text-3xl text-blue-600 mb-2"></i>
+            <h4 class="font-bold">Pierre (35 ans)</h4>
+            <p>Ingénieur informatique<br>Salaire : 3 800 €/mois</p>
+          </div>
+          <div class="bg-pink-50 dark:bg-pink-900 p-4 rounded-lg">
+            <i class="fas fa-user-nurse text-3xl text-pink-600 mb-2"></i>
+            <h4 class="font-bold">Marie (33 ans)</h4>
+            <p>Infirmière<br>Salaire : 2 400 €/mois</p>
+          </div>
+          <div class="bg-green-50 dark:bg-green-900 p-4 rounded-lg">
+            <i class="fas fa-child text-3xl text-green-600 mb-2"></i>
+            <h4 class="font-bold">Léa (8 ans)</h4>
+            <p>École primaire</p>
+          </div>
+          <div class="bg-yellow-50 dark:bg-yellow-900 p-4 rounded-lg">
+            <i class="fas fa-baby text-3xl text-yellow-600 mb-2"></i>
+            <h4 class="font-bold">Tom (2 ans)</h4>
+            <p>Crèche</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Comparaison revenus/dépenses -->
+      <div class="grid lg:grid-cols-2 gap-8 mb-12">
+        <!-- France -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-lg">
+          <h3 class="text-2xl font-bold text-blue-600 mb-6">🇫🇷 Vie actuelle en France</h3>
+          
+          <div class="space-y-4 mb-6">
+            <h4 class="font-bold text-lg text-green-600">💰 Revenus</h4>
+            <div class="space-y-2 pl-4">
+              <div class="flex justify-between"><span>Pierre (net)</span><span>3 000 €</span></div>
+              <div class="flex justify-between"><span>Marie (net)</span><span>1 950 €</span></div>
+              <div class="flex justify-between border-t pt-2"><strong>Total net</strong><span class="font-bold">4 950 €/mois</span></div>
+            </div>
+            
+            <h4 class="font-bold text-lg text-red-600 mt-6">💸 Dépenses spécifiques</h4>
+            <div class="space-y-2 pl-4">
+              <div class="flex justify-between"><span>Crèche Tom</span><span>580 €</span></div>
+              <div class="flex justify-between"><span>Mutuelle santé</span><span>180 €</span></div>
+              <div class="flex justify-between"><span>Frais médicaux</span><span>120 €</span></div>
+              <div class="flex justify-between"><span>Transport</span><span>380 €</span></div>
+              <div class="flex justify-between border-t pt-2"><strong>Dépenses contraintes</strong><span class="font-bold text-red-600">1 260 €</span></div>
+            </div>
+            
+            <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg mt-4">
+              <div class="flex justify-between text-lg"><strong>Reste à vivre</strong><span class="font-bold">3 690 €/mois</span></div>
+              <div class="text-sm text-gray-600 dark:text-gray-400">Logement, nourriture, loisirs, épargne...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Danemark -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-lg border-2 border-green-400">
+          <h3 class="text-2xl font-bold text-green-600 mb-6">🇩🇰 Même famille au Danemark</h3>
+          
+          <div class="space-y-4 mb-6">
+            <h4 class="font-bold text-lg text-green-600">💰 Revenus</h4>
+            <div class="space-y-2 pl-4">
+              <div class="flex justify-between"><span>Pierre (net)</span><span>3 800 €</span></div>
+              <div class="flex justify-between"><span>Marie (net)</span><span>2 200 €</span></div>
+              <div class="flex justify-between border-t pt-2"><strong>Total net</strong><span class="font-bold">6 000 €/mois</span></div>
+              <div class="text-sm text-green-600">+1050€ grâce aux salaires plus élevés</div>
+            </div>
+            
+            <h4 class="font-bold text-lg text-red-600 mt-6">💸 Dépenses spécifiques</h4>
+            <div class="space-y-2 pl-4">
+              <div class="flex justify-between"><span>Crèche Tom</span><span class="text-green-600 font-bold">85 €</span></div>
+              <div class="flex justify-between"><span>Mutuelle santé</span><span class="text-green-600 font-bold">0 €</span></div>
+              <div class="flex justify-between"><span>Frais médicaux</span><span class="text-green-600 font-bold">0 €</span></div>
+              <div class="flex justify-between"><span>Transport</span><span class="text-green-600">220 €</span></div>
+              <div class="flex justify-between border-t pt-2"><strong>Dépenses contraintes</strong><span class="font-bold text-green-600">305 €</span></div>
+              <div class="text-sm text-green-600">-955€ d'économie vs France !</div>
+            </div>
+            
+            <div class="bg-green-100 dark:bg-green-700 p-4 rounded-lg mt-4">
+              <div class="flex justify-between text-lg"><strong>Reste à vivre</strong><span class="font-bold text-green-600">5 695 €/mois</span></div>
+              <div class="text-sm text-green-800 dark:text-green-200">+2005€ de mieux par mois !</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Résumé gains -->
+      <div class="bg-gradient-to-r from-green-500 to-blue-500 text-white rounded-2xl p-8 text-center">
+        <h3 class="text-3xl font-bold mb-6">🎯 Bilan : Famille Dupont au Danemark</h3>
+        <div class="grid md:grid-cols-3 gap-6">
+          <div>
+            <div class="text-4xl font-bold mb-2">+24 060 €</div>
+            <div class="text-xl">par an de mieux</div>
+          </div>
+          <div>
+            <div class="text-4xl font-bold mb-2">0 €</div>
+            <div class="text-xl">de frais médicaux</div>
+          </div>
+          <div>
+            <div class="text-4xl font-bold mb-2">100%</div>
+            <div class="text-xl">études payées</div>
+          </div>
+        </div>
+        <p class="mt-6 text-lg">
+          En 20 ans : <strong>+481 200 € d'économies</strong> pour la même famille !<br>
+          <em>Sans compter la sécurité en cas de chômage ou maladie.</em>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Visualisations -->
+  <section id="charts-section" class="py-16 bg-gray-50 dark:bg-gray-900 hidden">
+    <div class="max-w-7xl mx-auto px-6">
+      <h2 class="text-4xl font-bold text-center mb-12">📊 Visualisations Interactives</h2>
+      
+      <!-- Graphique URM -->
+      <div class="grid lg:grid-cols-2 gap-8 mb-12">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
+          <h3 class="text-2xl font-bold mb-4 text-center">URM - Utilité Réelle des Ménages</h3>
+          <canvas id="urmChart" height="200"></canvas>
+        </div>
+        
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
+          <h3 class="text-2xl font-bold mb-4 text-center">Bonheur vs Richesse</h3>
+          <canvas id="happinessChart" height="200"></canvas>
+        </div>
+      </div>
+      
+      <!-- Comparaison systèmes -->
+      <div class="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-lg mb-8">
+        <h3 class="text-3xl font-bold text-center mb-8">⚖️ Balance : Capitalisme vs Social-démocratie</h3>
+        <div class="grid md:grid-cols-2 gap-12">
+          <!-- Capitalisme pur -->
+          <div class="text-center">
+            <h4 class="text-2xl font-bold text-red-600 mb-6">🇺🇸 Capitalisme pur (USA)</h4>
+            <div class="space-y-4">
+              <div class="flex justify-between bg-red-50 dark:bg-red-900 p-3 rounded">
+                <span>Innovation</span><span class="font-bold text-green-600">9/10</span>
+              </div>
+              <div class="flex justify-between bg-red-50 dark:bg-red-900 p-3 rounded">
+                <span>Efficacité économique</span><span class="font-bold text-green-600">8/10</span>
+              </div>
+              <div class="flex justify-between bg-red-50 dark:bg-red-900 p-3 rounded">
+                <span>Égalité</span><span class="font-bold text-red-600">2/10</span>
+              </div>
+              <div class="flex justify-between bg-red-50 dark:bg-red-900 p-3 rounded">
+                <span>Sécurité sociale</span><span class="font-bold text-red-600">3/10</span>
+              </div>
+              <div class="flex justify-between bg-red-50 dark:bg-red-900 p-3 rounded">
+                <span>Bonheur ménages</span><span class="font-bold text-orange-600">6/10</span>
+              </div>
+              <div class="flex justify-between bg-gray-100 dark:bg-gray-700 p-4 rounded font-bold text-lg">
+                <span>SCORE TOTAL</span><span class="text-red-600">28/50</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Social-démocratie -->
+          <div class="text-center">
+            <h4 class="text-2xl font-bold text-green-600 mb-6">🇩🇰 Social-démocratie (Danemark)</h4>
+            <div class="space-y-4">
+              <div class="flex justify-between bg-green-50 dark:bg-green-900 p-3 rounded">
+                <span>Innovation</span><span class="font-bold text-green-600">8/10</span>
+              </div>
+              <div class="flex justify-between bg-green-50 dark:bg-green-900 p-3 rounded">
+                <span>Efficacité économique</span><span class="font-bold text-green-600">8/10</span>
+              </div>
+              <div class="flex justify-between bg-green-50 dark:bg-green-900 p-3 rounded">
+                <span>Égalité</span><span class="font-bold text-green-600">9/10</span>
+              </div>
+              <div class="flex justify-between bg-green-50 dark:bg-green-900 p-3 rounded">
+                <span>Sécurité sociale</span><span class="font-bold text-green-600">10/10</span>
+              </div>
+              <div class="flex justify-between bg-green-50 dark:bg-green-900 p-3 rounded">
+                <span>Bonheur ménages</span><span class="font-bold text-green-600">9/10</span>
+              </div>
+              <div class="flex justify-between bg-gray-100 dark:bg-gray-700 p-4 rounded font-bold text-lg">
+                <span>SCORE TOTAL</span><span class="text-green-600">44/50</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="text-center mt-8">
+          <div class="text-3xl font-bold text-green-600 mb-4">🏆 Gagnant : Social-démocratie (+57%)</div>
+          <p class="text-lg italic">Le modèle nordique combine le meilleur des deux mondes</p>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -193,34 +529,222 @@
     <p>Fait avec ❤️ par un citoyen qui en a marre des faux débats | Sources : INSEE, OCDE, Eurostat, RTE, Cour des comptes 2024-2025</p>
   </footer>
 
-  <!-- Script Chart.js -->
+  <!-- Script Chart.js et interactions -->
   <script>
-    const ctx = document.getElementById('urmChart').getContext('2d');
-    new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: ['Danemark', 'Allemagne', 'Japon', 'Chine', 'USA'],
-        datasets: [{
-          label: 'URM – Utilité Réelle des Ménages (€ équivalent bien-être)',
-          data: [415000, 292000, 120000, -232000, -558000],
-          backgroundColor: ['#22c55e', '#3b82f6', '#a855f7', '#f97316', '#ef4444'],
-          borderRadius: 12,
-          borderWidth: 0
-        }]
-      },
-      options: {
-        indexAxis: 'y',
-        plugins: { legend: { display: false } },
-        scales: {
-          x: { ticks: { callback: v => (v/1000)+'k €', font: { size: 14 } } }
-        }
+    let urmChart, happinessChart;
+    
+    // Navigation entre sections
+    function showSection(section) {
+      // Masquer toutes les sections
+      document.getElementById('comparison-section').classList.add('hidden');
+      document.getElementById('simulation-section').classList.add('hidden');
+      document.getElementById('charts-section').classList.add('hidden');
+      
+      // Réinitialiser les boutons
+      document.querySelectorAll('[id^="btn-"]').forEach(btn => {
+        btn.classList.remove('bg-white/40', 'scale-105');
+        btn.classList.add('bg-white/20');
+      });
+      
+      // Afficher la section demandée
+      document.getElementById(section + '-section').classList.remove('hidden');
+      document.getElementById('btn-' + section).classList.add('bg-white/40', 'scale-105');
+      
+      // Initialiser les graphiques si nécessaire
+      if (section === 'charts') {
+        setTimeout(initCharts, 100);
       }
+      
+      // Scroll vers la section
+      document.getElementById(section + '-section').scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+
+    // Initialisation des graphiques
+    function initCharts() {
+      // Graphique URM
+      if (urmChart) urmChart.destroy();
+      const urmCtx = document.getElementById('urmChart').getContext('2d');
+      urmChart = new Chart(urmCtx, {
+        type: 'bar',
+        data: {
+          labels: ['Danemark', 'Suède', 'Allemagne', 'France', 'Japon', 'Chine', 'USA'],
+          datasets: [{
+            label: 'URM – Utilité Réelle des Ménages (€)',
+            data: [415000, 380000, 292000, 165000, 120000, -232000, -558000],
+            backgroundColor: [
+              '#22c55e', '#16a34a', '#3b82f6', '#6366f1', '#a855f7', '#f97316', '#ef4444'
+            ],
+            borderRadius: 8,
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          indexAxis: 'y',
+          plugins: { 
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return context.parsed.x.toLocaleString() + ' € d\'équivalent bien-être';
+                }
+              }
+            }
+          },
+          scales: {
+            x: { 
+              ticks: { 
+                callback: v => (v/1000).toLocaleString() + 'k €',
+                font: { size: 12 }
+              },
+              grid: { color: 'rgba(156, 163, 175, 0.2)' }
+            },
+            y: {
+              ticks: { font: { size: 12 } },
+              grid: { display: false }
+            }
+          }
+        }
+      });
+
+      // Graphique Bonheur vs Richesse
+      if (happinessChart) happinessChart.destroy();
+      const happinessCtx = document.getElementById('happinessChart').getContext('2d');
+      happinessChart = new Chart(happinessCtx, {
+        type: 'scatter',
+        data: {
+          datasets: [{
+            label: 'Pays',
+            data: [
+              {x: 67800, y: 7.8, country: 'Danemark 🇩🇰'},
+              {x: 58300, y: 7.6, country: 'Suède 🇸🇪'},
+              {x: 53100, y: 7.1, country: 'Allemagne 🇩🇪'},
+              {x: 43500, y: 6.6, country: 'France 🇫🇷'},
+              {x: 42940, y: 5.9, country: 'Japon 🇯🇵'},
+              {x: 76300, y: 6.9, country: 'USA 🇺🇸'},
+              {x: 12500, y: 5.2, country: 'Chine 🇨🇳'}
+            ],
+            backgroundColor: [
+              '#22c55e', '#16a34a', '#3b82f6', '#6366f1', '#a855f7', '#ef4444', '#f97316'
+            ],
+            borderColor: [
+              '#16a34a', '#15803d', '#2563eb', '#4f46e5', '#9333ea', '#dc2626', '#ea580c'
+            ],
+            borderWidth: 2,
+            pointRadius: 8,
+            pointHoverRadius: 12
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  const point = context.parsed;
+                  const data = context.dataset.data[context.dataIndex];
+                  return [
+                    data.country,
+                    `PIB/hab: ${point.x.toLocaleString()} €`,
+                    `Bonheur: ${point.y}/10`
+                  ];
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              title: { display: true, text: 'PIB par habitant (€)' },
+              ticks: { callback: v => (v/1000) + 'k €' }
+            },
+            y: {
+              title: { display: true, text: 'Indice de bonheur (/10)' },
+              min: 5,
+              max: 8
+            }
+          }
+        }
+      });
+    }
+
+    // Auto-affichage de la première section
+    document.addEventListener('DOMContentLoaded', function() {
+      // Dark mode auto
+      if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.classList.add('dark');
+      }
+      
+      // Afficher la section comparaison par défaut
+      showSection('comparison');
     });
 
-    // Dark mode auto
-    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      document.documentElement.classList.add('dark');
+    // Animation au scroll
+    function animateOnScroll() {
+      const elements = document.querySelectorAll('.animate-on-scroll');
+      elements.forEach(el => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight * 0.8) {
+          el.classList.add('animate-fade-in');
+        }
+      });
     }
+    
+    window.addEventListener('scroll', animateOnScroll);
   </script>
+
+  <style>
+    .animate-on-scroll {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.6s ease;
+    }
+    
+    .animate-fade-in {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    /* Animation des boutons */
+    button {
+      transition: all 0.3s ease;
+    }
+    
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    
+    /* Style des tableaux */
+    table {
+      border-spacing: 0;
+    }
+    
+    table th, table td {
+      border-bottom: 1px solid rgba(156, 163, 175, 0.2);
+    }
+    
+    /* Responsive amélioré */
+    @media (max-width: 768px) {
+      .grid {
+        grid-template-columns: 1fr !important;
+      }
+      
+      .text-6xl {
+        font-size: 3rem !important;
+      }
+      
+      .text-5xl {
+        font-size: 2.5rem !important;
+      }
+      
+      .text-4xl {
+        font-size: 2rem !important;
+      }
+    }
+  </style>
 </body>
 </html>
