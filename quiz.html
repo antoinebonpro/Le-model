@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎯 Quiz URM - Testez vos connaissances</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); }
+        .card-glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
+        @keyframes celebrate { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        @keyframes confetti { 0% { transform: translateY(0) rotate(0); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+        .shake { animation: shake 0.5s ease-in-out; }
+        .celebrate { animation: celebrate 0.5s ease-in-out; }
+        .confetti { position: fixed; animation: confetti 3s ease-out forwards; pointer-events: none; z-index: 100; }
+        .option-btn { transition: all 0.3s ease; }
+        .option-btn:hover:not(:disabled) { transform: translateX(10px); }
+        .option-btn.correct { background: linear-gradient(135deg, #10b981, #059669) !important; border-color: #10b981 !important; }
+        .option-btn.incorrect { background: linear-gradient(135deg, #ef4444, #dc2626) !important; border-color: #ef4444 !important; }
+        .progress-fill { transition: width 0.5s ease; }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen text-white">
+    <!-- Navigation -->
+    <nav class="bg-black/30 backdrop-blur-md border-b border-white/10 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3">
+            <div class="flex items-center justify-between flex-wrap gap-2">
+                <a href="index.html" class="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+                    URM Model
+                </a>
+                <div class="flex flex-wrap gap-2 text-sm">
+                    <a href="index.html" class="px-3 py-1 rounded-full hover:bg-white/10 transition">Accueil</a>
+                    <a href="calculateur.html" class="px-3 py-1 rounded-full hover:bg-white/10 transition">Calculateur</a>
+                    <a href="classement.html" class="px-3 py-1 rounded-full hover:bg-white/10 transition">Classement</a>
+                    <a href="quiz.html" class="px-3 py-1 rounded-full bg-yellow-500/30 text-yellow-300">Quiz</a>
+                    <a href="ressources.html" class="px-3 py-1 rounded-full hover:bg-white/10 transition">Ressources</a>
+                    <a href="contact.html" class="px-3 py-1 rounded-full hover:bg-white/10 transition">Contact</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Écran d'accueil du Quiz -->
+    <div id="quizIntro" class="max-w-3xl mx-auto px-4 py-16 text-center">
+        <div class="text-8xl mb-8">🎯</div>
+        <h1 class="text-5xl font-black mb-4">
+            <span class="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">Quiz URM</span>
+        </h1>
+        <p class="text-xl text-gray-300 mb-8">
+            Testez vos connaissances sur le modèle économique URM et les systèmes économiques mondiaux !
+        </p>
+        
+        <div class="card-glass rounded-2xl p-8 mb-8">
+            <div class="grid grid-cols-3 gap-4 mb-6">
+                <div class="text-center">
+                    <div class="text-3xl font-bold text-yellow-400">15</div>
+                    <div class="text-sm text-gray-400">Questions</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl font-bold text-blue-400">~5 min</div>
+                    <div class="text-sm text-gray-400">Durée</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl font-bold text-green-400">100</div>
+                    <div class="text-sm text-gray-400">Points max</div>
+                </div>
+            </div>
+            
+            <div class="text-left space-y-3 mb-6">
+                <h3 class="font-semibold text-lg">📋 Thèmes abordés :</h3>
+                <ul class="text-gray-300 space-y-2">
+                    <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Formule URM et ses composantes</li>
+                    <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Modèle nordique vs autres systèmes</li>
+                    <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Indicateurs économiques (PIB, Gini, Dette)</li>
+                    <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Classement mondial des pays</li>
+                </ul>
+            </div>
+        </div>
+        
+        <button onclick="startQuiz()" class="px-12 py-4 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400 rounded-xl font-bold text-xl text-black transition transform hover:scale-105 shadow-lg">
+            🚀 Commencer le Quiz
+        </button>
+    </div>
+
+    <!-- Zone du Quiz -->
+    <div id="quizZone" class="hidden max-w-3xl mx-auto px-4 py-8">
+        <!-- Barre de progression -->
+        <div class="mb-8">
+            <div class="flex justify-between text-sm text-gray-400 mb-2">
+                <span>Question <span id="currentQ">1</span>/15</span>
+                <span id="scoreDisplay">Score: 0 pts</span>
+            </div>
+            <div class="h-3 bg-white/10 rounded-full overflow-hidden">
+                <div id="progressBar" class="h-full bg-gradient-to-r from-yellow-500 to-orange-500 progress-fill" style="width: 6.67%"></div>
+            </div>
+        </div>
+        
+        <!-- Question -->
+        <div id="questionCard" class="card-glass rounded-2xl p-8 mb-6">
+            <div class="flex items-start gap-4 mb-6">
+                <span id="questionEmoji" class="text-4xl">🤔</span>
+                <h2 id="questionText" class="text-xl font-semibold"></h2>
+            </div>
+            
+            <!-- Options -->
+            <div id="optionsContainer" class="space-y-3">
+                <!-- Rempli par JS -->
+            </div>
+        </div>
+        
+        <!-- Info après réponse -->
+        <div id="explanationBox" class="hidden card-glass rounded-2xl p-6 mb-6 border-l-4 border-blue-500">
+            <h3 class="font-bold text-blue-400 mb-2">💡 Le saviez-vous ?</h3>
+            <p id="explanationText" class="text-gray-300"></p>
+        </div>
+        
+        <!-- Bouton suivant -->
+        <div class="text-center">
+            <button id="nextBtn" onclick="nextQuestion()" class="hidden px-8 py-3 bg-blue-600 hover:bg-blue-500 rounded-xl font-semibold transition transform hover:scale-105">
+                Question suivante →
+            </button>
+        </div>
+    </div>
+
+    <!-- Écran de résultats -->
+    <div id="resultsScreen" class="hidden max-w-3xl mx-auto px-4 py-16 text-center">
+        <div id="resultsEmoji" class="text-8xl mb-6">🏆</div>
+        <h1 class="text-4xl font-black mb-4">
+            <span id="resultsTitle" class="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">Félicitations !</span>
+        </h1>
+        <p id="resultsSubtitle" class="text-xl text-gray-300 mb-8"></p>
+        
+        <div class="card-glass rounded-2xl p-8 mb-8">
+            <div class="text-6xl font-black mb-4">
+                <span id="finalScore" class="bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent">0</span>
+                <span class="text-2xl text-gray-400">/100</span>
+            </div>
+            
+            <div class="grid grid-cols-3 gap-4 mb-6">
+                <div class="bg-green-500/20 rounded-xl p-4">
+                    <div id="correctCount" class="text-2xl font-bold text-green-400">0</div>
+                    <div class="text-sm text-gray-400">Correctes</div>
+                </div>
+                <div class="bg-red-500/20 rounded-xl p-4">
+                    <div id="incorrectCount" class="text-2xl font-bold text-red-400">0</div>
+                    <div class="text-sm text-gray-400">Incorrectes</div>
+                </div>
+                <div class="bg-blue-500/20 rounded-xl p-4">
+                    <div id="percentScore" class="text-2xl font-bold text-blue-400">0%</div>
+                    <div class="text-sm text-gray-400">Réussite</div>
+                </div>
+            </div>
+            
+            <!-- Badge gagné -->
+            <div id="badgeEarned" class="mb-6 p-4 bg-yellow-500/20 rounded-xl border border-yellow-500/30">
+                <span class="text-4xl" id="badgeIcon">🥇</span>
+                <div class="font-bold text-yellow-400 mt-2" id="badgeName">Expert URM</div>
+            </div>
+            
+            <!-- Partage -->
+            <div class="flex justify-center gap-4">
+                <button onclick="shareResults('twitter')" class="px-6 py-2 bg-blue-500 hover:bg-blue-400 rounded-lg font-medium transition">
+                    🐦 Twitter
+                </button>
+                <button onclick="shareResults('linkedin')" class="px-6 py-2 bg-blue-700 hover:bg-blue-600 rounded-lg font-medium transition">
+                    💼 LinkedIn
+                </button>
+                <button onclick="copyResults()" class="px-6 py-2 bg-gray-600 hover:bg-gray-500 rounded-lg font-medium transition">
+                    📋 Copier
+                </button>
+            </div>
+        </div>
+        
+        <div class="flex justify-center gap-4">
+            <button onclick="restartQuiz()" class="px-8 py-3 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-xl font-bold text-black transition transform hover:scale-105">
+                🔄 Rejouer
+            </button>
+            <a href="classement.html" class="px-8 py-3 bg-white/10 hover:bg-white/20 rounded-xl font-semibold transition">
+                🏆 Voir le classement mondial
+            </a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/10 py-8 text-center text-gray-500 mt-auto">
+        <p>URM Model Quiz © 2025 • Apprenez en vous amusant !</p>
+    </footer>
+
+    <script>
+        // Questions du quiz
+        const questions = [
+            {
+                emoji: "🔢",
+                question: "Que signifie URM ?",
+                options: [
+                    "Utilité Réelle des Ménages",
+                    "Union des Revenus Mondiaux",
+                    "Unité de Richesse Moyenne",
+                    "Usage Rationnel de la Monnaie"
+                ],
+                correct: 0,
+                explanation: "URM signifie 'Utilité Réelle des Ménages', une formule qui mesure le bien-être économique réel des citoyens en tenant compte des inégalités et de la dette."
+            },
+            {
+                emoji: "🇩🇰",
+                question: "Quel pays a généralement le meilleur score URM ?",
+                options: [
+                    "États-Unis",
+                    "Allemagne",
+                    "Danemark",
+                    "Japon"
+                ],
+                correct: 2,
+                explanation: "Le Danemark et les pays nordiques dominent le classement URM grâce à leurs faibles inégalités (Gini ~27), leur dette maîtrisée et leurs excellents services publics."
+            },
+            {
+                emoji: "📊",
+                question: "Que mesure l'indice de Gini ?",
+                options: [
+                    "Le PIB par habitant",
+                    "Les inégalités de revenus",
+                    "La dette publique",
+                    "Le taux de chômage"
+                ],
+                correct: 1,
+                explanation: "L'indice de Gini mesure les inégalités de revenus. Un Gini de 0 = égalité parfaite, un Gini de 100 = inégalité totale. Le Danemark a ~27, les USA ~41."
+            },
+            {
+                emoji: "🇫🇷",
+                question: "Quel est approximativement le score URM de la France en 2025 ?",
+                options: [
+                    "+150 000 €",
+                    "+50 000 €",
+                    "-200 000 €",
+                    "-700 000 €"
+                ],
+                correct: 3,
+                explanation: "La France a un score URM d'environ -727 000 € en raison de sa dette élevée (>110% du PIB), de ses inégalités et de sa faible mobilité sociale."
+            },
+            {
+                emoji: "📈",
+                question: "Dans la formule URM, que représente μ(W) ?",
+                options: [
+                    "La dette moyenne",
+                    "Le patrimoine médian",
+                    "L'indice de Gini",
+                    "Le taux d'inflation"
+                ],
+                correct: 1,
+                explanation: "μ(W) représente le patrimoine médian des ménages, estimé comme PIB × 8. C'est la base du calcul URM."
+            },
+            {
+                emoji: "🏛️",
+                question: "Pourquoi la dette publique réduit-elle le score URM ?",
+                options: [
+                    "Elle augmente les impôts futurs",
+                    "Elle crée de l'inflation",
+                    "Elle réduit les services publics",
+                    "Elle affaiblit la monnaie"
+                ],
+                correct: 0,
+                explanation: "La dette publique représente un fardeau pour les générations futures qui devront la rembourser via des impôts plus élevés ou des services réduits."
+            },
+            {
+                emoji: "🇯🇵",
+                question: "Quel pays a la dette publique la plus élevée (en % du PIB) ?",
+                options: [
+                    "États-Unis (~123%)",
+                    "France (~110%)",
+                    "Japon (~264%)",
+                    "Italie (~140%)"
+                ],
+                correct: 2,
+                explanation: "Le Japon détient le record mondial avec une dette de ~264% du PIB ! C'est pourquoi son score URM est très négatif malgré un PIB élevé."
+            },
+            {
+                emoji: "🏆",
+                question: "Quel système de classification est utilisé dans le classement URM ?",
+                options: [
+                    "Étoiles (1 à 5)",
+                    "Notes (A à F)",
+                    "Tiers (S, A, B, C, D, F)",
+                    "Médailles (Or, Argent, Bronze)"
+                ],
+                correct: 2,
+                explanation: "Le classement URM utilise un système de Tiers : S (élite, >150k€), A (excellent), B (bon), C (moyen), D (faible), F (critique)."
+            },
+            {
+                emoji: "🇺🇸",
+                question: "Pourquoi les États-Unis ont-ils un score URM négatif malgré un PIB élevé ?",
+                options: [
+                    "Faibles services publics",
+                    "Inégalités très élevées (Gini ~41)",
+                    "Dette importante",
+                    "Toutes ces raisons"
+                ],
+                correct: 3,
+                explanation: "Les USA combinent un Gini élevé (~41), une dette massive (>123% PIB) et des services publics limités (santé coûteuse), d'où un URM de ~-558k€."
+            },
+            {
+                emoji: "📉",
+                question: "Qu'est-ce que le coefficient A (aléa) dans la formule URM ?",
+                options: [
+                    "L'âge moyen de la population",
+                    "Le risque/l'instabilité économique",
+                    "L'attractivité du pays",
+                    "L'accès au crédit"
+                ],
+                correct: 1,
+                explanation: "Le coefficient A représente l'aléa économique - le risque d'instabilité. Il amplifie l'impact négatif des inégalités sur le score final."
+            },
+            {
+                emoji: "🌍",
+                question: "D'où proviennent les données utilisées pour calculer l'URM ?",
+                options: [
+                    "Uniquement le FMI",
+                    "Uniquement la Banque Mondiale",
+                    "World Bank + FMI + OCDE",
+                    "Eurostat uniquement"
+                ],
+                correct: 2,
+                explanation: "Les données proviennent de sources officielles : Banque Mondiale (PIB, Gini, santé, éducation), FMI (dette), et OCDE (mobilité sociale)."
+            },
+            {
+                emoji: "🔄",
+                question: "Que mesure la mobilité sociale (M) dans URM v3.0 ?",
+                options: [
+                    "Les migrations internationales",
+                    "Les chances de changer de classe sociale",
+                    "La mobilité géographique",
+                    "Le changement d'emploi"
+                ],
+                correct: 1,
+                explanation: "La mobilité sociale M mesure les chances pour un enfant de parents pauvres de s'élever socialement. Elle est de ~0.85 au Danemark, ~0.50 aux USA."
+            },
+            {
+                emoji: "💊",
+                question: "Comment les dépenses de santé influencent-elles le score URM ?",
+                options: [
+                    "Plus il y a de dépenses, plus le score baisse",
+                    "Elles n'ont aucun effet",
+                    "Les dépenses publiques élevées améliorent le score",
+                    "Seules les dépenses privées comptent"
+                ],
+                correct: 2,
+                explanation: "Les dépenses publiques de santé (% PIB) contribuent positivement au score via le terme S (Services). Plus d'investissement public = meilleur URM."
+            },
+            {
+                emoji: "🇸🇪",
+                question: "Quel pays scandinave a le 2ème meilleur score URM après la Norvège ?",
+                options: [
+                    "Finlande",
+                    "Suède",
+                    "Danemark",
+                    "Islande"
+                ],
+                correct: 2,
+                explanation: "Après la Norvège (~285k€), c'est le Danemark (~237k€) puis la Suède (~198k€). Ces pays excellent grâce à leur modèle social équilibré."
+            },
+            {
+                emoji: "🎯",
+                question: "Quel est l'objectif principal du modèle URM ?",
+                options: [
+                    "Mesurer la puissance économique",
+                    "Classer les pays par PIB",
+                    "Évaluer le bien-être réel des ménages",
+                    "Prédire les crises financières"
+                ],
+                correct: 2,
+                explanation: "L'URM vise à mesurer le bien-être économique RÉEL des ménages, pas juste la richesse brute. Il intègre inégalités, dette, services et mobilité sociale."
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let correctAnswers = 0;
+        let answered = false;
+
+        function startQuiz() {
+            document.getElementById('quizIntro').classList.add('hidden');
+            document.getElementById('quizZone').classList.remove('hidden');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const q = questions[currentQuestion];
+            document.getElementById('currentQ').textContent = currentQuestion + 1;
+            document.getElementById('progressBar').style.width = ((currentQuestion + 1) / questions.length * 100) + '%';
+            document.getElementById('questionEmoji').textContent = q.emoji;
+            document.getElementById('questionText').textContent = q.question;
+            
+            const container = document.getElementById('optionsContainer');
+            container.innerHTML = q.options.map((opt, i) => `
+                <button onclick="selectAnswer(${i})" class="option-btn w-full text-left p-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition">
+                    <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-white/10 mr-3 font-bold">${String.fromCharCode(65 + i)}</span>
+                    ${opt}
+                </button>
+            `).join('');
+            
+            document.getElementById('explanationBox').classList.add('hidden');
+            document.getElementById('nextBtn').classList.add('hidden');
+            answered = false;
+        }
+
+        function selectAnswer(index) {
+            if (answered) return;
+            answered = true;
+            
+            const q = questions[currentQuestion];
+            const buttons = document.querySelectorAll('.option-btn');
+            
+            buttons.forEach((btn, i) => {
+                btn.disabled = true;
+                if (i === q.correct) {
+                    btn.classList.add('correct');
+                } else if (i === index && i !== q.correct) {
+                    btn.classList.add('incorrect');
+                    btn.classList.add('shake');
+                }
+            });
+            
+            if (index === q.correct) {
+                correctAnswers++;
+                score += Math.round(100 / questions.length);
+                document.getElementById('questionCard').classList.add('celebrate');
+                setTimeout(() => document.getElementById('questionCard').classList.remove('celebrate'), 500);
+            }
+            
+            document.getElementById('scoreDisplay').textContent = `Score: ${score} pts`;
+            document.getElementById('explanationText').textContent = q.explanation;
+            document.getElementById('explanationBox').classList.remove('hidden');
+            
+            if (currentQuestion < questions.length - 1) {
+                document.getElementById('nextBtn').classList.remove('hidden');
+            } else {
+                setTimeout(showResults, 1500);
+            }
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            showQuestion();
+        }
+
+        function showResults() {
+            document.getElementById('quizZone').classList.add('hidden');
+            document.getElementById('resultsScreen').classList.remove('hidden');
+            
+            const percent = Math.round((correctAnswers / questions.length) * 100);
+            document.getElementById('finalScore').textContent = score;
+            document.getElementById('correctCount').textContent = correctAnswers;
+            document.getElementById('incorrectCount').textContent = questions.length - correctAnswers;
+            document.getElementById('percentScore').textContent = percent + '%';
+            
+            // Badge et message selon le score
+            let emoji, title, subtitle, badge, badgeName;
+            if (percent >= 90) {
+                emoji = '🏆'; title = 'Expert URM !'; subtitle = 'Vous maîtrisez parfaitement le modèle économique !';
+                badge = '🥇'; badgeName = 'Expert URM';
+                createConfetti();
+            } else if (percent >= 70) {
+                emoji = '🌟'; title = 'Très bien !'; subtitle = 'Excellente compréhension du modèle !';
+                badge = '🥈'; badgeName = 'Connaisseur';
+            } else if (percent >= 50) {
+                emoji = '👍'; title = 'Pas mal !'; subtitle = 'Vous avez les bases, continuez !';
+                badge = '🥉'; badgeName = 'Apprenti';
+            } else {
+                emoji = '📚'; title = 'À réviser'; subtitle = 'Explorez notre site pour en apprendre plus !';
+                badge = '🎓'; badgeName = 'Étudiant';
+            }
+            
+            document.getElementById('resultsEmoji').textContent = emoji;
+            document.getElementById('resultsTitle').textContent = title;
+            document.getElementById('resultsSubtitle').textContent = subtitle;
+            document.getElementById('badgeIcon').textContent = badge;
+            document.getElementById('badgeName').textContent = badgeName;
+        }
+
+        function createConfetti() {
+            const colors = ['#ffd700', '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7'];
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.top = '-20px';
+                confetti.style.fontSize = (Math.random() * 20 + 10) + 'px';
+                confetti.textContent = ['🎉', '🎊', '⭐', '🌟', '✨'][Math.floor(Math.random() * 5)];
+                confetti.style.animationDelay = Math.random() * 2 + 's';
+                document.body.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 5000);
+            }
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            correctAnswers = 0;
+            document.getElementById('resultsScreen').classList.add('hidden');
+            document.getElementById('quizIntro').classList.remove('hidden');
+            document.getElementById('scoreDisplay').textContent = 'Score: 0 pts';
+        }
+
+        function shareResults(platform) {
+            const text = `🎯 J'ai obtenu ${score}/100 au Quiz URM ! (${correctAnswers}/${questions.length} bonnes réponses)\n\nTestez vos connaissances sur le modèle économique : `;
+            const url = 'https://antoinebonpro.github.io/Le-model/quiz.html';
+            
+            if (platform === 'twitter') {
+                window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
+            } else if (platform === 'linkedin') {
+                window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, '_blank');
+            }
+        }
+
+        function copyResults() {
+            const text = `🎯 Quiz URM - Mon score : ${score}/100 (${correctAnswers}/${questions.length})\nhttps://antoinebonpro.github.io/Le-model/quiz.html`;
+            navigator.clipboard.writeText(text);
+            alert('Résultat copié !');
+        }
+    </script>
+</body>
+</html>

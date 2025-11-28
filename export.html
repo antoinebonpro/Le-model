@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📥 Export & API - URM Model</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'Fira Code', monospace; }
+        .gradient-bg { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); }
+        .card-glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+        .code-block { background: #0d1117; border: 1px solid #30363d; }
+        .highlight-json { color: #7ee787; }
+        .highlight-key { color: #79c0ff; }
+        .highlight-string { color: #a5d6ff; }
+        .highlight-number { color: #ffa657; }
+        @keyframes download { 0% { transform: translateY(0); } 50% { transform: translateY(5px); } 100% { transform: translateY(0); } }
+        .download-icon:hover { animation: download 0.5s ease-in-out infinite; }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen text-white">
+    <!-- Navigation -->
+    <nav class="bg-black/30 backdrop-blur-md border-b border-white/10 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3">
+            <div class="flex items-center justify-between flex-wrap gap-2">
+                <a href="index.html" class="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+                    URM Model
+                </a>
+                <div class="flex flex-wrap gap-2 text-sm">
+                    <a href="index.html" class="px-3 py-1 rounded-full hover:bg-white/10 transition">Accueil</a>
+                    <a href="france2025.html" class="px-3 py-1 rounded-full hover:bg-white/10 transition">France 2025</a>
+                    <a href="calculateur.html" class="px-3 py-1 rounded-full hover:bg-white/10 transition">Calculateur</a>
+                    <a href="simulateur.html" class="px-3 py-1 rounded-full hover:bg-white/10 transition">Simulateur</a>
+                    <a href="comparateur.html" class="px-3 py-1 rounded-full hover:bg-white/10 transition">Comparateur</a>
+                    <a href="classement.html" class="px-3 py-1 rounded-full hover:bg-white/10 transition">Classement</a>
+                    <a href="export.html" class="px-3 py-1 rounded-full bg-blue-500/30 text-blue-300">Export</a>
+                    <a href="methodologie.html" class="px-3 py-1 rounded-full hover:bg-white/10 transition">Méthodologie</a>
+                    <a href="contact.html" class="px-3 py-1 rounded-full hover:bg-white/10 transition">Contact</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="py-16 text-center">
+        <h1 class="text-5xl md:text-6xl font-black mb-4">
+            📥 <span class="bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent">Export & API</span>
+        </h1>
+        <p class="text-xl text-gray-300 max-w-3xl mx-auto px-4">
+            Téléchargez les données URM en CSV, JSON ou intégrez notre API dans vos projets
+        </p>
+    </header>
+
+    <!-- Export rapide -->
+    <section class="max-w-7xl mx-auto px-4 mb-12">
+        <div class="card-glass rounded-2xl p-8">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="text-3xl">⚡</span>
+                Export rapide
+            </h2>
+            
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Export CSV -->
+                <div class="bg-white/5 rounded-xl p-6 text-center hover:bg-white/10 transition group">
+                    <div class="text-5xl mb-4 download-icon">📄</div>
+                    <h3 class="text-xl font-bold mb-2">Format CSV</h3>
+                    <p class="text-gray-400 text-sm mb-4">Compatible Excel, Google Sheets, LibreOffice</p>
+                    <button onclick="exportCSV()" 
+                        class="w-full py-3 bg-green-600 hover:bg-green-500 rounded-lg font-semibold transition transform group-hover:scale-105">
+                        Télécharger CSV
+                    </button>
+                </div>
+                
+                <!-- Export JSON -->
+                <div class="bg-white/5 rounded-xl p-6 text-center hover:bg-white/10 transition group">
+                    <div class="text-5xl mb-4 download-icon">📋</div>
+                    <h3 class="text-xl font-bold mb-2">Format JSON</h3>
+                    <p class="text-gray-400 text-sm mb-4">Pour intégration dans vos applications</p>
+                    <button onclick="exportJSON()"
+                        class="w-full py-3 bg-blue-600 hover:bg-blue-500 rounded-lg font-semibold transition transform group-hover:scale-105">
+                        Télécharger JSON
+                    </button>
+                </div>
+                
+                <!-- Export PDF -->
+                <div class="bg-white/5 rounded-xl p-6 text-center hover:bg-white/10 transition group">
+                    <div class="text-5xl mb-4 download-icon">📑</div>
+                    <h3 class="text-xl font-bold mb-2">Rapport PDF</h3>
+                    <p class="text-gray-400 text-sm mb-4">Rapport complet avec graphiques</p>
+                    <button onclick="exportPDF()"
+                        class="w-full py-3 bg-purple-600 hover:bg-purple-500 rounded-lg font-semibold transition transform group-hover:scale-105">
+                        Générer PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sélecteur de données -->
+    <section class="max-w-7xl mx-auto px-4 mb-12">
+        <div class="card-glass rounded-2xl p-8">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="text-3xl">🎯</span>
+                Sélectionner les données
+            </h2>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="font-semibold mb-4">Pays à inclure</h3>
+                    <div class="grid grid-cols-2 gap-2 max-h-64 overflow-y-auto pr-2" id="countryCheckboxes">
+                        <!-- Rempli par JS -->
+                    </div>
+                    <div class="mt-4 flex gap-2">
+                        <button onclick="selectAll()" class="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm transition">
+                            Tout sélectionner
+                        </button>
+                        <button onclick="selectNone()" class="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm transition">
+                            Tout désélectionner
+                        </button>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold mb-4">Colonnes à inclure</h3>
+                    <div class="space-y-2">
+                        <label class="flex items-center gap-2 p-2 bg-white/5 rounded-lg hover:bg-white/10 cursor-pointer">
+                            <input type="checkbox" id="col_name" checked class="w-4 h-4 rounded">
+                            <span>Nom du pays</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-2 bg-white/5 rounded-lg hover:bg-white/10 cursor-pointer">
+                            <input type="checkbox" id="col_code" checked class="w-4 h-4 rounded">
+                            <span>Code ISO</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-2 bg-white/5 rounded-lg hover:bg-white/10 cursor-pointer">
+                            <input type="checkbox" id="col_urm" checked class="w-4 h-4 rounded">
+                            <span>Score URM (€)</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-2 bg-white/5 rounded-lg hover:bg-white/10 cursor-pointer">
+                            <input type="checkbox" id="col_tier" checked class="w-4 h-4 rounded">
+                            <span>Tier (S/A/B/C/D/F)</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-2 bg-white/5 rounded-lg hover:bg-white/10 cursor-pointer">
+                            <input type="checkbox" id="col_gdp" checked class="w-4 h-4 rounded">
+                            <span>PIB par habitant ($)</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-2 bg-white/5 rounded-lg hover:bg-white/10 cursor-pointer">
+                            <input type="checkbox" id="col_gini" checked class="w-4 h-4 rounded">
+                            <span>Indice Gini</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-2 bg-white/5 rounded-lg hover:bg-white/10 cursor-pointer">
+                            <input type="checkbox" id="col_debt" checked class="w-4 h-4 rounded">
+                            <span>Dette (% PIB)</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-2 bg-white/5 rounded-lg hover:bg-white/10 cursor-pointer">
+                            <input type="checkbox" id="col_rank" checked class="w-4 h-4 rounded">
+                            <span>Rang mondial</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Aperçu des données -->
+    <section class="max-w-7xl mx-auto px-4 mb-12">
+        <div class="card-glass rounded-2xl p-8">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl font-bold flex items-center gap-3">
+                    <span class="text-3xl">👁️</span>
+                    Aperçu des données
+                </h2>
+                <span class="text-sm text-gray-400" id="previewCount">0 pays</span>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-white/10 text-left">
+                            <th class="py-3 px-4">#</th>
+                            <th class="py-3 px-4">Pays</th>
+                            <th class="py-3 px-4">Code</th>
+                            <th class="py-3 px-4 text-right">URM (€)</th>
+                            <th class="py-3 px-4 text-center">Tier</th>
+                            <th class="py-3 px-4 text-right">PIB ($)</th>
+                            <th class="py-3 px-4 text-right">Gini</th>
+                            <th class="py-3 px-4 text-right">Dette %</th>
+                        </tr>
+                    </thead>
+                    <tbody id="previewTable" class="divide-y divide-white/5">
+                        <tr>
+                            <td colspan="8" class="py-8 text-center text-gray-400">
+                                <div class="animate-spin w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+                                Chargement des données...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Documentation API -->
+    <section class="max-w-7xl mx-auto px-4 mb-12">
+        <div class="card-glass rounded-2xl p-8">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="text-3xl">🔌</span>
+                Documentation API
+            </h2>
+            
+            <div class="space-y-6">
+                <!-- Endpoint 1 -->
+                <div class="bg-white/5 rounded-xl p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="px-3 py-1 bg-green-600 rounded text-sm font-bold">GET</span>
+                        <code class="mono text-blue-400">/api/v1/countries</code>
+                    </div>
+                    <p class="text-gray-400 mb-4">Récupère la liste de tous les pays avec leurs scores URM.</p>
+                    
+                    <h4 class="font-semibold mb-2">Exemple de réponse :</h4>
+                    <div class="code-block rounded-lg p-4 overflow-x-auto">
+                        <pre class="mono text-sm"><span class="highlight-json">{</span>
+  <span class="highlight-key">"success"</span>: <span class="highlight-number">true</span>,
+  <span class="highlight-key">"count"</span>: <span class="highlight-number">65</span>,
+  <span class="highlight-key">"data"</span>: [
+    <span class="highlight-json">{</span>
+      <span class="highlight-key">"code"</span>: <span class="highlight-string">"DNK"</span>,
+      <span class="highlight-key">"name"</span>: <span class="highlight-string">"Danemark"</span>,
+      <span class="highlight-key">"urm"</span>: <span class="highlight-number">237000</span>,
+      <span class="highlight-key">"tier"</span>: <span class="highlight-string">"S"</span>,
+      <span class="highlight-key">"gdp"</span>: <span class="highlight-number">67803</span>,
+      <span class="highlight-key">"gini"</span>: <span class="highlight-number">27.7</span>,
+      <span class="highlight-key">"debt"</span>: <span class="highlight-number">33.2</span>
+    <span class="highlight-json">}</span>,
+    ...
+  ]
+<span class="highlight-json">}</span></pre>
+                    </div>
+                </div>
+
+                <!-- Endpoint 2 -->
+                <div class="bg-white/5 rounded-xl p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="px-3 py-1 bg-green-600 rounded text-sm font-bold">GET</span>
+                        <code class="mono text-blue-400">/api/v1/countries/{code}</code>
+                    </div>
+                    <p class="text-gray-400 mb-4">Récupère les détails d'un pays spécifique par son code ISO.</p>
+                    
+                    <h4 class="font-semibold mb-2">Paramètres :</h4>
+                    <table class="w-full text-sm mb-4">
+                        <tr class="border-b border-white/10">
+                            <td class="py-2 font-mono text-blue-400">code</td>
+                            <td class="py-2 text-gray-400">Code ISO 3 du pays (ex: FRA, DEU, DNK)</td>
+                        </tr>
+                    </table>
+                    
+                    <h4 class="font-semibold mb-2">Exemple :</h4>
+                    <div class="code-block rounded-lg p-4">
+                        <code class="mono text-sm">curl https://urm-model.fr/api/v1/countries/FRA</code>
+                    </div>
+                </div>
+
+                <!-- Endpoint 3 -->
+                <div class="bg-white/5 rounded-xl p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="px-3 py-1 bg-blue-600 rounded text-sm font-bold">POST</span>
+                        <code class="mono text-blue-400">/api/v1/calculate</code>
+                    </div>
+                    <p class="text-gray-400 mb-4">Calcule le score URM avec des paramètres personnalisés.</p>
+                    
+                    <h4 class="font-semibold mb-2">Corps de la requête :</h4>
+                    <div class="code-block rounded-lg p-4 overflow-x-auto mb-4">
+                        <pre class="mono text-sm"><span class="highlight-json">{</span>
+  <span class="highlight-key">"gdp"</span>: <span class="highlight-number">45000</span>,
+  <span class="highlight-key">"gini"</span>: <span class="highlight-number">32</span>,
+  <span class="highlight-key">"debt"</span>: <span class="highlight-number">98</span>,
+  <span class="highlight-key">"health"</span>: <span class="highlight-number">11.5</span>,
+  <span class="highlight-key">"education"</span>: <span class="highlight-number">5.4</span>
+<span class="highlight-json">}</span></pre>
+                    </div>
+                </div>
+
+                <!-- Code d'intégration -->
+                <div class="bg-white/5 rounded-xl p-6">
+                    <h3 class="font-bold mb-4">💻 Exemple d'intégration JavaScript</h3>
+                    <div class="code-block rounded-lg p-4 overflow-x-auto">
+                        <pre class="mono text-sm"><span class="text-purple-400">// Récupérer tous les pays</span>
+<span class="text-blue-400">async function</span> <span class="text-yellow-400">getURMData</span>() {
+  <span class="text-blue-400">const</span> response = <span class="text-blue-400">await</span> <span class="text-yellow-400">fetch</span>(<span class="highlight-string">'https://urm-model.fr/api/v1/countries'</span>);
+  <span class="text-blue-400">const</span> data = <span class="text-blue-400">await</span> response.<span class="text-yellow-400">json</span>();
+  <span class="text-blue-400">return</span> data;
+}
+
+<span class="text-purple-400">// Calculer un score personnalisé</span>
+<span class="text-blue-400">async function</span> <span class="text-yellow-400">calculateCustomURM</span>(params) {
+  <span class="text-blue-400">const</span> response = <span class="text-blue-400">await</span> <span class="text-yellow-400">fetch</span>(<span class="highlight-string">'https://urm-model.fr/api/v1/calculate'</span>, {
+    method: <span class="highlight-string">'POST'</span>,
+    headers: { <span class="highlight-string">'Content-Type'</span>: <span class="highlight-string">'application/json'</span> },
+    body: <span class="text-cyan-400">JSON</span>.<span class="text-yellow-400">stringify</span>(params)
+  });
+  <span class="text-blue-400">return</span> response.<span class="text-yellow-400">json</span>();
+}</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Statistiques d'utilisation -->
+    <section class="max-w-7xl mx-auto px-4 mb-16">
+        <div class="grid md:grid-cols-4 gap-4">
+            <div class="card-glass rounded-xl p-6 text-center">
+                <div class="text-4xl font-bold text-green-400">2.5K+</div>
+                <div class="text-sm text-gray-400 mt-1">Téléchargements</div>
+            </div>
+            <div class="card-glass rounded-xl p-6 text-center">
+                <div class="text-4xl font-bold text-blue-400">65</div>
+                <div class="text-sm text-gray-400 mt-1">Pays analysés</div>
+            </div>
+            <div class="card-glass rounded-xl p-6 text-center">
+                <div class="text-4xl font-bold text-purple-400">150+</div>
+                <div class="text-sm text-gray-400 mt-1">Utilisateurs API</div>
+            </div>
+            <div class="card-glass rounded-xl p-6 text-center">
+                <div class="text-4xl font-bold text-yellow-400">99.9%</div>
+                <div class="text-sm text-gray-400 mt-1">Uptime API</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/10 py-8 text-center text-gray-500">
+        <p>URM Model © 2025 • Données: World Bank, FMI</p>
+        <p class="mt-2 text-sm">API et données disponibles sous licence MIT</p>
+    </footer>
+
+    <script>
+        // Données des pays
+        const countriesData = [
+            { code: 'DNK', name: 'Danemark', flag: '🇩🇰', urm: 237000, tier: 'S', gdp: 67803, gini: 27.7, debt: 33.2 },
+            { code: 'NOR', name: 'Norvège', flag: '🇳🇴', urm: 285000, tier: 'S', gdp: 82832, gini: 27.6, debt: 42.5 },
+            { code: 'CHE', name: 'Suisse', flag: '🇨🇭', urm: 265000, tier: 'S', gdp: 93720, gini: 33.1, debt: 41.0 },
+            { code: 'SWE', name: 'Suède', flag: '🇸🇪', urm: 198000, tier: 'S', gdp: 55873, gini: 28.8, debt: 33.1 },
+            { code: 'FIN', name: 'Finlande', flag: '🇫🇮', urm: 175000, tier: 'S', gdp: 53654, gini: 27.3, debt: 73.3 },
+            { code: 'ISL', name: 'Islande', flag: '🇮🇸', urm: 168000, tier: 'S', gdp: 73466, gini: 26.1, debt: 68.0 },
+            { code: 'LUX', name: 'Luxembourg', flag: '🇱🇺', urm: 155000, tier: 'S', gdp: 128259, gini: 34.8, debt: 24.5 },
+            { code: 'NLD', name: 'Pays-Bas', flag: '🇳🇱', urm: 142000, tier: 'A', gdp: 57025, gini: 29.2, debt: 50.1 },
+            { code: 'DEU', name: 'Allemagne', flag: '🇩🇪', urm: 85000, tier: 'A', gdp: 51203, gini: 31.7, debt: 66.3 },
+            { code: 'AUT', name: 'Autriche', flag: '🇦🇹', urm: 95000, tier: 'A', gdp: 53637, gini: 30.5, debt: 77.8 },
+            { code: 'BEL', name: 'Belgique', flag: '🇧🇪', urm: 68000, tier: 'A', gdp: 51247, gini: 27.2, debt: 105.2 },
+            { code: 'IRL', name: 'Irlande', flag: '🇮🇪', urm: 120000, tier: 'A', gdp: 103685, gini: 30.6, debt: 44.4 },
+            { code: 'GBR', name: 'Royaume-Uni', flag: '🇬🇧', urm: 35000, tier: 'B', gdp: 45850, gini: 35.1, debt: 101.0 },
+            { code: 'FRA', name: 'France', flag: '🇫🇷', urm: -727000, tier: 'F', gdp: 43659, gini: 31.6, debt: 110.6 },
+            { code: 'ESP', name: 'Espagne', flag: '🇪🇸', urm: -85000, tier: 'C', gdp: 30103, gini: 33.0, debt: 107.7 },
+            { code: 'ITA', name: 'Italie', flag: '🇮🇹', urm: -320000, tier: 'F', gdp: 34776, gini: 35.2, debt: 140.6 },
+            { code: 'PRT', name: 'Portugal', flag: '🇵🇹', urm: -45000, tier: 'C', gdp: 24514, gini: 33.8, debt: 112.4 },
+            { code: 'GRC', name: 'Grèce', flag: '🇬🇷', urm: -180000, tier: 'D', gdp: 20876, gini: 32.4, debt: 171.3 },
+            { code: 'USA', name: 'États-Unis', flag: '🇺🇸', urm: -558000, tier: 'F', gdp: 76398, gini: 41.4, debt: 123.3 },
+            { code: 'CAN', name: 'Canada', flag: '🇨🇦', urm: 45000, tier: 'B', gdp: 52051, gini: 33.3, debt: 106.6 },
+            { code: 'JPN', name: 'Japon', flag: '🇯🇵', urm: -520000, tier: 'F', gdp: 33815, gini: 32.9, debt: 263.9 },
+            { code: 'KOR', name: 'Corée du Sud', flag: '🇰🇷', urm: 15000, tier: 'B', gdp: 32422, gini: 31.4, debt: 54.3 },
+            { code: 'AUS', name: 'Australie', flag: '🇦🇺', urm: 75000, tier: 'A', gdp: 65099, gini: 34.3, debt: 57.0 },
+            { code: 'NZL', name: 'Nouvelle-Zélande', flag: '🇳🇿', urm: 58000, tier: 'A', gdp: 48781, gini: 32.0, debt: 50.6 },
+            { code: 'SGP', name: 'Singapour', flag: '🇸🇬', urm: 95000, tier: 'A', gdp: 65233, gini: 45.9, debt: 167.5 },
+            { code: 'CHN', name: 'Chine', flag: '🇨🇳', urm: -125000, tier: 'D', gdp: 12556, gini: 38.2, debt: 77.1 },
+            { code: 'BRA', name: 'Brésil', flag: '🇧🇷', urm: -280000, tier: 'D', gdp: 8917, gini: 52.9, debt: 87.0 },
+            { code: 'MEX', name: 'Mexique', flag: '🇲🇽', urm: -150000, tier: 'D', gdp: 10045, gini: 45.4, debt: 53.8 },
+            { code: 'ARG', name: 'Argentine', flag: '🇦🇷', urm: -220000, tier: 'D', gdp: 13650, gini: 42.3, debt: 89.5 },
+            { code: 'ZAF', name: 'Afrique du Sud', flag: '🇿🇦', urm: -350000, tier: 'F', gdp: 6001, gini: 63.0, debt: 72.2 },
+        ];
+
+        // Initialiser les checkboxes des pays
+        function initCountryCheckboxes() {
+            const container = document.getElementById('countryCheckboxes');
+            container.innerHTML = countriesData.map(c => `
+                <label class="flex items-center gap-2 p-2 bg-white/5 rounded hover:bg-white/10 cursor-pointer">
+                    <input type="checkbox" class="country-cb w-4 h-4 rounded" data-code="${c.code}" checked>
+                    <span class="text-lg">${c.flag}</span>
+                    <span class="text-sm">${c.name}</span>
+                </label>
+            `).join('');
+        }
+
+        // Sélectionner tous / aucun
+        function selectAll() {
+            document.querySelectorAll('.country-cb').forEach(cb => cb.checked = true);
+            updatePreview();
+        }
+
+        function selectNone() {
+            document.querySelectorAll('.country-cb').forEach(cb => cb.checked = false);
+            updatePreview();
+        }
+
+        // Mettre à jour l'aperçu
+        function updatePreview() {
+            const selectedCodes = Array.from(document.querySelectorAll('.country-cb:checked')).map(cb => cb.dataset.code);
+            const selectedData = countriesData.filter(c => selectedCodes.includes(c.code))
+                .sort((a, b) => b.urm - a.urm);
+            
+            document.getElementById('previewCount').textContent = `${selectedData.length} pays`;
+            
+            const tbody = document.getElementById('previewTable');
+            if (selectedData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="py-8 text-center text-gray-400">Aucun pays sélectionné</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = selectedData.slice(0, 10).map((c, i) => {
+                const urmClass = c.urm >= 0 ? 'text-green-400' : 'text-red-400';
+                const urmFormatted = c.urm >= 0 ? `+${c.urm.toLocaleString('fr-FR')}` : c.urm.toLocaleString('fr-FR');
+                const tierColors = {
+                    'S': 'bg-yellow-500/20 text-yellow-400',
+                    'A': 'bg-green-500/20 text-green-400',
+                    'B': 'bg-blue-500/20 text-blue-400',
+                    'C': 'bg-yellow-600/20 text-yellow-500',
+                    'D': 'bg-orange-500/20 text-orange-400',
+                    'F': 'bg-red-500/20 text-red-400'
+                };
+                return `
+                    <tr class="hover:bg-white/5">
+                        <td class="py-3 px-4">${i + 1}</td>
+                        <td class="py-3 px-4">${c.flag} ${c.name}</td>
+                        <td class="py-3 px-4 font-mono text-gray-400">${c.code}</td>
+                        <td class="py-3 px-4 text-right font-bold ${urmClass}">${urmFormatted} €</td>
+                        <td class="py-3 px-4 text-center"><span class="px-2 py-1 rounded text-xs font-bold ${tierColors[c.tier]}">${c.tier}</span></td>
+                        <td class="py-3 px-4 text-right text-gray-400">${c.gdp.toLocaleString('fr-FR')} $</td>
+                        <td class="py-3 px-4 text-right text-gray-400">${c.gini}</td>
+                        <td class="py-3 px-4 text-right text-gray-400">${c.debt}%</td>
+                    </tr>
+                `;
+            }).join('');
+
+            if (selectedData.length > 10) {
+                tbody.innerHTML += `<tr><td colspan="8" class="py-4 text-center text-gray-500 text-sm">... et ${selectedData.length - 10} autres pays</td></tr>`;
+            }
+        }
+
+        // Export CSV
+        function exportCSV() {
+            const selectedCodes = Array.from(document.querySelectorAll('.country-cb:checked')).map(cb => cb.dataset.code);
+            const selectedData = countriesData.filter(c => selectedCodes.includes(c.code));
+            
+            const cols = [];
+            if (document.getElementById('col_rank').checked) cols.push('Rang');
+            if (document.getElementById('col_name').checked) cols.push('Pays');
+            if (document.getElementById('col_code').checked) cols.push('Code ISO');
+            if (document.getElementById('col_urm').checked) cols.push('Score URM (€)');
+            if (document.getElementById('col_tier').checked) cols.push('Tier');
+            if (document.getElementById('col_gdp').checked) cols.push('PIB par habitant ($)');
+            if (document.getElementById('col_gini').checked) cols.push('Indice Gini');
+            if (document.getElementById('col_debt').checked) cols.push('Dette (% PIB)');
+            
+            let csv = cols.join(';') + '\n';
+            
+            selectedData.sort((a, b) => b.urm - a.urm).forEach((c, i) => {
+                const row = [];
+                if (document.getElementById('col_rank').checked) row.push(i + 1);
+                if (document.getElementById('col_name').checked) row.push(c.name);
+                if (document.getElementById('col_code').checked) row.push(c.code);
+                if (document.getElementById('col_urm').checked) row.push(c.urm);
+                if (document.getElementById('col_tier').checked) row.push(c.tier);
+                if (document.getElementById('col_gdp').checked) row.push(c.gdp);
+                if (document.getElementById('col_gini').checked) row.push(c.gini);
+                if (document.getElementById('col_debt').checked) row.push(c.debt);
+                csv += row.join(';') + '\n';
+            });
+            
+            downloadFile(csv, 'urm-data.csv', 'text/csv;charset=utf-8');
+        }
+
+        // Export JSON
+        function exportJSON() {
+            const selectedCodes = Array.from(document.querySelectorAll('.country-cb:checked')).map(cb => cb.dataset.code);
+            const selectedData = countriesData.filter(c => selectedCodes.includes(c.code))
+                .sort((a, b) => b.urm - a.urm)
+                .map((c, i) => {
+                    const obj = {};
+                    if (document.getElementById('col_rank').checked) obj.rank = i + 1;
+                    if (document.getElementById('col_name').checked) obj.name = c.name;
+                    if (document.getElementById('col_code').checked) obj.code = c.code;
+                    if (document.getElementById('col_urm').checked) obj.urm = c.urm;
+                    if (document.getElementById('col_tier').checked) obj.tier = c.tier;
+                    if (document.getElementById('col_gdp').checked) obj.gdp = c.gdp;
+                    if (document.getElementById('col_gini').checked) obj.gini = c.gini;
+                    if (document.getElementById('col_debt').checked) obj.debt = c.debt;
+                    return obj;
+                });
+            
+            const json = JSON.stringify({
+                success: true,
+                generated: new Date().toISOString(),
+                count: selectedData.length,
+                data: selectedData
+            }, null, 2);
+            
+            downloadFile(json, 'urm-data.json', 'application/json');
+        }
+
+        // Export PDF (simulé)
+        function exportPDF() {
+            alert('🚧 Fonctionnalité en développement\n\nLe rapport PDF sera bientôt disponible.\n\nEn attendant, utilisez l\'export CSV ou JSON.');
+        }
+
+        // Télécharger un fichier
+        function downloadFile(content, filename, mimeType) {
+            const blob = new Blob([content], { type: mimeType });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            initCountryCheckboxes();
+            updatePreview();
+            
+            // Écouter les changements de checkboxes
+            document.getElementById('countryCheckboxes').addEventListener('change', updatePreview);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparateur de Modèles Économiques - URM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'urm-blue': '#3b82f6',
+                        'urm-red': '#ef4444',
+                        'urm-green': '#22c55e'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .math { font-family: 'Times New Roman', serif; font-style: italic; }
+        
+        .country-selector {
+            transition: all 0.3s ease;
+        }
+        
+        .country-selector:hover {
+            transform: scale(1.05);
+        }
+        
+        .country-selector.selected {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.3);
+        }
+        
+        .radar-container {
+            position: relative;
+        }
+        
+        .comparison-card {
+            transition: all 0.3s ease;
+        }
+        
+        .comparison-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        
+        .metric-bar {
+            transition: width 0.8s ease-out;
+        }
+        
+        @keyframes slide-in {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-slide-in {
+            animation: slide-in 0.5s ease-out forwards;
+        }
+        
+        .vs-badge {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 min-h-screen">
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-b border-gray-200 dark:border-gray-700">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-balance-scale text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold">Comparateur URM</h1>
+                        <p class="text-xs text-gray-500">Analyse comparative des modèles</p>
+                    </div>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-4">
+                    <a href="index.html" class="text-gray-600 dark:text-gray-400 hover:text-blue-600 px-3 py-2 rounded-lg transition-colors">
+                        <i class="fas fa-home mr-2"></i>Accueil
+                    </a>
+                    <a href="france2025.html" class="text-gray-600 dark:text-gray-400 hover:text-blue-600 px-3 py-2 rounded-lg transition-colors">
+                        <i class="fas fa-flag mr-2"></i>France 2025
+                    </a>
+                    <a href="calculateur.html" class="text-gray-600 dark:text-gray-400 hover:text-blue-600 px-3 py-2 rounded-lg transition-colors">
+                        <i class="fas fa-globe mr-2"></i>Calculateur
+                    </a>
+                    <a href="simulateur.html" class="text-gray-600 dark:text-gray-400 hover:text-blue-600 px-3 py-2 rounded-lg transition-colors">
+                        <i class="fas fa-sliders-h mr-2"></i>Simulateur
+                    </a>
+                    <button onclick="toggleTheme()" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:text-blue-600">
+                        <i id="themeIcon" class="fas fa-moon"></i>
+                    </button>
+                </div>
+                
+                <button onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-lg text-gray-600 dark:text-gray-400">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Menu Mobile -->
+        <div id="mobileMenu" class="hidden md:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
+            <div class="px-6 py-4 space-y-2">
+                <a href="index.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <i class="fas fa-home mr-2"></i>Accueil
+                </a>
+                <a href="france2025.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <i class="fas fa-flag mr-2"></i>France 2025
+                </a>
+                <a href="calculateur.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <i class="fas fa-globe mr-2"></i>Calculateur Mondial
+                </a>
+                <a href="simulateur.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <i class="fas fa-sliders-h mr-2"></i>Simulateur
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="pt-24 pb-12 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white">
+        <div class="max-w-6xl mx-auto px-6 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">
+                ⚖️ Comparateur de Modèles
+            </h1>
+            <p class="text-xl opacity-90 mb-6">
+                Comparez les systèmes économiques de différents pays côte à côte
+            </p>
+            <div class="bg-white/20 backdrop-blur-md rounded-xl px-6 py-4 inline-block">
+                <span class="text-lg font-medium">
+                    <i class="fas fa-mouse-pointer mr-2"></i>
+                    Sélectionnez 2 à 4 pays pour les comparer
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sélection des pays -->
+    <section class="py-12">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-2xl font-bold mb-6 text-center">
+                <i class="fas fa-flag mr-2 text-blue-500"></i>
+                Sélectionnez les pays à comparer
+            </h2>
+            
+            <!-- Catégories -->
+            <div class="grid md:grid-cols-4 gap-6 mb-8">
+                <!-- Modèle Nordique -->
+                <div class="bg-green-50 dark:bg-green-900/20 rounded-2xl p-4">
+                    <h3 class="font-bold text-green-700 dark:text-green-400 mb-3">
+                        <i class="fas fa-crown mr-2"></i>Modèle Nordique
+                    </h3>
+                    <div class="space-y-2">
+                        <div class="country-selector cursor-pointer bg-white dark:bg-gray-800 rounded-xl p-3 border-2 border-transparent hover:border-green-500" onclick="toggleCountry('DNK')" data-code="DNK">
+                            <span class="text-2xl mr-2">🇩🇰</span>
+                            <span class="font-medium">Danemark</span>
+                        </div>
+                        <div class="country-selector cursor-pointer bg-white dark:bg-gray-800 rounded-xl p-3 border-2 border-transparent hover:border-green-500" onclick="toggleCountry('SWE')" data-code="SWE">
+                            <span class="text-2xl mr-2">🇸🇪</span>
+                            <span class="font-medium">Suède</span>
+                        </div>
+                        <div class="country-selector cursor-pointer bg-white dark:bg-gray-800 rounded-xl p-3 border-2 border-transparent hover:border-green-500" onclick="toggleCountry('NOR')" data-code="NOR">
+                            <span class="text-2xl mr-2">🇳🇴</span>
+                            <span class="font-medium">Norvège</span>
+                        </div>
+                        <div class="country-selector cursor-pointer bg-white dark:bg-gray-800 rounded-xl p-3 border-2 border-transparent hover:border-green-500" onclick="toggleCountry('FIN')" data-code="FIN">
+                            <span class="text-2xl mr-2">🇫🇮</span>
+                            <span class="font-medium">Finlande</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Europe de l'Ouest -->
+                <div class="bg-blue-50 dark:bg-blue-900/20 rounded-2xl p-4">
+                    <h3 class="font-bold text-blue-700 dark:text-blue-400 mb-3">
+                        <i class="fas fa-euro-sign mr-2"></i>Europe de l'Ouest
+                    </h3>
+                    <div class="space-y-2">
+                        <div class="country-selector cursor-pointer bg-white dark:bg-gray-800 rounded-xl p-3 border-2 border-transparent hover:border-blue-500" onclick="toggleCountry('FRA')" data-code="FRA">
+                            <span class="text-2xl mr-2">🇫🇷</span>
+                            <span class="font-medium">France</span>
+                        </div>
+                        <div class="country-selector cursor-pointer bg-white dark:bg-gray-800 rounded-xl p-3 border-2 border-transparent hover:border-blue-500" onclick="toggleCountry('DEU')" data-code="DEU">
+                            <span class="text-2xl mr-2">🇩🇪</span>
+                            <span class="font-medium">Allemagne</span>
+                        </div>
+                        <div class="country-selector cursor-pointer bg-white dark:bg-gray-800 rounded-xl p-3 border-2 border-transparent hover:border-blue-500" onclick="toggleCountry('NLD')" data-code="NLD">
+                            <span class="text-2xl mr-2">🇳🇱</span>
+                            <span class="font-medium">Pays-Bas</span>
+                        </div>
+                        <div class="country-selector cursor-pointer bg-white dark:bg-gray-800 rounded-xl p-3 border-2 border-transparent hover:border-blue-500" onclick="toggleCountry('GBR')" data-code="GBR">
+                            <span class="text-2xl mr-2">🇬🇧</span>
+                            <span class="font-medium">Royaume-Uni</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Amérique -->
+                <div class="bg-red-50 dark:bg-red-900/20 rounded-2xl p-4">
+                    <h3 class="font-bold text-red-700 dark:text-red-400 mb-3">
+                        <i class="fas fa-dollar-sign mr-2"></i>Amérique
+                    </h3>
+                    <div class="space-y-2">
+                        <div class="country-selector cursor-pointer bg-white dark:bg-gray-800 rounded-xl p-3 border-2 border-transparent hover:border-red-500" onclick="toggleCountry('USA')" data-code="USA">
+                            <span class="text-2xl mr-2">🇺🇸</span>
+                            <span class="font-medium">États-Unis</span>
+                        </div>
+                        <div class="country-selector cursor-pointer bg-white dark:bg-gray-800 rounded-xl p-3 border-2 border-transparent hover:border-red-500" onclick="toggleCountry('CAN')" data-code="CAN">
+                            <span class="text-2xl mr-2">🇨🇦</span>
+                            <span class="font-medium">Canada</span>
+                        </div>
+                        <div class="country-selector cursor-pointer bg-white dark:bg-gray-800 rounded-xl p-3 border-2 border-transparent hover:border-red-500" onclick="toggleCountry('BRA')" data-code="BRA">
+                            <span class="text-2xl mr-2">🇧🇷</span>
+                            <span class="font-medium">Brésil</span>
+                        </div>
+                        <div class="country-selector cursor-pointer bg-white dark:bg-gray-800 rounded-xl p-3 border-2 border-transparent hover:border-red-500" onclick="toggleCountry('MEX')" data-code="MEX">
+                            <span class="text-2xl mr-2">🇲🇽</span>
+                            <span class="font-medium">Mexique</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Asie -->
+                <div class="bg-yellow-50 dark:bg-yellow-900/20 rounded-2xl p-4">
+                    <h3 class="font-bold text-yellow-700 dark:text-yellow-400 mb-3">
+                        <i class="fas fa-yen-sign mr-2"></i>Asie-Pacifique
+                    </h3>
+                    <div class="space-y-2">
+                        <div class="country-selector cursor-pointer bg-white dark:bg-gray-800 rounded-xl p-3 border-2 border-transparent hover:border-yellow-500" onclick="toggleCountry('JPN')" data-code="JPN">
+                            <span class="text-2xl mr-2">🇯🇵</span>
+                            <span class="font-medium">Japon</span>
+                        </div>
+                        <div class="country-selector cursor-pointer bg-white dark:bg-gray-800 rounded-xl p-3 border-2 border-transparent hover:border-yellow-500" onclick="toggleCountry('KOR')" data-code="KOR">
+                            <span class="text-2xl mr-2">🇰🇷</span>
+                            <span class="font-medium">Corée du Sud</span>
+                        </div>
+                        <div class="country-selector cursor-pointer bg-white dark:bg-gray-800 rounded-xl p-3 border-2 border-transparent hover:border-yellow-500" onclick="toggleCountry('CHN')" data-code="CHN">
+                            <span class="text-2xl mr-2">🇨🇳</span>
+                            <span class="font-medium">Chine</span>
+                        </div>
+                        <div class="country-selector cursor-pointer bg-white dark:bg-gray-800 rounded-xl p-3 border-2 border-transparent hover:border-yellow-500" onclick="toggleCountry('AUS')" data-code="AUS">
+                            <span class="text-2xl mr-2">🇦🇺</span>
+                            <span class="font-medium">Australie</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sélection actuelle -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 mb-8">
+                <div class="flex items-center justify-between flex-wrap gap-4">
+                    <div>
+                        <h3 class="font-bold text-lg mb-2">
+                            <i class="fas fa-check-circle mr-2 text-green-500"></i>
+                            Pays sélectionnés (<span id="selectedCount">0</span>/4)
+                        </h3>
+                        <div id="selectedCountries" class="flex flex-wrap gap-2">
+                            <span class="text-gray-500">Cliquez sur les pays ci-dessus...</span>
+                        </div>
+                    </div>
+                    <div class="flex gap-3">
+                        <button onclick="clearSelection()" class="px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-lg transition-colors">
+                            <i class="fas fa-times mr-2"></i>Effacer
+                        </button>
+                        <button onclick="compare()" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition-colors">
+                            <i class="fas fa-balance-scale mr-2"></i>Comparer
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Résultats de la Comparaison -->
+    <section id="results" class="hidden py-12 bg-gray-100 dark:bg-gray-900">
+        <div class="max-w-7xl mx-auto px-6">
+            
+            <!-- Titre -->
+            <h2 class="text-3xl font-bold text-center mb-8">
+                <i class="fas fa-trophy mr-2 text-yellow-500"></i>
+                Résultats de la Comparaison
+            </h2>
+            
+            <!-- Cartes des pays -->
+            <div id="countryCards" class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                <!-- Généré dynamiquement -->
+            </div>
+            
+            <!-- Graphique Radar -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 mb-12">
+                <h3 class="text-2xl font-bold mb-6 text-center">
+                    <i class="fas fa-spider mr-2 text-purple-500"></i>
+                    Analyse Radar Multi-Critères
+                </h3>
+                <div class="radar-container max-w-2xl mx-auto">
+                    <canvas id="radarChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Graphique Barres -->
+            <div class="grid md:grid-cols-2 gap-8 mb-12">
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6">
+                    <h3 class="text-xl font-bold mb-4">
+                        <i class="fas fa-chart-bar mr-2 text-blue-500"></i>
+                        Score URM Comparé
+                    </h3>
+                    <canvas id="urmBarChart"></canvas>
+                </div>
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6">
+                    <h3 class="text-xl font-bold mb-4">
+                        <i class="fas fa-coins mr-2 text-yellow-500"></i>
+                        PIB vs Bien-être Réel
+                    </h3>
+                    <canvas id="gdpVsUrmChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Tableau détaillé -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden">
+                <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+                    <h3 class="text-xl font-bold">
+                        <i class="fas fa-table mr-2 text-green-500"></i>
+                        Tableau Comparatif Détaillé
+                    </h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-100 dark:bg-gray-700">
+                            <tr>
+                                <th class="px-6 py-4 text-left font-bold">Indicateur</th>
+                                <th id="th1" class="px-6 py-4 text-center font-bold">—</th>
+                                <th id="th2" class="px-6 py-4 text-center font-bold">—</th>
+                                <th id="th3" class="px-6 py-4 text-center font-bold hidden">—</th>
+                                <th id="th4" class="px-6 py-4 text-center font-bold hidden">—</th>
+                            </tr>
+                        </thead>
+                        <tbody id="comparisonTable" class="divide-y divide-gray-200 dark:divide-gray-700">
+                            <!-- Généré dynamiquement -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Verdict -->
+            <div id="verdict" class="mt-12 bg-gradient-to-r from-green-600 to-blue-600 text-white rounded-2xl shadow-xl p-8 text-center">
+                <h3 class="text-3xl font-bold mb-4">🏆 Verdict</h3>
+                <p id="verdictText" class="text-xl">Le <strong>Danemark</strong> remporte la comparaison avec un score URM de <strong>+237k€</strong></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Méthodologie -->
+    <section class="py-12">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="bg-blue-50 dark:bg-blue-900/20 rounded-2xl p-8">
+                <h2 class="text-2xl font-bold mb-6">
+                    <i class="fas fa-info-circle mr-2 text-blue-500"></i>
+                    Comment lire cette comparaison ?
+                </h2>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="font-bold text-green-600 mb-2">✅ Un score URM positif signifie :</h3>
+                        <ul class="space-y-1 text-sm">
+                            <li>• Bon équilibre richesse/égalité</li>
+                            <li>• Services publics de qualité</li>
+                            <li>• Dette maîtrisée</li>
+                            <li>• Mobilité sociale élevée</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-red-600 mb-2">❌ Un score URM négatif signifie :</h3>
+                        <ul class="space-y-1 text-sm">
+                            <li>• Fortes inégalités</li>
+                            <li>• Dette publique excessive</li>
+                            <li>• Services publics insuffisants</li>
+                            <li>• Précarité des ménages</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-6xl mx-auto px-6 text-center">
+            <div class="text-3xl font-bold mb-4">⚖️ Comparateur URM</div>
+            <p class="text-gray-400 mb-6">Comparez objectivement les modèles économiques du monde entier</p>
+            <div class="flex justify-center space-x-6">
+                <a href="index.html" class="text-gray-400 hover:text-white transition-colors">Accueil</a>
+                <a href="france2025.html" class="text-gray-400 hover:text-white transition-colors">France 2025</a>
+                <a href="calculateur.html" class="text-gray-400 hover:text-white transition-colors">Calculateur</a>
+                <a href="simulateur.html" class="text-gray-400 hover:text-white transition-colors">Simulateur</a>
+            </div>
+            <div class="mt-8 pt-8 border-t border-gray-800 text-sm text-gray-500">
+                © 2025 URM Model - Données World Bank & FMI
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ============================================
+        // DONNÉES DES PAYS
+        // ============================================
+        const COUNTRIES_DATA = {
+            DNK: {
+                name: 'Danemark', flag: '🇩🇰', region: 'Nordique',
+                gdp: 68000, gini: 28, debt: 35, health: 10.5, education: 7.8,
+                mobility: 0.85, alea: 0.12, urm: 237000
+            },
+            SWE: {
+                name: 'Suède', flag: '🇸🇪', region: 'Nordique',
+                gdp: 56000, gini: 27, debt: 33, health: 10.9, education: 7.6,
+                mobility: 0.82, alea: 0.14, urm: 198000
+            },
+            NOR: {
+                name: 'Norvège', flag: '🇳🇴', region: 'Nordique',
+                gdp: 89000, gini: 27, debt: 43, health: 11.4, education: 7.3,
+                mobility: 0.83, alea: 0.11, urm: 285000
+            },
+            FIN: {
+                name: 'Finlande', flag: '🇫🇮', region: 'Nordique',
+                gdp: 51000, gini: 27, debt: 73, health: 9.6, education: 6.4,
+                mobility: 0.79, alea: 0.15, urm: 142000
+            },
+            FRA: {
+                name: 'France', flag: '🇫🇷', region: 'Europe Ouest',
+                gdp: 44000, gini: 32, debt: 112, health: 11.2, education: 5.5,
+                mobility: 0.45, alea: 0.25, urm: -727000
+            },
+            DEU: {
+                name: 'Allemagne', flag: '🇩🇪', region: 'Europe Ouest',
+                gdp: 52000, gini: 31, debt: 66, health: 12.8, education: 4.9,
+                mobility: 0.52, alea: 0.18, urm: 85000
+            },
+            NLD: {
+                name: 'Pays-Bas', flag: '🇳🇱', region: 'Europe Ouest',
+                gdp: 58000, gini: 29, debt: 51, health: 11.2, education: 5.5,
+                mobility: 0.68, alea: 0.15, urm: 165000
+            },
+            GBR: {
+                name: 'Royaume-Uni', flag: '🇬🇧', region: 'Europe Ouest',
+                gdp: 46000, gini: 35, debt: 101, health: 12.4, education: 5.2,
+                mobility: 0.38, alea: 0.28, urm: -320000
+            },
+            USA: {
+                name: 'États-Unis', flag: '🇺🇸', region: 'Amérique',
+                gdp: 76000, gini: 41, debt: 123, health: 16.6, education: 5.0,
+                mobility: 0.30, alea: 0.35, urm: -558000
+            },
+            CAN: {
+                name: 'Canada', flag: '🇨🇦', region: 'Amérique',
+                gdp: 52000, gini: 33, debt: 107, health: 12.2, education: 5.3,
+                mobility: 0.55, alea: 0.20, urm: -45000
+            },
+            BRA: {
+                name: 'Brésil', flag: '🇧🇷', region: 'Amérique',
+                gdp: 9000, gini: 53, debt: 88, health: 9.6, education: 6.1,
+                mobility: 0.25, alea: 0.40, urm: -890000
+            },
+            MEX: {
+                name: 'Mexique', flag: '🇲🇽', region: 'Amérique',
+                gdp: 11000, gini: 45, debt: 57, health: 5.4, education: 4.3,
+                mobility: 0.28, alea: 0.38, urm: -650000
+            },
+            JPN: {
+                name: 'Japon', flag: '🇯🇵', region: 'Asie',
+                gdp: 34000, gini: 33, debt: 264, health: 11.0, education: 3.6,
+                mobility: 0.42, alea: 0.20, urm: -520000
+            },
+            KOR: {
+                name: 'Corée du Sud', flag: '🇰🇷', region: 'Asie',
+                gdp: 33000, gini: 31, debt: 54, health: 8.4, education: 4.5,
+                mobility: 0.38, alea: 0.25, urm: 35000
+            },
+            CHN: {
+                name: 'Chine', flag: '🇨🇳', region: 'Asie',
+                gdp: 13000, gini: 38, debt: 77, health: 5.6, education: 3.6,
+                mobility: 0.35, alea: 0.30, urm: -420000
+            },
+            AUS: {
+                name: 'Australie', flag: '🇦🇺', region: 'Asie-Pacifique',
+                gdp: 65000, gini: 34, debt: 57, health: 10.6, education: 6.1,
+                mobility: 0.58, alea: 0.22, urm: 78000
+            }
+        };
+
+        let selectedCountries = new Set();
+        let radarChart = null;
+        let urmBarChart = null;
+        let gdpVsUrmChart = null;
+
+        // ============================================
+        // SÉLECTION DES PAYS
+        // ============================================
+        function toggleCountry(code) {
+            if (selectedCountries.has(code)) {
+                selectedCountries.delete(code);
+            } else if (selectedCountries.size < 4) {
+                selectedCountries.add(code);
+            } else {
+                alert('Maximum 4 pays peuvent être comparés simultanément.');
+                return;
+            }
+            updateSelectionDisplay();
+        }
+
+        function updateSelectionDisplay() {
+            // Mettre à jour les classes des sélecteurs
+            document.querySelectorAll('.country-selector').forEach(el => {
+                const code = el.dataset.code;
+                if (selectedCountries.has(code)) {
+                    el.classList.add('selected');
+                } else {
+                    el.classList.remove('selected');
+                }
+            });
+
+            // Mettre à jour le compteur
+            document.getElementById('selectedCount').textContent = selectedCountries.size;
+
+            // Mettre à jour la liste des pays sélectionnés
+            const container = document.getElementById('selectedCountries');
+            if (selectedCountries.size === 0) {
+                container.innerHTML = '<span class="text-gray-500">Cliquez sur les pays ci-dessus...</span>';
+            } else {
+                container.innerHTML = Array.from(selectedCountries).map(code => {
+                    const country = COUNTRIES_DATA[code];
+                    return `
+                        <span class="inline-flex items-center bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 px-3 py-1 rounded-full">
+                            ${country.flag} ${country.name}
+                            <button onclick="event.stopPropagation(); toggleCountry('${code}')" class="ml-2 hover:text-red-600">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </span>
+                    `;
+                }).join('');
+            }
+        }
+
+        function clearSelection() {
+            selectedCountries.clear();
+            updateSelectionDisplay();
+            document.getElementById('results').classList.add('hidden');
+        }
+
+        // ============================================
+        // COMPARAISON
+        // ============================================
+        function compare() {
+            if (selectedCountries.size < 2) {
+                alert('Veuillez sélectionner au moins 2 pays à comparer.');
+                return;
+            }
+
+            const codes = Array.from(selectedCountries);
+            const countries = codes.map(code => ({ code, ...COUNTRIES_DATA[code] }));
+
+            // Trier par URM décroissant
+            countries.sort((a, b) => b.urm - a.urm);
+
+            // Afficher les résultats
+            document.getElementById('results').classList.remove('hidden');
+
+            // Générer les cartes
+            generateCards(countries);
+
+            // Générer les graphiques
+            generateRadarChart(countries);
+            generateUrmBarChart(countries);
+            generateGdpVsUrmChart(countries);
+
+            // Générer le tableau
+            generateTable(countries);
+
+            // Verdict
+            generateVerdict(countries);
+
+            // Scroll vers les résultats
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function generateCards(countries) {
+            const container = document.getElementById('countryCards');
+            container.innerHTML = countries.map((c, i) => {
+                const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '';
+                const isPositive = c.urm >= 0;
+                const borderColor = isPositive ? 'border-green-500' : 'border-red-500';
+                const bgColor = isPositive ? 'bg-green-50 dark:bg-green-900/20' : 'bg-red-50 dark:bg-red-900/20';
+                
+                return `
+                    <div class="comparison-card ${bgColor} rounded-2xl shadow-xl p-6 border-l-4 ${borderColor} animate-slide-in" style="animation-delay: ${i * 0.1}s">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center">
+                                <span class="text-4xl mr-3">${c.flag}</span>
+                                <div>
+                                    <h3 class="font-bold text-lg">${c.name}</h3>
+                                    <span class="text-sm text-gray-500">${c.region}</span>
+                                </div>
+                            </div>
+                            ${medal ? `<span class="text-3xl">${medal}</span>` : ''}
+                        </div>
+                        <div class="text-center">
+                            <div class="text-4xl font-bold ${isPositive ? 'text-green-600' : 'text-red-600'} mb-2">
+                                ${isPositive ? '+' : ''}${(c.urm / 1000).toFixed(0)}k€
+                            </div>
+                            <div class="text-sm text-gray-500">Score URM</div>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 space-y-2 text-sm">
+                            <div class="flex justify-between">
+                                <span>PIB/hab</span>
+                                <span class="font-medium">${c.gdp.toLocaleString()} $</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Gini</span>
+                                <span class="font-medium">${c.gini}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Dette</span>
+                                <span class="font-medium">${c.debt}%</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Mobilité</span>
+                                <span class="font-medium">${(c.mobility * 100).toFixed(0)}%</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function generateRadarChart(countries) {
+            const ctx = document.getElementById('radarChart').getContext('2d');
+            if (radarChart) radarChart.destroy();
+
+            const colors = ['#3b82f6', '#ef4444', '#22c55e', '#f59e0b'];
+
+            radarChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['PIB/hab (normalisé)', 'Égalité (100-Gini)', 'Faible dette', 'Santé', 'Éducation', 'Mobilité'],
+                    datasets: countries.map((c, i) => ({
+                        label: c.name,
+                        data: [
+                            (c.gdp / 100000) * 100,
+                            100 - c.gini,
+                            Math.max(0, 100 - c.debt / 2.5),
+                            c.health * 5,
+                            c.education * 10,
+                            c.mobility * 100
+                        ],
+                        backgroundColor: colors[i] + '33',
+                        borderColor: colors[i],
+                        borderWidth: 2,
+                        pointBackgroundColor: colors[i]
+                    }))
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    },
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    }
+                }
+            });
+        }
+
+        function generateUrmBarChart(countries) {
+            const ctx = document.getElementById('urmBarChart').getContext('2d');
+            if (urmBarChart) urmBarChart.destroy();
+
+            urmBarChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: countries.map(c => c.flag + ' ' + c.name),
+                    datasets: [{
+                        label: 'Score URM (k€)',
+                        data: countries.map(c => c.urm / 1000),
+                        backgroundColor: countries.map(c => c.urm >= 0 ? 'rgba(34, 197, 94, 0.7)' : 'rgba(239, 68, 68, 0.7)'),
+                        borderColor: countries.map(c => c.urm >= 0 ? 'rgb(34, 197, 94)' : 'rgb(239, 68, 68)'),
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            grid: {
+                                color: (ctx) => ctx.tick.value === 0 ? '#ef4444' : 'rgba(0,0,0,0.1)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function generateGdpVsUrmChart(countries) {
+            const ctx = document.getElementById('gdpVsUrmChart').getContext('2d');
+            if (gdpVsUrmChart) gdpVsUrmChart.destroy();
+
+            const colors = ['#3b82f6', '#ef4444', '#22c55e', '#f59e0b'];
+
+            gdpVsUrmChart = new Chart(ctx, {
+                type: 'scatter',
+                data: {
+                    datasets: countries.map((c, i) => ({
+                        label: c.name,
+                        data: [{ x: c.gdp / 1000, y: c.urm / 1000 }],
+                        backgroundColor: colors[i],
+                        pointRadius: 15,
+                        pointHoverRadius: 18
+                    }))
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => `${ctx.dataset.label}: PIB ${ctx.raw.x}k$, URM ${ctx.raw.y > 0 ? '+' : ''}${ctx.raw.y.toFixed(0)}k€`
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: { display: true, text: 'PIB/habitant (k$)' }
+                        },
+                        y: {
+                            title: { display: true, text: 'Score URM (k€)' },
+                            grid: {
+                                color: (ctx) => ctx.tick.value === 0 ? '#ef4444' : 'rgba(0,0,0,0.1)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function generateTable(countries) {
+            // En-têtes
+            countries.forEach((c, i) => {
+                const th = document.getElementById(`th${i + 1}`);
+                th.textContent = c.flag + ' ' + c.name;
+                th.classList.remove('hidden');
+            });
+            // Cacher les colonnes non utilisées
+            for (let i = countries.length; i < 4; i++) {
+                document.getElementById(`th${i + 1}`).classList.add('hidden');
+            }
+
+            // Corps du tableau
+            const metrics = [
+                { name: 'Score URM', key: 'urm', format: v => (v >= 0 ? '+' : '') + (v / 1000).toFixed(0) + 'k€', highlight: true },
+                { name: 'PIB/habitant', key: 'gdp', format: v => v.toLocaleString() + ' $' },
+                { name: 'Indice Gini', key: 'gini', format: v => v.toFixed(1), reverse: true },
+                { name: 'Dette publique', key: 'debt', format: v => v + '%', reverse: true },
+                { name: 'Dépenses santé', key: 'health', format: v => v.toFixed(1) + '%' },
+                { name: 'Dépenses éducation', key: 'education', format: v => v.toFixed(1) + '%' },
+                { name: 'Mobilité sociale', key: 'mobility', format: v => (v * 100).toFixed(0) + '%' },
+                { name: 'Aléa économique', key: 'alea', format: v => (v * 100).toFixed(0) + '%', reverse: true }
+            ];
+
+            const tbody = document.getElementById('comparisonTable');
+            tbody.innerHTML = metrics.map(m => {
+                const values = countries.map(c => c[m.key]);
+                const best = m.reverse ? Math.min(...values) : Math.max(...values);
+                
+                return `
+                    <tr class="${m.highlight ? 'bg-yellow-50 dark:bg-yellow-900/20 font-bold' : ''}">
+                        <td class="px-6 py-4 font-medium">${m.name}</td>
+                        ${countries.map((c, i) => `
+                            <td class="px-6 py-4 text-center ${c[m.key] === best ? 'text-green-600 font-bold' : ''} ${i >= countries.length ? 'hidden' : ''}">
+                                ${m.format(c[m.key])}
+                                ${c[m.key] === best ? ' 🏆' : ''}
+                            </td>
+                        `).join('')}
+                        ${Array(4 - countries.length).fill('<td class="hidden"></td>').join('')}
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function generateVerdict(countries) {
+            const winner = countries[0];
+            const loser = countries[countries.length - 1];
+            
+            let text = `Le <strong>${winner.flag} ${winner.name}</strong> remporte la comparaison avec un score URM de <strong>${winner.urm >= 0 ? '+' : ''}${(winner.urm / 1000).toFixed(0)}k€</strong>`;
+            
+            if (countries.length > 2) {
+                const diff = winner.urm - loser.urm;
+                text += `<br><br>Écart avec ${loser.flag} ${loser.name} : <strong>${(diff / 1000).toFixed(0)}k€</strong>`;
+            }
+            
+            document.getElementById('verdictText').innerHTML = text;
+        }
+
+        // ============================================
+        // UTILITAIRES
+        // ============================================
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+            const icon = document.getElementById('themeIcon');
+            icon.className = document.documentElement.classList.contains('dark') ? 'fas fa-sun' : 'fas fa-moon';
+        }
+
+        function toggleMobileMenu() {
+            document.getElementById('mobileMenu').classList.toggle('hidden');
+        }
+
+        // ============================================
+        // INITIALISATION
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            // Pré-sélectionner Danemark et France par défaut
+            toggleCountry('DNK');
+            toggleCountry('FRA');
+        });
+    </script>
+</body>
+</html>

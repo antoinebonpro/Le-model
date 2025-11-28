@@ -117,27 +117,22 @@
                 <!-- Menu principal -->
                 <div class="hidden lg:flex items-center space-x-8">
                     <a href="index.html" class="nav-link text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 px-4 py-2 rounded-lg font-semibold transition-all transform hover:scale-105 shadow-lg">
-                        <i class="fas fa-calculator mr-2"></i>🇲 Modèle Global
-                        <span class="ml-1 text-xs opacity-75">(URM v2.0)</span>
+                        <i class="fas fa-calculator mr-2"></i>🏠 Accueil
                     </a>
-                    <a href="#header" onclick="scrollToTop()" class="nav-link text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium">
-                        <i class="fas fa-home mr-2"></i>Début
+                    <a href="simulateur.html" class="nav-link text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium">
+                        <i class="fas fa-sliders-h mr-2"></i>Simulateur
+                    </a>
+                    <a href="comparateur.html" class="nav-link text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium">
+                        <i class="fas fa-balance-scale mr-2"></i>Comparateur
                     </a>
                     <a href="#formule" onclick="scrollToSection('formule')" class="nav-link text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium">
                         <i class="fas fa-function mr-2"></i>Formule v3.0
                     </a>
-                    <a href="#donnees" onclick="scrollToSection('donnees')" class="nav-link text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium">
-                        <i class="fas fa-database mr-2"></i>Données 2025
-                    </a>
                     <a href="#comparaison" onclick="scrollToSection('comparaison')" class="nav-link text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium">
                         <i class="fas fa-chart-bar mr-2"></i>Comparaison
                     </a>
-                    <a href="#scenarios" onclick="scrollToSection('scenarios')" class="nav-link text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium">
-                        <i class="fas fa-road mr-2"></i>Scénarios 2035
-                    </a>
                     <a href="calculateur.html" class="nav-link text-white bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 px-4 py-2 rounded-lg font-semibold transition-all transform hover:scale-105 shadow-lg">
                         <i class="fas fa-globe mr-2"></i>🌍 Calculateur
-                        <span class="ml-1 text-xs opacity-75">(Temps Réel)</span>
                     </a>
                 </div>
                 
@@ -160,20 +155,20 @@
             <!-- Menu mobile déroulant -->
             <div id="mobileMenu" class="lg:hidden hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
                 <div class="px-6 py-4 space-y-3">
-                    <a href="index.html" class="flex items-center justify-between px-3 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold transition-all transform hover:scale-105 shadow-lg">
-                        <div class="flex items-center">
-                            <i class="fas fa-calculator mr-3 w-5"></i>🇲 Modèle Global URM v2.0
-                        </div>
-                        <span class="bg-blue-700 text-xs px-2 py-0.5 rounded-full">Complet</span>
+                    <a href="index.html" class="flex items-center px-3 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold shadow-lg">
+                        <i class="fas fa-home mr-3 w-5"></i>🏠 Accueil
                     </a>
-                    <a href="#header" onclick="scrollToTop(); toggleMobileMenu()" class="flex items-center px-3 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                        <i class="fas fa-home mr-3 w-5"></i>Début de l'analyse
+                    <a href="simulateur.html" class="flex items-center px-3 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                        <i class="fas fa-sliders-h mr-3 w-5"></i>Simulateur Personnel
+                    </a>
+                    <a href="comparateur.html" class="flex items-center px-3 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                        <i class="fas fa-balance-scale mr-3 w-5"></i>Comparateur
+                    </a>
+                    <a href="calculateur.html" class="flex items-center px-3 py-2 rounded-lg bg-gradient-to-r from-green-600 to-teal-600 text-white font-semibold shadow-lg">
+                        <i class="fas fa-globe mr-3 w-5"></i>🌍 Calculateur Mondial
                     </a>
                     <a href="#formule" onclick="scrollToSection('formule'); toggleMobileMenu()" class="flex items-center px-3 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                         <i class="fas fa-function mr-3 w-5"></i>Formule URM v3.0
-                    </a>
-                    <a href="#donnees" onclick="scrollToSection('donnees'); toggleMobileMenu()" class="flex items-center px-3 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                        <i class="fas fa-database mr-3 w-5"></i>Données France 2025
                     </a>
                     <a href="#comparaison" onclick="scrollToSection('comparaison'); toggleMobileMenu()" class="flex items-center px-3 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                         <i class="fas fa-chart-bar mr-3 w-5"></i>Comparaison mondiale

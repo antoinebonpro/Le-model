@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Évolution Historique - URM Timeline</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
+    <style>
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, #3b82f6, #8b5cf6, #ec4899);
+        }
+        
+        .timeline-item {
+            position: relative;
+            padding: 20px;
+            width: 45%;
+        }
+        
+        .timeline-item:nth-child(odd) {
+            left: 0;
+            text-align: right;
+        }
+        
+        .timeline-item:nth-child(even) {
+            left: 55%;
+        }
+        
+        .timeline-dot {
+            position: absolute;
+            top: 30px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border: 4px solid #3b82f6;
+            border-radius: 50%;
+            z-index: 10;
+        }
+        
+        .timeline-item:nth-child(odd) .timeline-dot {
+            right: -10px;
+        }
+        
+        .timeline-item:nth-child(even) .timeline-dot {
+            left: -10px;
+        }
+        
+        @media (max-width: 768px) {
+            .timeline-line {
+                left: 20px;
+            }
+            .timeline-item {
+                width: calc(100% - 50px);
+                left: 50px !important;
+                text-align: left !important;
+            }
+            .timeline-dot {
+                left: -40px !important;
+                right: auto !important;
+            }
+        }
+        
+        .era-card {
+            transition: all 0.3s ease;
+        }
+        
+        .era-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        
+        .country-evolution {
+            transition: all 0.3s ease;
+        }
+        
+        .country-evolution:hover {
+            transform: scale(1.02);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 min-h-screen">
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-b border-gray-200 dark:border-gray-700">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-r from-amber-500 to-orange-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-history text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold">Timeline URM</h1>
+                        <p class="text-xs text-gray-500">Évolution 1990-2025</p>
+                    </div>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-4">
+                    <a href="index.html" class="text-gray-600 dark:text-gray-400 hover:text-blue-600 px-3 py-2 rounded-lg transition-colors">
+                        <i class="fas fa-home mr-2"></i>Accueil
+                    </a>
+                    <a href="simulateur.html" class="text-gray-600 dark:text-gray-400 hover:text-blue-600 px-3 py-2 rounded-lg transition-colors">
+                        <i class="fas fa-sliders-h mr-2"></i>Simulateur
+                    </a>
+                    <a href="comparateur.html" class="text-gray-600 dark:text-gray-400 hover:text-blue-600 px-3 py-2 rounded-lg transition-colors">
+                        <i class="fas fa-balance-scale mr-2"></i>Comparateur
+                    </a>
+                    <a href="methodologie.html" class="text-gray-600 dark:text-gray-400 hover:text-blue-600 px-3 py-2 rounded-lg transition-colors">
+                        <i class="fas fa-book mr-2"></i>Méthodologie
+                    </a>
+                    <button onclick="toggleTheme()" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800">
+                        <i id="themeIcon" class="fas fa-moon"></i>
+                    </button>
+                </div>
+                
+                <button onclick="toggleMobileMenu()" class="md:hidden p-2">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div id="mobileMenu" class="hidden md:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 px-6 py-4 space-y-2">
+            <a href="index.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">Accueil</a>
+            <a href="simulateur.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">Simulateur</a>
+            <a href="comparateur.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">Comparateur</a>
+            <a href="methodologie.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">Méthodologie</a>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="pt-24 pb-16 bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 text-white">
+        <div class="max-w-6xl mx-auto px-6 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">
+                ⏳ Évolution Historique
+            </h1>
+            <p class="text-xl opacity-90 mb-6">
+                35 ans de transformation économique mondiale (1990-2025)
+            </p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <span class="bg-white/20 backdrop-blur-md px-4 py-2 rounded-full">
+                    <i class="fas fa-chart-line mr-2"></i>Tendances sur 35 ans
+                </span>
+                <span class="bg-white/20 backdrop-blur-md px-4 py-2 rounded-full">
+                    <i class="fas fa-globe mr-2"></i>150+ pays analysés
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sélecteur de pays -->
+    <section class="py-8 bg-white dark:bg-gray-900 sticky top-16 z-40 shadow-lg">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="flex flex-wrap items-center justify-center gap-4">
+                <span class="font-bold">Comparer l'évolution :</span>
+                <button onclick="selectCountries(['DNK', 'FRA', 'USA'])" class="px-4 py-2 bg-blue-100 dark:bg-blue-900/30 hover:bg-blue-200 dark:hover:bg-blue-800/50 rounded-lg transition-colors">
+                    🇩🇰 🇫🇷 🇺🇸 Trio classique
+                </button>
+                <button onclick="selectCountries(['DNK', 'SWE', 'NOR', 'FIN'])" class="px-4 py-2 bg-green-100 dark:bg-green-900/30 hover:bg-green-200 dark:hover:bg-green-800/50 rounded-lg transition-colors">
+                    🇩🇰 🇸🇪 🇳🇴 🇫🇮 Nordiques
+                </button>
+                <button onclick="selectCountries(['USA', 'GBR', 'CAN', 'AUS'])" class="px-4 py-2 bg-red-100 dark:bg-red-900/30 hover:bg-red-200 dark:hover:bg-red-800/50 rounded-lg transition-colors">
+                    🇺🇸 🇬🇧 🇨🇦 🇦🇺 Anglo-saxons
+                </button>
+                <button onclick="selectCountries(['FRA', 'DEU', 'ITA', 'ESP'])" class="px-4 py-2 bg-yellow-100 dark:bg-yellow-900/30 hover:bg-yellow-200 dark:hover:bg-yellow-800/50 rounded-lg transition-colors">
+                    🇫🇷 🇩🇪 🇮🇹 🇪🇸 Europe Sud
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Graphique d'évolution principal -->
+    <section class="py-12">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6">
+                <h2 class="text-2xl font-bold mb-6 text-center">
+                    <i class="fas fa-chart-line mr-2 text-blue-500"></i>
+                    Évolution du Score URM (1990-2025)
+                </h2>
+                <canvas id="evolutionChart" height="350"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ères économiques -->
+    <section class="py-12 bg-gray-100 dark:bg-gray-900">
+        <div class="max-w-6xl mx-auto px-6">
+            <h2 class="text-3xl font-bold mb-8 text-center">
+                <i class="fas fa-landmark mr-2 text-purple-500"></i>
+                Les Grandes Ères Économiques
+            </h2>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- 1990s -->
+                <div class="era-card bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+                    <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center mb-4">
+                        <span class="text-2xl">📼</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">1990-2000</h3>
+                    <h4 class="text-blue-600 font-medium mb-3">L'ère de la mondialisation</h4>
+                    <ul class="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                        <li>• Chute du mur de Berlin</li>
+                        <li>• Accords de l'OMC</li>
+                        <li>• Boom technologique</li>
+                        <li>• URM moyen : +50k€</li>
+                    </ul>
+                </div>
+                
+                <!-- 2000s -->
+                <div class="era-card bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+                    <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center mb-4">
+                        <span class="text-2xl">💶</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">2000-2008</h3>
+                    <h4 class="text-green-600 font-medium mb-3">L'âge d'or européen</h4>
+                    <ul class="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                        <li>• Création de l'Euro</li>
+                        <li>• Expansion UE à l'Est</li>
+                        <li>• Croissance soutenue</li>
+                        <li>• URM moyen : +120k€</li>
+                    </ul>
+                </div>
+                
+                <!-- 2008-2020 -->
+                <div class="era-card bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+                    <div class="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center mb-4">
+                        <span class="text-2xl">📉</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">2008-2020</h3>
+                    <h4 class="text-red-600 font-medium mb-3">Crises successives</h4>
+                    <ul class="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                        <li>• Crise des subprimes</li>
+                        <li>• Crise de la dette EU</li>
+                        <li>• Austérité généralisée</li>
+                        <li>• URM moyen : -50k€</li>
+                    </ul>
+                </div>
+                
+                <!-- 2020+ -->
+                <div class="era-card bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+                    <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center mb-4">
+                        <span class="text-2xl">🦠</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">2020-2025</h3>
+                    <h4 class="text-purple-600 font-medium mb-3">Post-pandémie</h4>
+                    <ul class="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                        <li>• Pandémie COVID-19</li>
+                        <li>• Inflation record</li>
+                        <li>• Guerre en Ukraine</li>
+                        <li>• URM divergent</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Timeline détaillée -->
+    <section class="py-12">
+        <div class="max-w-4xl mx-auto px-6">
+            <h2 class="text-3xl font-bold mb-12 text-center">
+                <i class="fas fa-stream mr-2 text-orange-500"></i>
+                Événements Clés
+            </h2>
+            
+            <div class="relative">
+                <div class="timeline-line"></div>
+                
+                <div class="space-y-8">
+                    <!-- 1990 -->
+                    <div class="timeline-item bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4">
+                        <div class="timeline-dot"></div>
+                        <span class="text-sm text-blue-600 font-bold">1990</span>
+                        <h4 class="font-bold">Réunification allemande</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">L'Allemagne devient le moteur économique européen</p>
+                    </div>
+                    
+                    <!-- 1992 -->
+                    <div class="timeline-item bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4">
+                        <div class="timeline-dot" style="border-color: #22c55e;"></div>
+                        <span class="text-sm text-green-600 font-bold">1992</span>
+                        <h4 class="font-bold">Traité de Maastricht</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Création de l'Union Européenne moderne</p>
+                    </div>
+                    
+                    <!-- 1999 -->
+                    <div class="timeline-item bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4">
+                        <div class="timeline-dot" style="border-color: #f59e0b;"></div>
+                        <span class="text-sm text-yellow-600 font-bold">1999</span>
+                        <h4 class="font-bold">Lancement de l'Euro</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Monnaie unique pour 11 pays européens</p>
+                    </div>
+                    
+                    <!-- 2008 -->
+                    <div class="timeline-item bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4">
+                        <div class="timeline-dot" style="border-color: #ef4444;"></div>
+                        <span class="text-sm text-red-600 font-bold">2008</span>
+                        <h4 class="font-bold">Crise financière mondiale</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Effondrement de Lehman Brothers, récession globale</p>
+                    </div>
+                    
+                    <!-- 2010 -->
+                    <div class="timeline-item bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4">
+                        <div class="timeline-dot" style="border-color: #ef4444;"></div>
+                        <span class="text-sm text-red-600 font-bold">2010</span>
+                        <h4 class="font-bold">Crise de la dette grecque</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Plans d'austérité en Europe du Sud</p>
+                    </div>
+                    
+                    <!-- 2015 -->
+                    <div class="timeline-item bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4">
+                        <div class="timeline-dot" style="border-color: #8b5cf6;"></div>
+                        <span class="text-sm text-purple-600 font-bold">2015</span>
+                        <h4 class="font-bold">Crise migratoire</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Tensions politiques en Europe</p>
+                    </div>
+                    
+                    <!-- 2020 -->
+                    <div class="timeline-item bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4">
+                        <div class="timeline-dot" style="border-color: #ef4444;"></div>
+                        <span class="text-sm text-red-600 font-bold">2020</span>
+                        <h4 class="font-bold">Pandémie COVID-19</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Confinements mondiaux, choc économique</p>
+                    </div>
+                    
+                    <!-- 2022 -->
+                    <div class="timeline-item bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4">
+                        <div class="timeline-dot" style="border-color: #f59e0b;"></div>
+                        <span class="text-sm text-yellow-600 font-bold">2022</span>
+                        <h4 class="font-bold">Guerre en Ukraine</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Crise énergétique, inflation record</p>
+                    </div>
+                    
+                    <!-- 2025 -->
+                    <div class="timeline-item bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4">
+                        <div class="timeline-dot" style="border-color: #3b82f6;"></div>
+                        <span class="text-sm text-blue-600 font-bold">2025</span>
+                        <h4 class="font-bold">Situation actuelle</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Nordiques toujours en tête, France en difficulté</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Évolution par pays -->
+    <section class="py-12 bg-gray-100 dark:bg-gray-900">
+        <div class="max-w-6xl mx-auto px-6">
+            <h2 class="text-3xl font-bold mb-8 text-center">
+                <i class="fas fa-flag mr-2 text-green-500"></i>
+                Trajectoires Nationales
+            </h2>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Danemark -->
+                <div class="country-evolution bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+                    <div class="flex items-center mb-4">
+                        <span class="text-4xl mr-3">🇩🇰</span>
+                        <div>
+                            <h3 class="font-bold text-lg">Danemark</h3>
+                            <span class="text-green-600 text-sm font-bold">Leader constant</span>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-sm">
+                            <span>1990</span>
+                            <span class="text-green-600 font-bold">+85k€</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span>2000</span>
+                            <span class="text-green-600 font-bold">+142k€</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span>2010</span>
+                            <span class="text-green-600 font-bold">+178k€</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span>2025</span>
+                            <span class="text-green-600 font-bold">+237k€</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 bg-green-50 dark:bg-green-900/20 rounded-lg p-3 text-sm">
+                        <strong>Clé du succès :</strong> Flexicurité, éducation gratuite, syndicats forts
+                    </div>
+                </div>
+                
+                <!-- France -->
+                <div class="country-evolution bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+                    <div class="flex items-center mb-4">
+                        <span class="text-4xl mr-3">🇫🇷</span>
+                        <div>
+                            <h3 class="font-bold text-lg">France</h3>
+                            <span class="text-red-600 text-sm font-bold">Déclin progressif</span>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-sm">
+                            <span>1990</span>
+                            <span class="text-green-600 font-bold">+95k€</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span>2000</span>
+                            <span class="text-green-600 font-bold">+120k€</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span>2010</span>
+                            <span class="text-yellow-600 font-bold">+45k€</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span>2025</span>
+                            <span class="text-red-600 font-bold">-727k€</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 bg-red-50 dark:bg-red-900/20 rounded-lg p-3 text-sm">
+                        <strong>Causes :</strong> Dette explosive (112%), mobilité sociale faible (45%)
+                    </div>
+                </div>
+                
+                <!-- États-Unis -->
+                <div class="country-evolution bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+                    <div class="flex items-center mb-4">
+                        <span class="text-4xl mr-3">🇺🇸</span>
+                        <div>
+                            <h3 class="font-bold text-lg">États-Unis</h3>
+                            <span class="text-red-600 text-sm font-bold">Inégalités croissantes</span>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-sm">
+                            <span>1990</span>
+                            <span class="text-yellow-600 font-bold">+25k€</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span>2000</span>
+                            <span class="text-yellow-600 font-bold">+10k€</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span>2010</span>
+                            <span class="text-red-600 font-bold">-180k€</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span>2025</span>
+                            <span class="text-red-600 font-bold">-558k€</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 bg-red-50 dark:bg-red-900/20 rounded-lg p-3 text-sm">
+                        <strong>Causes :</strong> Gini 41, santé privatisée, dette étudiante
+                    </div>
+                </div>
+                
+                <!-- Allemagne -->
+                <div class="country-evolution bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+                    <div class="flex items-center mb-4">
+                        <span class="text-4xl mr-3">🇩🇪</span>
+                        <div>
+                            <h3 class="font-bold text-lg">Allemagne</h3>
+                            <span class="text-green-600 text-sm font-bold">Résiliente</span>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-sm">
+                            <span>1990</span>
+                            <span class="text-yellow-600 font-bold">+20k€</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span>2000</span>
+                            <span class="text-green-600 font-bold">+65k€</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span>2010</span>
+                            <span class="text-green-600 font-bold">+78k€</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span>2025</span>
+                            <span class="text-green-600 font-bold">+85k€</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 bg-green-50 dark:bg-green-900/20 rounded-lg p-3 text-sm">
+                        <strong>Clé :</strong> Industrie forte, dette maîtrisée (66%)
+                    </div>
+                </div>
+                
+                <!-- Japon -->
+                <div class="country-evolution bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+                    <div class="flex items-center mb-4">
+                        <span class="text-4xl mr-3">🇯🇵</span>
+                        <div>
+                            <h3 class="font-bold text-lg">Japon</h3>
+                            <span class="text-red-600 text-sm font-bold">Stagnation</span>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-sm">
+                            <span>1990</span>
+                            <span class="text-green-600 font-bold">+180k€</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span>2000</span>
+                            <span class="text-yellow-600 font-bold">+50k€</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span>2010</span>
+                            <span class="text-red-600 font-bold">-120k€</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span>2025</span>
+                            <span class="text-red-600 font-bold">-520k€</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 bg-red-50 dark:bg-red-900/20 rounded-lg p-3 text-sm">
+                        <strong>Causes :</strong> Dette record (264%), vieillissement
+                    </div>
+                </div>
+                
+                <!-- Chine -->
+                <div class="country-evolution bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+                    <div class="flex items-center mb-4">
+                        <span class="text-4xl mr-3">🇨🇳</span>
+                        <div>
+                            <h3 class="font-bold text-lg">Chine</h3>
+                            <span class="text-yellow-600 text-sm font-bold">Progression rapide</span>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-sm">
+                            <span>1990</span>
+                            <span class="text-red-600 font-bold">-850k€</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span>2000</span>
+                            <span class="text-red-600 font-bold">-720k€</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span>2010</span>
+                            <span class="text-red-600 font-bold">-580k€</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span>2025</span>
+                            <span class="text-red-600 font-bold">-420k€</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-3 text-sm">
+                        <strong>Évolution :</strong> PIB en hausse mais inégalités croissantes
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projections 2035 -->
+    <section class="py-12">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl shadow-xl p-8 text-white">
+                <h2 class="text-3xl font-bold mb-6 text-center">
+                    <i class="fas fa-crystal-ball mr-2"></i>
+                    Projections 2035
+                </h2>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="bg-white/10 backdrop-blur-md rounded-xl p-4 text-center">
+                        <div class="text-4xl mb-2">🇩🇰</div>
+                        <div class="font-bold">Danemark</div>
+                        <div class="text-2xl font-bold text-green-300">+320k€</div>
+                        <div class="text-sm opacity-75">+35% vs 2025</div>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-md rounded-xl p-4 text-center">
+                        <div class="text-4xl mb-2">🇫🇷</div>
+                        <div class="font-bold">France (si réformes)</div>
+                        <div class="text-2xl font-bold text-yellow-300">+50k€</div>
+                        <div class="text-sm opacity-75">Scénario optimiste</div>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-md rounded-xl p-4 text-center">
+                        <div class="text-4xl mb-2">🇫🇷</div>
+                        <div class="font-bold">France (statu quo)</div>
+                        <div class="text-2xl font-bold text-red-300">-1200k€</div>
+                        <div class="text-sm opacity-75">Scénario tendanciel</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-6xl mx-auto px-6 text-center">
+            <div class="text-3xl font-bold mb-4">⏳ Timeline URM</div>
+            <p class="text-gray-400 mb-6">35 ans d'histoire économique analysée</p>
+            <div class="flex justify-center flex-wrap gap-4">
+                <a href="index.html" class="text-gray-400 hover:text-white transition-colors">Accueil</a>
+                <a href="france2025.html" class="text-gray-400 hover:text-white transition-colors">France 2025</a>
+                <a href="calculateur.html" class="text-gray-400 hover:text-white transition-colors">Calculateur</a>
+                <a href="simulateur.html" class="text-gray-400 hover:text-white transition-colors">Simulateur</a>
+                <a href="comparateur.html" class="text-gray-400 hover:text-white transition-colors">Comparateur</a>
+                <a href="methodologie.html" class="text-gray-400 hover:text-white transition-colors">Méthodologie</a>
+            </div>
+            <div class="mt-8 pt-8 border-t border-gray-800 text-sm text-gray-500">
+                © 2025 URM Model - Données historiques World Bank & FMI
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Données historiques simulées
+        const historicalData = {
+            DNK: { name: 'Danemark', flag: '🇩🇰', color: '#ef4444', data: [85, 95, 110, 125, 142, 155, 165, 178, 190, 205, 215, 225, 237] },
+            FRA: { name: 'France', flag: '🇫🇷', color: '#3b82f6', data: [95, 105, 115, 120, 110, 85, 60, 45, 20, -50, -200, -500, -727] },
+            USA: { name: 'États-Unis', flag: '🇺🇸', color: '#22c55e', data: [25, 30, 20, 10, 5, -20, -80, -180, -250, -350, -420, -500, -558] },
+            DEU: { name: 'Allemagne', flag: '🇩🇪', color: '#f59e0b', data: [20, 35, 50, 65, 72, 78, 82, 78, 75, 80, 82, 84, 85] },
+            SWE: { name: 'Suède', flag: '🇸🇪', color: '#8b5cf6', data: [70, 85, 100, 115, 130, 145, 155, 165, 175, 185, 190, 195, 198] },
+            NOR: { name: 'Norvège', flag: '🇳🇴', color: '#ec4899', data: [100, 120, 140, 160, 180, 200, 220, 240, 255, 265, 275, 280, 285] },
+            FIN: { name: 'Finlande', flag: '🇫🇮', color: '#14b8a6', data: [50, 60, 75, 90, 105, 115, 125, 130, 135, 138, 140, 141, 142] },
+            GBR: { name: 'Royaume-Uni', flag: '🇬🇧', color: '#6366f1', data: [40, 50, 55, 45, 30, 10, -20, -80, -150, -220, -270, -300, -320] },
+            CAN: { name: 'Canada', flag: '🇨🇦', color: '#f97316', data: [35, 45, 55, 50, 40, 25, 10, -10, -25, -35, -40, -43, -45] },
+            AUS: { name: 'Australie', flag: '🇦🇺', color: '#06b6d4', data: [45, 55, 65, 70, 75, 78, 80, 78, 76, 77, 78, 78, 78] }
+        };
+
+        const years = ['1990', '1993', '1996', '1999', '2002', '2005', '2008', '2011', '2014', '2017', '2020', '2023', '2025'];
+        
+        let evolutionChart = null;
+        let selectedCountries = ['DNK', 'FRA', 'USA'];
+
+        function selectCountries(codes) {
+            selectedCountries = codes;
+            updateChart();
+        }
+
+        function updateChart() {
+            const ctx = document.getElementById('evolutionChart').getContext('2d');
+            if (evolutionChart) evolutionChart.destroy();
+
+            evolutionChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: years,
+                    datasets: selectedCountries.map(code => {
+                        const country = historicalData[code];
+                        return {
+                            label: `${country.flag} ${country.name}`,
+                            data: country.data,
+                            borderColor: country.color,
+                            backgroundColor: country.color + '20',
+                            borderWidth: 3,
+                            fill: false,
+                            tension: 0.3,
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        };
+                    })
+                },
+                options: {
+                    responsive: true,
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: { usePointStyle: true, padding: 20 }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => `${ctx.dataset.label}: ${ctx.raw > 0 ? '+' : ''}${ctx.raw}k€`
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            title: { display: true, text: 'Score URM (k€)' },
+                            grid: {
+                                color: (ctx) => ctx.tick.value === 0 ? '#ef4444' : 'rgba(0,0,0,0.1)'
+                            }
+                        },
+                        x: {
+                            title: { display: true, text: 'Année' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+            const icon = document.getElementById('themeIcon');
+            icon.className = document.documentElement.classList.contains('dark') ? 'fas fa-sun' : 'fas fa-moon';
+        }
+
+        function toggleMobileMenu() {
+            document.getElementById('mobileMenu').classList.toggle('hidden');
+        }
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', updateChart);
+    </script>
+</body>
+</html>

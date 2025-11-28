@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🗺️ Carte Interactive URM - Visualisation Mondiale</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3e 50%, #0f2460 100%); }
+        .card-glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+        
+        /* Styles pour la carte */
+        .map-container { position: relative; }
+        .country-marker {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            border: 2px solid white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .country-marker:hover {
+            transform: scale(1.5);
+            z-index: 100;
+        }
+        .country-marker.tier-s { background: linear-gradient(135deg, #ffd700, #ffec8b); color: #1a1a2e; }
+        .country-marker.tier-a { background: linear-gradient(135deg, #10b981, #34d399); color: white; }
+        .country-marker.tier-b { background: linear-gradient(135deg, #3b82f6, #60a5fa); color: white; }
+        .country-marker.tier-c { background: linear-gradient(135deg, #f59e0b, #fbbf24); color: #1a1a2e; }
+        .country-marker.tier-d { background: linear-gradient(135deg, #f97316, #fb923c); color: white; }
+        .country-marker.tier-f { background: linear-gradient(135deg, #ef4444, #f87171); color: white; }
+        
+        .tooltip {
+            position: absolute;
+            background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 12px;
+            padding: 12px 16px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            z-index: 1000;
+            min-width: 200px;
+        }
+        .tooltip.visible { opacity: 1; }
+        
+        /* Animation pulse pour les pays sélectionnés */
+        @keyframes pulse-ring {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+        .country-marker.selected::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px solid currentColor;
+            animation: pulse-ring 1.5s ease-out infinite;
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen text-white">
+    <!-- Navigation -->
+    <nav class="bg-black/30 backdrop-blur-md border-b border-white/10 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3">
+            <div class="flex items-center justify-between flex-wrap gap-2">
+                <a href="index.html" class="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+                    URM Model
+                </a>
+                <div class="flex flex-wrap gap-2 text-sm">
+                    <a href="index.html" class="px-3 py-1 rounded-full hover:bg-white/10 transition">Accueil</a>
+                    <a href="calculateur.html" class="px-3 py-1 rounded-full hover:bg-white/10 transition">Calculateur</a>
+                    <a href="classement.html" class="px-3 py-1 rounded-full hover:bg-white/10 transition">Classement</a>
+                    <a href="carte.html" class="px-3 py-1 rounded-full bg-green-500/30 text-green-300">Carte</a>
+                    <a href="quiz.html" class="px-3 py-1 rounded-full hover:bg-white/10 transition">Quiz</a>
+                    <a href="ressources.html" class="px-3 py-1 rounded-full hover:bg-white/10 transition">Ressources</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="py-8 text-center">
+        <h1 class="text-4xl md:text-5xl font-black mb-4">
+            🗺️ <span class="bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent">Carte Interactive URM</span>
+        </h1>
+        <p class="text-gray-300 max-w-2xl mx-auto px-4">
+            Explorez le score URM de chaque pays en un coup d'œil
+        </p>
+    </header>
+
+    <!-- Légende -->
+    <section class="max-w-7xl mx-auto px-4 mb-4">
+        <div class="flex flex-wrap justify-center gap-4 text-sm">
+            <div class="flex items-center gap-2">
+                <span class="w-4 h-4 rounded-full bg-gradient-to-r from-yellow-400 to-yellow-300"></span>
+                <span>Tier S (>150k€)</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="w-4 h-4 rounded-full bg-gradient-to-r from-green-500 to-green-400"></span>
+                <span>Tier A (50-150k€)</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="w-4 h-4 rounded-full bg-gradient-to-r from-blue-500 to-blue-400"></span>
+                <span>Tier B (0-50k€)</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="w-4 h-4 rounded-full bg-gradient-to-r from-yellow-500 to-yellow-400"></span>
+                <span>Tier C (-100-0k€)</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="w-4 h-4 rounded-full bg-gradient-to-r from-orange-500 to-orange-400"></span>
+                <span>Tier D (-300--100k€)</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="w-4 h-4 rounded-full bg-gradient-to-r from-red-500 to-red-400"></span>
+                <span>Tier F (<-300k€)</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Carte -->
+    <section class="max-w-7xl mx-auto px-4 mb-8">
+        <div class="card-glass rounded-2xl p-4 overflow-hidden">
+            <div class="map-container" style="width: 100%; height: 500px; position: relative; background: linear-gradient(180deg, #1e3a5f 0%, #0d1b2a 100%); border-radius: 12px; overflow: hidden;">
+                <!-- Fond de carte simplifié avec continents -->
+                <svg viewBox="0 0 1000 500" style="width: 100%; height: 100%; position: absolute; top: 0; left: 0;">
+                    <!-- Continents simplifiés -->
+                    <!-- Europe -->
+                    <path d="M480 100 L520 90 L560 100 L580 130 L550 160 L510 170 L470 150 L460 120 Z" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+                    <!-- Afrique -->
+                    <path d="M470 200 L530 180 L560 220 L550 300 L510 340 L460 300 L450 240 Z" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+                    <!-- Asie -->
+                    <path d="M580 80 L750 60 L850 120 L820 200 L700 230 L600 180 L570 130 Z" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+                    <!-- Amérique du Nord -->
+                    <path d="M100 80 L250 50 L300 100 L280 180 L200 200 L120 160 L90 120 Z" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+                    <!-- Amérique du Sud -->
+                    <path d="M200 250 L280 230 L300 300 L280 400 L220 420 L180 350 L190 280 Z" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+                    <!-- Océanie -->
+                    <path d="M780 320 L850 300 L880 350 L850 400 L790 390 L770 350 Z" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+                </svg>
+                
+                <!-- Marqueurs des pays (positionnés manuellement) -->
+                <div id="mapMarkers"></div>
+                
+                <!-- Tooltip -->
+                <div id="tooltip" class="tooltip">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span id="tooltipFlag" class="text-2xl"></span>
+                        <span id="tooltipName" class="font-bold"></span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 text-sm">
+                        <div>
+                            <span class="text-gray-400">Score URM</span>
+                            <div id="tooltipUrm" class="font-bold"></div>
+                        </div>
+                        <div>
+                            <span class="text-gray-400">Tier</span>
+                            <div id="tooltipTier" class="font-bold"></div>
+                        </div>
+                        <div>
+                            <span class="text-gray-400">PIB/hab</span>
+                            <div id="tooltipGdp" class="text-gray-300"></div>
+                        </div>
+                        <div>
+                            <span class="text-gray-400">Gini</span>
+                            <div id="tooltipGini" class="text-gray-300"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats rapides -->
+    <section class="max-w-7xl mx-auto px-4 mb-8">
+        <div class="grid grid-cols-2 md:grid-cols-6 gap-4">
+            <div class="card-glass rounded-xl p-4 text-center">
+                <div class="text-2xl font-bold text-yellow-400" id="countS">0</div>
+                <div class="text-xs text-gray-400">Tier S</div>
+            </div>
+            <div class="card-glass rounded-xl p-4 text-center">
+                <div class="text-2xl font-bold text-green-400" id="countA">0</div>
+                <div class="text-xs text-gray-400">Tier A</div>
+            </div>
+            <div class="card-glass rounded-xl p-4 text-center">
+                <div class="text-2xl font-bold text-blue-400" id="countB">0</div>
+                <div class="text-xs text-gray-400">Tier B</div>
+            </div>
+            <div class="card-glass rounded-xl p-4 text-center">
+                <div class="text-2xl font-bold text-yellow-500" id="countC">0</div>
+                <div class="text-xs text-gray-400">Tier C</div>
+            </div>
+            <div class="card-glass rounded-xl p-4 text-center">
+                <div class="text-2xl font-bold text-orange-400" id="countD">0</div>
+                <div class="text-xs text-gray-400">Tier D</div>
+            </div>
+            <div class="card-glass rounded-xl p-4 text-center">
+                <div class="text-2xl font-bold text-red-400" id="countF">0</div>
+                <div class="text-xs text-gray-400">Tier F</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Détails pays sélectionné -->
+    <section class="max-w-4xl mx-auto px-4 mb-16">
+        <div id="countryDetails" class="card-glass rounded-2xl p-8 text-center">
+            <p class="text-gray-400">👆 Cliquez sur un pays sur la carte pour voir ses détails</p>
+        </div>
+    </section>
+
+    <!-- Top 10 par région -->
+    <section class="max-w-7xl mx-auto px-4 mb-16">
+        <h2 class="text-2xl font-bold text-center mb-8">🌍 Leaders par Région</h2>
+        <div class="grid md:grid-cols-3 gap-6">
+            <!-- Europe -->
+            <div class="card-glass rounded-2xl p-6">
+                <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+                    <span class="text-2xl">🇪🇺</span> Europe
+                </h3>
+                <div id="topEurope" class="space-y-2">
+                    <!-- Rempli par JS -->
+                </div>
+            </div>
+            
+            <!-- Asie-Pacifique -->
+            <div class="card-glass rounded-2xl p-6">
+                <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+                    <span class="text-2xl">🌏</span> Asie-Pacifique
+                </h3>
+                <div id="topAsia" class="space-y-2">
+                    <!-- Rempli par JS -->
+                </div>
+            </div>
+            
+            <!-- Amériques -->
+            <div class="card-glass rounded-2xl p-6">
+                <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+                    <span class="text-2xl">🌎</span> Amériques
+                </h3>
+                <div id="topAmericas" class="space-y-2">
+                    <!-- Rempli par JS -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/10 py-8 text-center text-gray-500">
+        <p>URM Model © 2025 • Carte Interactive</p>
+    </footer>
+
+    <script>
+        // Données des pays avec positions sur la carte (x%, y%)
+        const countries = [
+            // Europe Nordique
+            { code: 'DNK', name: 'Danemark', flag: '🇩🇰', x: 50, y: 18, urm: 237000, tier: 'S', gdp: 67803, gini: 27.7, region: 'europe' },
+            { code: 'NOR', name: 'Norvège', flag: '🇳🇴', x: 49, y: 12, urm: 285000, tier: 'S', gdp: 82832, gini: 27.6, region: 'europe' },
+            { code: 'SWE', name: 'Suède', flag: '🇸🇪', x: 52, y: 14, urm: 198000, tier: 'S', gdp: 55873, gini: 28.8, region: 'europe' },
+            { code: 'FIN', name: 'Finlande', flag: '🇫🇮', x: 55, y: 12, urm: 175000, tier: 'S', gdp: 53654, gini: 27.3, region: 'europe' },
+            { code: 'ISL', name: 'Islande', flag: '🇮🇸', x: 42, y: 10, urm: 168000, tier: 'S', gdp: 73466, gini: 26.1, region: 'europe' },
+            // Europe Ouest
+            { code: 'CHE', name: 'Suisse', flag: '🇨🇭', x: 49, y: 24, urm: 265000, tier: 'S', gdp: 93720, gini: 33.1, region: 'europe' },
+            { code: 'LUX', name: 'Luxembourg', flag: '🇱🇺', x: 48, y: 22, urm: 155000, tier: 'S', gdp: 128259, gini: 34.8, region: 'europe' },
+            { code: 'NLD', name: 'Pays-Bas', flag: '🇳🇱', x: 47, y: 20, urm: 142000, tier: 'A', gdp: 57025, gini: 29.2, region: 'europe' },
+            { code: 'DEU', name: 'Allemagne', flag: '🇩🇪', x: 50, y: 21, urm: 85000, tier: 'A', gdp: 51203, gini: 31.7, region: 'europe' },
+            { code: 'AUT', name: 'Autriche', flag: '🇦🇹', x: 52, y: 24, urm: 95000, tier: 'A', gdp: 53637, gini: 30.5, region: 'europe' },
+            { code: 'BEL', name: 'Belgique', flag: '🇧🇪', x: 46, y: 21, urm: 68000, tier: 'A', gdp: 51247, gini: 27.2, region: 'europe' },
+            { code: 'FRA', name: 'France', flag: '🇫🇷', x: 45, y: 25, urm: -727000, tier: 'F', gdp: 43659, gini: 31.6, region: 'europe' },
+            { code: 'GBR', name: 'Royaume-Uni', flag: '🇬🇧', x: 43, y: 19, urm: 35000, tier: 'B', gdp: 45850, gini: 35.1, region: 'europe' },
+            { code: 'IRL', name: 'Irlande', flag: '🇮🇪', x: 40, y: 19, urm: 120000, tier: 'A', gdp: 103685, gini: 30.6, region: 'europe' },
+            // Europe Sud
+            { code: 'ESP', name: 'Espagne', flag: '🇪🇸', x: 43, y: 29, urm: -85000, tier: 'C', gdp: 30103, gini: 33.0, region: 'europe' },
+            { code: 'ITA', name: 'Italie', flag: '🇮🇹', x: 50, y: 28, urm: -320000, tier: 'F', gdp: 34776, gini: 35.2, region: 'europe' },
+            { code: 'PRT', name: 'Portugal', flag: '🇵🇹', x: 40, y: 28, urm: -45000, tier: 'C', gdp: 24514, gini: 33.8, region: 'europe' },
+            { code: 'GRC', name: 'Grèce', flag: '🇬🇷', x: 54, y: 30, urm: -180000, tier: 'D', gdp: 20876, gini: 32.4, region: 'europe' },
+            // Europe Est
+            { code: 'POL', name: 'Pologne', flag: '🇵🇱', x: 54, y: 20, urm: 15000, tier: 'B', gdp: 18688, gini: 29.7, region: 'europe' },
+            { code: 'CZE', name: 'Tchéquie', flag: '🇨🇿', x: 52, y: 22, urm: 25000, tier: 'B', gdp: 27200, gini: 25.0, region: 'europe' },
+            // Amériques
+            { code: 'USA', name: 'États-Unis', flag: '🇺🇸', x: 20, y: 28, urm: -558000, tier: 'F', gdp: 76398, gini: 41.4, region: 'americas' },
+            { code: 'CAN', name: 'Canada', flag: '🇨🇦', x: 18, y: 18, urm: 45000, tier: 'B', gdp: 52051, gini: 33.3, region: 'americas' },
+            { code: 'MEX', name: 'Mexique', flag: '🇲🇽', x: 15, y: 38, urm: -150000, tier: 'D', gdp: 10045, gini: 45.4, region: 'americas' },
+            { code: 'BRA', name: 'Brésil', flag: '🇧🇷', x: 28, y: 58, urm: -280000, tier: 'D', gdp: 8917, gini: 52.9, region: 'americas' },
+            { code: 'ARG', name: 'Argentine', flag: '🇦🇷', x: 25, y: 72, urm: -220000, tier: 'D', gdp: 13650, gini: 42.3, region: 'americas' },
+            { code: 'CHL', name: 'Chili', flag: '🇨🇱', x: 23, y: 70, urm: -50000, tier: 'C', gdp: 16265, gini: 44.9, region: 'americas' },
+            // Asie
+            { code: 'JPN', name: 'Japon', flag: '🇯🇵', x: 85, y: 30, urm: -520000, tier: 'F', gdp: 33815, gini: 32.9, region: 'asia' },
+            { code: 'KOR', name: 'Corée du Sud', flag: '🇰🇷', x: 82, y: 32, urm: 15000, tier: 'B', gdp: 32422, gini: 31.4, region: 'asia' },
+            { code: 'CHN', name: 'Chine', flag: '🇨🇳', x: 75, y: 32, urm: -125000, tier: 'D', gdp: 12556, gini: 38.2, region: 'asia' },
+            { code: 'SGP', name: 'Singapour', flag: '🇸🇬', x: 76, y: 50, urm: 95000, tier: 'A', gdp: 65233, gini: 45.9, region: 'asia' },
+            { code: 'IND', name: 'Inde', flag: '🇮🇳', x: 68, y: 40, urm: -180000, tier: 'D', gdp: 2410, gini: 35.7, region: 'asia' },
+            // Océanie
+            { code: 'AUS', name: 'Australie', flag: '🇦🇺', x: 85, y: 68, urm: 75000, tier: 'A', gdp: 65099, gini: 34.3, region: 'asia' },
+            { code: 'NZL', name: 'Nouvelle-Zélande', flag: '🇳🇿', x: 92, y: 75, urm: 58000, tier: 'A', gdp: 48781, gini: 32.0, region: 'asia' },
+            // Moyen-Orient
+            { code: 'ISR', name: 'Israël', flag: '🇮🇱', x: 58, y: 32, urm: 65000, tier: 'A', gdp: 54930, gini: 38.6, region: 'asia' },
+            { code: 'ARE', name: 'Émirats Arabes Unis', flag: '🇦🇪', x: 63, y: 38, urm: 55000, tier: 'A', gdp: 53757, gini: 32.5, region: 'asia' },
+            // Afrique
+            { code: 'ZAF', name: 'Afrique du Sud', flag: '🇿🇦', x: 55, y: 70, urm: -350000, tier: 'F', gdp: 6001, gini: 63.0, region: 'africa' },
+            { code: 'EGY', name: 'Égypte', flag: '🇪🇬', x: 57, y: 38, urm: -120000, tier: 'D', gdp: 3698, gini: 31.5, region: 'africa' },
+            { code: 'MAR', name: 'Maroc', flag: '🇲🇦', x: 43, y: 34, urm: -95000, tier: 'C', gdp: 3795, gini: 39.5, region: 'africa' },
+        ];
+
+        let selectedCountry = null;
+
+        // Initialiser la carte
+        function initMap() {
+            const container = document.getElementById('mapMarkers');
+            
+            countries.forEach(country => {
+                const marker = document.createElement('div');
+                marker.className = `country-marker tier-${country.tier.toLowerCase()}`;
+                marker.style.left = country.x + '%';
+                marker.style.top = country.y + '%';
+                marker.textContent = country.flag;
+                marker.dataset.code = country.code;
+                
+                marker.addEventListener('mouseenter', (e) => showTooltip(e, country));
+                marker.addEventListener('mouseleave', hideTooltip);
+                marker.addEventListener('click', () => selectCountry(country));
+                
+                container.appendChild(marker);
+            });
+            
+            updateStats();
+            updateRegionTops();
+        }
+
+        // Afficher le tooltip
+        function showTooltip(e, country) {
+            const tooltip = document.getElementById('tooltip');
+            document.getElementById('tooltipFlag').textContent = country.flag;
+            document.getElementById('tooltipName').textContent = country.name;
+            
+            const urmText = country.urm >= 0 
+                ? `<span class="text-green-400">+${country.urm.toLocaleString('fr-FR')} €</span>`
+                : `<span class="text-red-400">${country.urm.toLocaleString('fr-FR')} €</span>`;
+            document.getElementById('tooltipUrm').innerHTML = urmText;
+            
+            const tierColors = { S: 'text-yellow-400', A: 'text-green-400', B: 'text-blue-400', C: 'text-yellow-500', D: 'text-orange-400', F: 'text-red-400' };
+            document.getElementById('tooltipTier').innerHTML = `<span class="${tierColors[country.tier]}">${country.tier}</span>`;
+            
+            document.getElementById('tooltipGdp').textContent = country.gdp.toLocaleString('fr-FR') + ' $';
+            document.getElementById('tooltipGini').textContent = country.gini;
+            
+            tooltip.style.left = (e.target.offsetLeft + 30) + 'px';
+            tooltip.style.top = (e.target.offsetTop - 10) + 'px';
+            tooltip.classList.add('visible');
+        }
+
+        // Cacher le tooltip
+        function hideTooltip() {
+            document.getElementById('tooltip').classList.remove('visible');
+        }
+
+        // Sélectionner un pays
+        function selectCountry(country) {
+            // Retirer la sélection précédente
+            document.querySelectorAll('.country-marker.selected').forEach(m => m.classList.remove('selected'));
+            
+            // Ajouter la sélection
+            const marker = document.querySelector(`[data-code="${country.code}"]`);
+            marker.classList.add('selected');
+            selectedCountry = country;
+            
+            // Afficher les détails
+            const urmClass = country.urm >= 0 ? 'text-green-400' : 'text-red-400';
+            const urmFormatted = country.urm >= 0 
+                ? '+' + country.urm.toLocaleString('fr-FR') 
+                : country.urm.toLocaleString('fr-FR');
+            
+            const tierColors = { S: 'bg-yellow-500/20 text-yellow-400', A: 'bg-green-500/20 text-green-400', B: 'bg-blue-500/20 text-blue-400', C: 'bg-yellow-600/20 text-yellow-500', D: 'bg-orange-500/20 text-orange-400', F: 'bg-red-500/20 text-red-400' };
+            
+            document.getElementById('countryDetails').innerHTML = `
+                <div class="flex items-center justify-center gap-4 mb-6">
+                    <span class="text-6xl">${country.flag}</span>
+                    <div class="text-left">
+                        <h3 class="text-3xl font-bold">${country.name}</h3>
+                        <span class="px-3 py-1 rounded-full text-sm font-bold ${tierColors[country.tier]}">Tier ${country.tier}</span>
+                    </div>
+                </div>
+                
+                <div class="text-5xl font-black ${urmClass} mb-6">${urmFormatted} €</div>
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="bg-white/5 rounded-xl p-4">
+                        <div class="text-2xl font-bold">${country.gdp.toLocaleString('fr-FR')} $</div>
+                        <div class="text-sm text-gray-400">PIB/habitant</div>
+                    </div>
+                    <div class="bg-white/5 rounded-xl p-4">
+                        <div class="text-2xl font-bold">${country.gini}</div>
+                        <div class="text-sm text-gray-400">Indice Gini</div>
+                    </div>
+                    <div class="bg-white/5 rounded-xl p-4">
+                        <div class="text-2xl font-bold">${country.tier}</div>
+                        <div class="text-sm text-gray-400">Tier URM</div>
+                    </div>
+                    <div class="bg-white/5 rounded-xl p-4">
+                        <div class="text-2xl font-bold">#${countries.sort((a,b) => b.urm - a.urm).findIndex(c => c.code === country.code) + 1}</div>
+                        <div class="text-sm text-gray-400">Classement</div>
+                    </div>
+                </div>
+                
+                <div class="mt-6">
+                    <a href="classement.html" class="px-6 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg font-medium transition">
+                        Voir le classement complet →
+                    </a>
+                </div>
+            `;
+        }
+
+        // Mettre à jour les stats
+        function updateStats() {
+            const counts = { S: 0, A: 0, B: 0, C: 0, D: 0, F: 0 };
+            countries.forEach(c => counts[c.tier]++);
+            
+            document.getElementById('countS').textContent = counts.S;
+            document.getElementById('countA').textContent = counts.A;
+            document.getElementById('countB').textContent = counts.B;
+            document.getElementById('countC').textContent = counts.C;
+            document.getElementById('countD').textContent = counts.D;
+            document.getElementById('countF').textContent = counts.F;
+        }
+
+        // Top par région
+        function updateRegionTops() {
+            const regions = {
+                europe: countries.filter(c => c.region === 'europe').sort((a,b) => b.urm - a.urm).slice(0, 5),
+                asia: countries.filter(c => c.region === 'asia').sort((a,b) => b.urm - a.urm).slice(0, 5),
+                americas: countries.filter(c => c.region === 'americas').sort((a,b) => b.urm - a.urm).slice(0, 5)
+            };
+            
+            ['Europe', 'Asia', 'Americas'].forEach(region => {
+                const container = document.getElementById('top' + region);
+                const data = regions[region.toLowerCase()];
+                
+                container.innerHTML = data.map((c, i) => {
+                    const urmClass = c.urm >= 0 ? 'text-green-400' : 'text-red-400';
+                    const urmShort = c.urm >= 0 ? '+' + Math.round(c.urm/1000) + 'k€' : Math.round(c.urm/1000) + 'k€';
+                    return `
+                        <div class="flex items-center justify-between p-2 bg-white/5 rounded-lg">
+                            <div class="flex items-center gap-2">
+                                <span class="text-gray-500 text-sm w-4">${i + 1}.</span>
+                                <span>${c.flag}</span>
+                                <span class="text-sm">${c.name}</span>
+                            </div>
+                            <span class="font-bold text-sm ${urmClass}">${urmShort}</span>
+                        </div>
+                    `;
+                }).join('');
+            });
+        }
+
+        // Initialisation
+        initMap();
+    </script>
+</body>
+</html>

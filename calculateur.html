@@ -95,10 +95,16 @@
                 
                 <div class="hidden lg:flex items-center space-x-8">
                     <a href="index.html" class="nav-link text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 px-4 py-2 rounded-lg font-semibold transition-all">
-                        <i class="fas fa-calculator mr-2"></i>Modèle Global (URM v2.0)
+                        <i class="fas fa-home mr-2"></i>🏠 Accueil
                     </a>
                     <a href="france2025.html" class="nav-link text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium">
                         <i class="fas fa-flag mr-2"></i>🇫🇷 France 2025
+                    </a>
+                    <a href="simulateur.html" class="nav-link text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium">
+                        <i class="fas fa-sliders-h mr-2"></i>Simulateur
+                    </a>
+                    <a href="comparateur.html" class="nav-link text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium">
+                        <i class="fas fa-balance-scale mr-2"></i>Comparateur
                     </a>
                 </div>
                 
@@ -118,15 +124,17 @@
         <!-- Menu Mobile -->
         <div id="mobileMenu" class="lg:hidden hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
             <div class="px-6 py-4 space-y-3">
-                <a href="index.html" class="flex items-center justify-between px-3 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold transition-all transform hover:scale-105 shadow-lg">
-                    <div class="flex items-center">
-                        <i class="fas fa-calculator mr-3 w-5"></i>Modèle Global URM v2.0
-                    </div>
+                <a href="index.html" class="flex items-center px-3 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold shadow-lg">
+                    <i class="fas fa-home mr-3 w-5"></i>🏠 Accueil
                 </a>
-                <a href="france2025.html" class="flex items-center justify-between px-3 py-2 rounded-lg bg-gradient-to-r from-red-600 to-blue-600 text-white font-semibold transition-all transform hover:scale-105 shadow-lg">
-                    <div class="flex items-center">
-                        <i class="fas fa-flag mr-3 w-5"></i>🇫🇷 France 2025 (URM v3.0)
-                    </div>
+                <a href="france2025.html" class="flex items-center px-3 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                    <i class="fas fa-flag mr-3 w-5"></i>🇫🇷 France 2025
+                </a>
+                <a href="simulateur.html" class="flex items-center px-3 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                    <i class="fas fa-sliders-h mr-3 w-5"></i>Simulateur Personnel
+                </a>
+                <a href="comparateur.html" class="flex items-center px-3 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                    <i class="fas fa-balance-scale mr-3 w-5"></i>Comparateur
                 </a>
                 <div class="flex items-center justify-between pt-3 border-t border-gray-200 dark:border-gray-700">
                     <button onclick="toggleDarkMode()" class="flex items-center px-3 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
@@ -147,7 +155,7 @@
                 Calculateur URM <span class="text-yellow-300">Mondial</span>
             </h1>
             <p class="text-xl md:text-2xl opacity-95 mb-4">
-                <strong>N'importe quel pays</strong> - Données en temps réel via World Bank API
+                <strong>N'importe quel pays</strong> - Données en temps réel via World Bank + FMI API
             </p>
             <div class="flex justify-center items-center space-x-4 text-sm flex-wrap gap-2">
                 <span class="data-badge bg-white/20 px-3 py-1 rounded-full">
@@ -323,7 +331,7 @@
                 🏆 Classement URM - <span class="text-green-600">Données Temps Réel</span>
             </h2>
             <p class="text-center text-gray-600 dark:text-gray-400 mb-8">
-                Source: World Bank Open Data | Dernières données disponibles
+                Source: World Bank Open Data + FMI DataMapper | Dernières données disponibles
             </p>
             
             <!-- Graphique -->
@@ -378,11 +386,12 @@
                 <h4 class="font-bold text-blue-800 dark:text-blue-300 mb-3"><i class="fas fa-info-circle mr-2"></i>Note sur les données</h4>
                 <ul class="text-sm text-blue-700 dark:text-blue-400 space-y-1">
                     <li>• <strong>PIB/habitant:</strong> NY.GDP.PCAP.CD (World Bank)</li>
-                    <li>• <strong>Dette publique:</strong> GC.DOD.TOTL.GD.ZS (World Bank)</li>
-                    <li>• <strong>Indice Gini:</strong> SI.POV.GINI (World Bank)</li>
+                    <li>• <strong>Dette publique:</strong> GGXWDG_NGDP (FMI DataMapper) - General Government Gross Debt % PIB</li>
+                    <li>• <strong>Indice Gini:</strong> SI.POV.GINI (World Bank) - Données 2010-2024</li>
                     <li>• <strong>Dépenses santé:</strong> SH.XPD.CHEX.GD.ZS (World Bank)</li>
                     <li>• <strong>Dépenses éducation:</strong> SE.XPD.TOTL.GD.ZS (World Bank)</li>
                     <li>• <strong>Mobilité sociale:</strong> Estimée selon les données OCDE/pays (coefficient 0-1)</li>
+                    <li class="mt-2 pt-2 border-t border-blue-300">📅 L'année entre parenthèses indique l'année de la dernière donnée disponible</li>
                 </ul>
             </div>
         </div>
@@ -735,9 +744,63 @@
         // ============================================
         // RÉCUPÉRATION DES DONNÉES
         // ============================================
+        
+        // Mapping ISO3 vers code FMI (certains pays ont des codes différents)
+        const ISO3_TO_IMF = {
+            // Europe de l'Ouest
+            'DEU': 'DEU', 'FRA': 'FRA', 'GBR': 'GBR', 'ITA': 'ITA', 'ESP': 'ESP',
+            'NLD': 'NLD', 'BEL': 'BEL', 'CHE': 'CHE', 'AUT': 'AUT', 'PRT': 'PRT',
+            'GRC': 'GRC', 'IRL': 'IRL', 'LUX': 'LUX', 'MLT': 'MLT', 'CYP': 'CYP',
+            // Scandinavie
+            'DNK': 'DNK', 'SWE': 'SWE', 'NOR': 'NOR', 'FIN': 'FIN', 'ISL': 'ISL',
+            // Europe de l'Est
+            'POL': 'POL', 'CZE': 'CZE', 'HUN': 'HUN', 'ROU': 'ROM', 'BGR': 'BGR',
+            'HRV': 'HRV', 'SVK': 'SVK', 'SVN': 'SVN', 'EST': 'EST', 'LVA': 'LVA',
+            'LTU': 'LTU', 'SRB': 'SRB', 'BIH': 'BIH', 'MKD': 'MKD', 'ALB': 'ALB',
+            'MNE': 'MNE', 'XKX': 'UVK', 'MDA': 'MDA', 'BLR': 'BLR',
+            // Ex-URSS
+            'RUS': 'RUS', 'UKR': 'UKR', 'KAZ': 'KAZ', 'UZB': 'UZB', 'AZE': 'AZE',
+            'GEO': 'GEO', 'ARM': 'ARM', 'TKM': 'TKM', 'KGZ': 'KGZ', 'TJK': 'TJK',
+            // Amérique du Nord
+            'USA': 'USA', 'CAN': 'CAN', 'MEX': 'MEX',
+            // Amérique du Sud
+            'BRA': 'BRA', 'ARG': 'ARG', 'COL': 'COL', 'CHL': 'CHL', 'PER': 'PER',
+            'VEN': 'VEN', 'ECU': 'ECU', 'BOL': 'BOL', 'PRY': 'PRY', 'URY': 'URY',
+            // Amérique Centrale / Caraïbes
+            'GTM': 'GTM', 'CRI': 'CRI', 'PAN': 'PAN', 'DOM': 'DOM', 'CUB': 'CUB',
+            'HND': 'HND', 'SLV': 'SLV', 'NIC': 'NIC', 'JAM': 'JAM', 'TTO': 'TTO',
+            // Asie de l'Est
+            'JPN': 'JPN', 'CHN': 'CHN', 'KOR': 'KOR', 'TWN': 'TWN', 'HKG': 'HKG',
+            'MNG': 'MNG',
+            // Asie du Sud-Est
+            'IDN': 'IDN', 'THA': 'THA', 'MYS': 'MYS', 'SGP': 'SGP', 'PHL': 'PHL',
+            'VNM': 'VNM', 'MMR': 'MMR', 'KHM': 'KHM', 'LAO': 'LAO', 'BRN': 'BRN',
+            // Asie du Sud
+            'IND': 'IND', 'PAK': 'PAK', 'BGD': 'BGD', 'LKA': 'LKA', 'NPL': 'NPL',
+            // Moyen-Orient
+            'TUR': 'TUR', 'SAU': 'SAU', 'ARE': 'ARE', 'ISR': 'ISR', 'IRN': 'IRN',
+            'IRQ': 'IRQ', 'QAT': 'QAT', 'KWT': 'KWT', 'OMN': 'OMN', 'BHR': 'BHR',
+            'JOR': 'JOR', 'LBN': 'LBN', 'SYR': 'SYR', 'YEM': 'YEM',
+            // Afrique du Nord
+            'EGY': 'EGY', 'MAR': 'MAR', 'DZA': 'DZA', 'TUN': 'TUN', 'LBY': 'LBY',
+            // Afrique Sub-saharienne
+            'ZAF': 'ZAF', 'NGA': 'NGA', 'KEN': 'KEN', 'ETH': 'ETH', 'GHA': 'GHA',
+            'TZA': 'TZA', 'UGA': 'UGA', 'AGO': 'AGO', 'MOZ': 'MOZ', 'CMR': 'CMR',
+            'CIV': 'CIV', 'SEN': 'SEN', 'ZMB': 'ZMB', 'ZWE': 'ZWE', 'RWA': 'RWA',
+            'MUS': 'MUS', 'BWA': 'BWA', 'NAM': 'NAM', 'GAB': 'GAB', 'COG': 'COG',
+            'COD': 'COD', 'MLI': 'MLI', 'BFA': 'BFA', 'NER': 'NER', 'TCD': 'TCD',
+            // Océanie
+            'AUS': 'AUS', 'NZL': 'NZL', 'FJI': 'FJI', 'PNG': 'PNG'
+        };
+
+        // Cache pour les données FMI (évite les appels répétés)
+        let imfDebtCache = null;
+
         async function fetchWorldBankIndicator(indicator, countries) {
             const countryStr = countries.join(';');
-            const url = `${WORLD_BANK_BASE}/country/${countryStr}/indicator/${indicator}?format=json&date=2018:2024&per_page=1000`;
+            // Étendre la période pour Gini (données souvent plus anciennes)
+            const dateRange = indicator === 'SI.POV.GINI' ? '2010:2024' : '2018:2024';
+            const url = `${WORLD_BANK_BASE}/country/${countryStr}/indicator/${indicator}?format=json&date=${dateRange}&per_page=2000`;
             
             try {
                 const response = await fetch(url);
@@ -759,6 +822,51 @@
                 console.error(`Erreur ${indicator}:`, error);
             }
             return {};
+        }
+
+        // Récupérer les données de dette depuis l'API FMI (GGXWDG_NGDP)
+        async function fetchIMFDebtData() {
+            if (imfDebtCache) return imfDebtCache;
+            
+            const url = 'https://www.imf.org/external/datamapper/api/v1/GGXWDG_NGDP?periods=2024,2023,2022,2021,2020';
+            
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data && data.values && data.values.GGXWDG_NGDP) {
+                    imfDebtCache = {};
+                    const debtData = data.values.GGXWDG_NGDP;
+                    
+                    // Parcourir tous les pays dans la réponse FMI
+                    for (const [countryCode, years] of Object.entries(debtData)) {
+                        // Trouver l'année la plus récente avec des données
+                        for (const year of ['2024', '2023', '2022', '2021', '2020']) {
+                            if (years[year] !== undefined && years[year] !== null) {
+                                imfDebtCache[countryCode] = { value: years[year], year: year };
+                                break;
+                            }
+                        }
+                    }
+                    return imfDebtCache;
+                }
+            } catch (error) {
+                console.error('Erreur FMI dette:', error);
+            }
+            return {};
+        }
+
+        // Convertir les données FMI vers codes ISO3
+        function getIMFDebtForCountries(imfData, countries) {
+            const result = {};
+            for (const iso3 of countries) {
+                // Essayer le code direct ou le mapping
+                const imfCode = ISO3_TO_IMF[iso3] || iso3;
+                if (imfData[imfCode]) {
+                    result[iso3] = imfData[imfCode];
+                }
+            }
+            return result;
         }
 
         // ============================================
@@ -823,17 +931,35 @@
                 document.getElementById('loading-detail').textContent = `${countries.length} pays sélectionnés`;
                 document.getElementById('loading-progress').style.width = '10%';
 
-                const [gdpData, debtData, giniData, healthData, educData] = await Promise.all([
+                // Récupération World Bank + FMI en parallèle
+                const [gdpData, wbDebtData, giniData, healthData, educData, imfDebtRaw] = await Promise.all([
                     fetchWorldBankIndicator('NY.GDP.PCAP.CD', countries),
-                    fetchWorldBankIndicator('GC.DOD.TOTL.GD.ZS', countries),
+                    fetchWorldBankIndicator('GC.DOD.TOTL.GD.ZS', countries), // Backup
                     fetchWorldBankIndicator('SI.POV.GINI', countries),
                     fetchWorldBankIndicator('SH.XPD.CHEX.GD.ZS', countries),
-                    fetchWorldBankIndicator('SE.XPD.TOTL.GD.ZS', countries)
+                    fetchWorldBankIndicator('SE.XPD.TOTL.GD.ZS', countries),
+                    fetchIMFDebtData() // API FMI pour la dette
                 ]);
 
+                document.getElementById('loading-progress').style.width = '50%';
+                document.getElementById('loading-status').textContent = 'Traitement des données FMI...';
+
+                // Convertir les données FMI vers les codes ISO3
+                const imfDebtData = getIMFDebtForCountries(imfDebtRaw, countries);
+                
+                // Fusionner: priorité FMI, sinon World Bank
+                const debtData = {};
+                for (const code of countries) {
+                    if (imfDebtData[code]) {
+                        debtData[code] = imfDebtData[code];
+                    } else if (wbDebtData[code]) {
+                        debtData[code] = wbDebtData[code];
+                    }
+                }
+
                 document.getElementById('loading-progress').style.width = '60%';
-                document.getElementById('loading-status').textContent = 'Traitement des données...';
-                updateStatus('status-data', 'success', 'Données reçues');
+                document.getElementById('loading-status').textContent = 'Calcul des scores URM...';
+                updateStatus('status-data', 'success', 'Données reçues (WB + FMI)');
 
                 // Compilation et calcul
                 const results = [];
@@ -1024,8 +1150,8 @@
                     <td class="px-4 py-3 font-bold">${i + 1}</td>
                     <td class="px-4 py-3 font-medium">${r.flag} ${r.nameFr}</td>
                     <td class="px-4 py-3 text-right">${r.gdpPerCapita ? Math.round(r.gdpPerCapita).toLocaleString() : '—'}</td>
-                    <td class="px-4 py-3 text-right">${r.debt ? r.debt.toFixed(1) + '%' : '—'}</td>
-                    <td class="px-4 py-3 text-right">${r.gini ? r.gini.toFixed(1) : '—'}</td>
+                    <td class="px-4 py-3 text-right">${r.debt ? r.debt.toFixed(1) + '%' : '—'}${r.debtYear ? ' <span class="text-xs text-gray-400">(' + r.debtYear + ')</span>' : ''}</td>
+                    <td class="px-4 py-3 text-right">${r.gini ? r.gini.toFixed(1) : '—'}${r.giniYear ? ' <span class="text-xs text-gray-400">(' + r.giniYear + ')</span>' : ''}</td>
                     <td class="px-4 py-3 text-right">${r.health ? r.health.toFixed(1) + '%' : '—'}</td>
                     <td class="px-4 py-3 text-right">${r.education ? r.education.toFixed(1) + '%' : '—'}</td>
                     <td class="px-4 py-3 text-right">${(r.mobility * 100).toFixed(0)}%</td>

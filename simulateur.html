@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulateur Personnel URM - Calculez Votre Bien-Être</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'urm-blue': '#3b82f6',
+                        'urm-red': '#ef4444',
+                        'urm-green': '#22c55e'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .math { font-family: 'Times New Roman', serif; font-style: italic; }
+        
+        .slider-container input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: linear-gradient(to right, #22c55e 0%, #eab308 50%, #ef4444 100%);
+            outline: none;
+        }
+        
+        .slider-container input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid #3b82f6;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            transition: all 0.2s;
+        }
+        
+        .slider-container input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        
+        .result-card {
+            transition: all 0.5s ease;
+        }
+        
+        .result-card.positive {
+            background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+            border-color: #22c55e;
+        }
+        
+        .result-card.negative {
+            background: linear-gradient(135deg, #fee2e2, #fecaca);
+            border-color: #ef4444;
+        }
+        
+        .dark .result-card.positive {
+            background: linear-gradient(135deg, #14532d, #166534);
+        }
+        
+        .dark .result-card.negative {
+            background: linear-gradient(135deg, #7f1d1d, #991b1b);
+        }
+        
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(59, 130, 246, 0.6); }
+        }
+        
+        .pulse-glow {
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+        
+        .comparison-bar {
+            transition: width 0.8s ease-out;
+        }
+        
+        .scenario-card {
+            transition: all 0.3s ease;
+        }
+        
+        .scenario-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        
+        .scenario-card.selected {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 min-h-screen">
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-b border-gray-200 dark:border-gray-700">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-user-cog text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold">Simulateur URM</h1>
+                        <p class="text-xs text-gray-500">Votre bien-être personnalisé</p>
+                    </div>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-4">
+                    <a href="index.html" class="text-gray-600 dark:text-gray-400 hover:text-blue-600 px-3 py-2 rounded-lg transition-colors">
+                        <i class="fas fa-home mr-2"></i>Accueil
+                    </a>
+                    <a href="france2025.html" class="text-gray-600 dark:text-gray-400 hover:text-blue-600 px-3 py-2 rounded-lg transition-colors">
+                        <i class="fas fa-flag mr-2"></i>France 2025
+                    </a>
+                    <a href="calculateur.html" class="text-gray-600 dark:text-gray-400 hover:text-blue-600 px-3 py-2 rounded-lg transition-colors">
+                        <i class="fas fa-globe mr-2"></i>Calculateur
+                    </a>
+                    <a href="comparateur.html" class="text-gray-600 dark:text-gray-400 hover:text-blue-600 px-3 py-2 rounded-lg transition-colors">
+                        <i class="fas fa-balance-scale mr-2"></i>Comparateur
+                    </a>
+                    <button onclick="toggleTheme()" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:text-blue-600">
+                        <i id="themeIcon" class="fas fa-moon"></i>
+                    </button>
+                </div>
+                
+                <button onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-lg text-gray-600 dark:text-gray-400">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Menu Mobile -->
+        <div id="mobileMenu" class="hidden md:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
+            <div class="px-6 py-4 space-y-2">
+                <a href="index.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <i class="fas fa-home mr-2"></i>Accueil
+                </a>
+                <a href="france2025.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <i class="fas fa-flag mr-2"></i>France 2025
+                </a>
+                <a href="calculateur.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <i class="fas fa-globe mr-2"></i>Calculateur Mondial
+                </a>
+                <a href="comparateur.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <i class="fas fa-balance-scale mr-2"></i>Comparateur
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="pt-24 pb-12 bg-gradient-to-r from-purple-600 via-pink-600 to-red-600 text-white">
+        <div class="max-w-6xl mx-auto px-6 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">
+                🧮 Simulateur Personnel URM
+            </h1>
+            <p class="text-xl opacity-90 mb-6">
+                Testez différents scénarios et voyez comment les politiques économiques affectent VOTRE bien-être
+            </p>
+            <div class="bg-white/20 backdrop-blur-md rounded-xl px-6 py-4 inline-block">
+                <span class="text-lg font-medium">
+                    <i class="fas fa-lightbulb mr-2"></i>
+                    Modifiez les curseurs pour simuler différentes situations économiques
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Simulateur Principal -->
+    <section class="py-12">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid lg:grid-cols-3 gap-8">
+                
+                <!-- Panneau de Contrôle -->
+                <div class="lg:col-span-2 space-y-6">
+                    
+                    <!-- Scénarios Prédéfinis -->
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6">
+                        <h2 class="text-2xl font-bold mb-4">
+                            <i class="fas fa-magic mr-2 text-purple-500"></i>
+                            Scénarios Prédéfinis
+                        </h2>
+                        <div class="grid md:grid-cols-4 gap-4">
+                            <div class="scenario-card cursor-pointer bg-blue-50 dark:bg-blue-900/30 border-2 border-blue-200 dark:border-blue-700 rounded-xl p-4 text-center" onclick="loadScenario('denmark')">
+                                <div class="text-3xl mb-2">🇩🇰</div>
+                                <div class="font-bold">Danemark</div>
+                                <div class="text-sm text-green-600">Modèle idéal</div>
+                            </div>
+                            <div class="scenario-card cursor-pointer bg-red-50 dark:bg-red-900/30 border-2 border-red-200 dark:border-red-700 rounded-xl p-4 text-center" onclick="loadScenario('france')">
+                                <div class="text-3xl mb-2">🇫🇷</div>
+                                <div class="font-bold">France 2025</div>
+                                <div class="text-sm text-yellow-600">Situation actuelle</div>
+                            </div>
+                            <div class="scenario-card cursor-pointer bg-gray-50 dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-xl p-4 text-center" onclick="loadScenario('usa')">
+                                <div class="text-3xl mb-2">🇺🇸</div>
+                                <div class="font-bold">États-Unis</div>
+                                <div class="text-sm text-red-600">Ultra-capitalisme</div>
+                            </div>
+                            <div class="scenario-card cursor-pointer bg-yellow-50 dark:bg-yellow-900/30 border-2 border-yellow-200 dark:border-yellow-700 rounded-xl p-4 text-center" onclick="loadScenario('utopia')">
+                                <div class="text-3xl mb-2">🌟</div>
+                                <div class="font-bold">Utopie</div>
+                                <div class="text-sm text-purple-600">Scénario optimal</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Paramètres Économiques -->
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6">
+                        <h2 class="text-2xl font-bold mb-6">
+                            <i class="fas fa-sliders-h mr-2 text-blue-500"></i>
+                            Paramètres Économiques
+                        </h2>
+                        
+                        <div class="space-y-8">
+                            <!-- PIB par habitant -->
+                            <div class="slider-container">
+                                <div class="flex justify-between items-center mb-2">
+                                    <label class="font-semibold flex items-center">
+                                        <i class="fas fa-coins mr-2 text-yellow-500"></i>
+                                        PIB par habitant
+                                    </label>
+                                    <span id="gdpValue" class="text-xl font-bold text-blue-600">45 000 $</span>
+                                </div>
+                                <input type="range" id="gdpSlider" min="5000" max="120000" value="45000" oninput="updateSimulation()">
+                                <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                    <span>5 000 $ (pauvre)</span>
+                                    <span>120 000 $ (riche)</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Indice Gini -->
+                            <div class="slider-container">
+                                <div class="flex justify-between items-center mb-2">
+                                    <label class="font-semibold flex items-center">
+                                        <i class="fas fa-balance-scale mr-2 text-purple-500"></i>
+                                        Indice Gini (inégalités)
+                                    </label>
+                                    <span id="giniValue" class="text-xl font-bold text-purple-600">32</span>
+                                </div>
+                                <input type="range" id="giniSlider" min="20" max="60" value="32" oninput="updateSimulation()">
+                                <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                    <span>20 (très égalitaire)</span>
+                                    <span>60 (très inégalitaire)</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Dette Publique -->
+                            <div class="slider-container">
+                                <div class="flex justify-between items-center mb-2">
+                                    <label class="font-semibold flex items-center">
+                                        <i class="fas fa-landmark mr-2 text-red-500"></i>
+                                        Dette Publique (% PIB)
+                                    </label>
+                                    <span id="debtValue" class="text-xl font-bold text-red-600">98%</span>
+                                </div>
+                                <input type="range" id="debtSlider" min="10" max="250" value="98" oninput="updateSimulation()">
+                                <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                    <span>10% (faible)</span>
+                                    <span>250% (critique)</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Dépenses Santé -->
+                            <div class="slider-container">
+                                <div class="flex justify-between items-center mb-2">
+                                    <label class="font-semibold flex items-center">
+                                        <i class="fas fa-heartbeat mr-2 text-pink-500"></i>
+                                        Dépenses Santé (% PIB)
+                                    </label>
+                                    <span id="healthValue" class="text-xl font-bold text-pink-600">11.2%</span>
+                                </div>
+                                <input type="range" id="healthSlider" min="2" max="20" value="11.2" step="0.1" oninput="updateSimulation()">
+                                <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                    <span>2% (minimal)</span>
+                                    <span>20% (maximum)</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Dépenses Éducation -->
+                            <div class="slider-container">
+                                <div class="flex justify-between items-center mb-2">
+                                    <label class="font-semibold flex items-center">
+                                        <i class="fas fa-graduation-cap mr-2 text-blue-500"></i>
+                                        Dépenses Éducation (% PIB)
+                                    </label>
+                                    <span id="educValue" class="text-xl font-bold text-blue-600">5.5%</span>
+                                </div>
+                                <input type="range" id="educSlider" min="1" max="12" value="5.5" step="0.1" oninput="updateSimulation()">
+                                <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                    <span>1% (minimal)</span>
+                                    <span>12% (maximum)</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Mobilité Sociale -->
+                            <div class="slider-container">
+                                <div class="flex justify-between items-center mb-2">
+                                    <label class="font-semibold flex items-center">
+                                        <i class="fas fa-arrow-up mr-2 text-green-500"></i>
+                                        Mobilité Sociale
+                                    </label>
+                                    <span id="mobilityValue" class="text-xl font-bold text-green-600">45%</span>
+                                </div>
+                                <input type="range" id="mobilitySlider" min="10" max="90" value="45" oninput="updateSimulation()">
+                                <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                    <span>10% (rigide)</span>
+                                    <span>90% (fluide)</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Aléa économique -->
+                            <div class="slider-container">
+                                <div class="flex justify-between items-center mb-2">
+                                    <label class="font-semibold flex items-center">
+                                        <i class="fas fa-dice mr-2 text-orange-500"></i>
+                                        Aléa Économique (risque)
+                                    </label>
+                                    <span id="aleaValue" class="text-xl font-bold text-orange-600">25%</span>
+                                </div>
+                                <input type="range" id="aleaSlider" min="5" max="50" value="25" oninput="updateSimulation()">
+                                <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                    <span>5% (stable)</span>
+                                    <span>50% (volatile)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Panneau Résultats -->
+                <div class="space-y-6">
+                    
+                    <!-- Score URM Principal -->
+                    <div id="resultCard" class="result-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 border-4 border-gray-200 dark:border-gray-700 pulse-glow">
+                        <h2 class="text-xl font-bold mb-4 text-center">
+                            <i class="fas fa-trophy mr-2 text-yellow-500"></i>
+                            Votre Score URM
+                        </h2>
+                        <div id="urmScore" class="text-6xl font-bold text-center mb-4 text-green-600">
+                            +127k€
+                        </div>
+                        <div id="urmInterpretation" class="text-center text-lg">
+                            <span class="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 px-4 py-2 rounded-full">
+                                ✅ Situation favorable
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <!-- Décomposition -->
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6">
+                        <h3 class="text-lg font-bold mb-4">
+                            <i class="fas fa-chart-pie mr-2 text-blue-500"></i>
+                            Décomposition
+                        </h3>
+                        <div class="space-y-3" id="decomposition">
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm">Patrimoine médian μ(W)</span>
+                                <span id="muW" class="font-bold text-green-600">+360 000€</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm">Impact inégalités −3.2×σ(W)</span>
+                                <span id="sigmaImpact" class="font-bold text-red-600">−156 800€</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm">Services publics S</span>
+                                <span id="servicesS" class="font-bold text-green-600">+16 700€</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm">Impact dette −1.6×Dₚ</span>
+                                <span id="debtImpact" class="font-bold text-red-600">−156 800€</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm">Impact aléa −2.1×A×σ(W)</span>
+                                <span id="aleaImpact" class="font-bold text-red-600">−25 725€</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm">Bonus mobilité +80k×M</span>
+                                <span id="mobilityBonus" class="font-bold text-green-600">+36 000€</span>
+                            </div>
+                            <hr class="my-3 border-gray-300 dark:border-gray-600">
+                            <div class="flex justify-between items-center text-lg font-bold">
+                                <span>TOTAL URM</span>
+                                <span id="totalURM" class="text-blue-600">+127 375€</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Comparaison Pays -->
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6">
+                        <h3 class="text-lg font-bold mb-4">
+                            <i class="fas fa-flag mr-2 text-purple-500"></i>
+                            Comparaison
+                        </h3>
+                        <div class="space-y-3">
+                            <div>
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span>🇩🇰 Danemark</span>
+                                    <span class="text-green-600 font-bold">+237k€</span>
+                                </div>
+                                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
+                                    <div class="comparison-bar bg-green-500 h-3 rounded-full" style="width: 100%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span>🎯 Votre Simulation</span>
+                                    <span id="compYou" class="text-blue-600 font-bold">+127k€</span>
+                                </div>
+                                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
+                                    <div id="compYouBar" class="comparison-bar bg-blue-500 h-3 rounded-full" style="width: 54%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span>🇫🇷 France 2025</span>
+                                    <span class="text-yellow-600 font-bold">−727k€</span>
+                                </div>
+                                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
+                                    <div class="comparison-bar bg-red-500 h-3 rounded-full" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span>🇺🇸 États-Unis</span>
+                                    <span class="text-red-600 font-bold">−558k€</span>
+                                </div>
+                                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
+                                    <div class="comparison-bar bg-red-400 h-3 rounded-full" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Actions -->
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6">
+                        <h3 class="text-lg font-bold mb-4">
+                            <i class="fas fa-share-alt mr-2 text-green-500"></i>
+                            Actions
+                        </h3>
+                        <div class="space-y-3">
+                            <button onclick="shareResult()" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-lg transition-colors">
+                                <i class="fab fa-twitter mr-2"></i>Partager sur Twitter
+                            </button>
+                            <button onclick="exportPDF()" class="w-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 font-bold py-3 px-4 rounded-lg transition-colors">
+                                <i class="fas fa-file-pdf mr-2"></i>Exporter en PDF
+                            </button>
+                            <button onclick="resetSimulation()" class="w-full border-2 border-gray-300 dark:border-gray-600 hover:border-red-500 hover:text-red-500 font-bold py-3 px-4 rounded-lg transition-colors">
+                                <i class="fas fa-undo mr-2"></i>Réinitialiser
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Graphique Évolution -->
+    <section class="py-12 bg-gray-100 dark:bg-gray-900">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8">
+                <h2 class="text-2xl font-bold mb-6 text-center">
+                    <i class="fas fa-chart-line mr-2 text-blue-500"></i>
+                    Impact de Chaque Paramètre sur l'URM
+                </h2>
+                <canvas id="impactChart" height="300"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <!-- Explication de la Formule -->
+    <section class="py-12">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl shadow-xl p-8">
+                <h2 class="text-2xl font-bold mb-6 text-center">
+                    <i class="fas fa-calculator mr-2"></i>
+                    Formule URM v3.0
+                </h2>
+                <div class="bg-white/10 backdrop-blur-md rounded-xl p-6 mb-6">
+                    <div class="text-center text-2xl font-bold math">
+                        URM = μ(W) − 3.2×σ(W) + S − 1.6×D<sub>p</sub> − 2.1×A×σ(W) + 80 000×M
+                    </div>
+                </div>
+                <div class="grid md:grid-cols-2 gap-6 text-sm">
+                    <div>
+                        <h3 class="font-bold mb-2">📊 Variables positives :</h3>
+                        <ul class="space-y-1">
+                            <li>• <strong>μ(W)</strong> : Patrimoine médian (PIB × 8)</li>
+                            <li>• <strong>S</strong> : Services publics (santé + éducation)</li>
+                            <li>• <strong>M</strong> : Mobilité sociale (0-1)</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="font-bold mb-2">📉 Variables négatives :</h3>
+                        <ul class="space-y-1">
+                            <li>• <strong>σ(W)</strong> : Écart-type richesse (inégalités)</li>
+                            <li>• <strong>Dₚ</strong> : Dette publique (% PIB)</li>
+                            <li>• <strong>A</strong> : Aléa économique (risque)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-6xl mx-auto px-6 text-center">
+            <div class="text-3xl font-bold mb-4">🧮 Simulateur URM</div>
+            <p class="text-gray-400 mb-6">Un outil pour comprendre l'impact des politiques économiques sur votre bien-être réel</p>
+            <div class="flex justify-center space-x-6">
+                <a href="index.html" class="text-gray-400 hover:text-white transition-colors">Accueil</a>
+                <a href="france2025.html" class="text-gray-400 hover:text-white transition-colors">France 2025</a>
+                <a href="calculateur.html" class="text-gray-400 hover:text-white transition-colors">Calculateur</a>
+                <a href="comparateur.html" class="text-gray-400 hover:text-white transition-colors">Comparateur</a>
+            </div>
+            <div class="mt-8 pt-8 border-t border-gray-800 text-sm text-gray-500">
+                © 2025 URM Model - Données World Bank & FMI
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ============================================
+        // CONFIGURATION
+        // ============================================
+        const SCENARIOS = {
+            denmark: {
+                name: 'Danemark',
+                gdp: 68000,
+                gini: 28,
+                debt: 35,
+                health: 10.5,
+                education: 7.8,
+                mobility: 85,
+                alea: 12
+            },
+            france: {
+                name: 'France 2025',
+                gdp: 44000,
+                gini: 32,
+                debt: 112,
+                health: 11.2,
+                education: 5.5,
+                mobility: 45,
+                alea: 25
+            },
+            usa: {
+                name: 'États-Unis',
+                gdp: 76000,
+                gini: 41,
+                debt: 123,
+                health: 16.6,
+                education: 5.0,
+                mobility: 30,
+                alea: 35
+            },
+            utopia: {
+                name: 'Utopie',
+                gdp: 80000,
+                gini: 22,
+                debt: 20,
+                health: 12,
+                education: 10,
+                mobility: 90,
+                alea: 8
+            }
+        };
+
+        let impactChart = null;
+
+        // ============================================
+        // CALCUL URM
+        // ============================================
+        function calculateURM() {
+            const gdp = parseFloat(document.getElementById('gdpSlider').value);
+            const gini = parseFloat(document.getElementById('giniSlider').value);
+            const debt = parseFloat(document.getElementById('debtSlider').value);
+            const health = parseFloat(document.getElementById('healthSlider').value);
+            const education = parseFloat(document.getElementById('educSlider').value);
+            const mobility = parseFloat(document.getElementById('mobilitySlider').value) / 100;
+            const alea = parseFloat(document.getElementById('aleaSlider').value) / 100;
+
+            // Calculs intermédiaires
+            const muW = gdp * 8; // Patrimoine médian estimé
+            const sigmaW = Math.max((gini - 25) * 7000, 10000); // Écart-type
+            const services = (health + education) * 1000;
+            const debtImpact = 1.6 * debt * 1000;
+            const aleaImpact = 2.1 * alea * sigmaW;
+            const mobilityBonus = 80000 * mobility;
+
+            // Formule URM v3.0
+            const urm = muW - (3.2 * sigmaW) + services - debtImpact - aleaImpact + mobilityBonus;
+
+            return {
+                urm: Math.round(urm),
+                muW: Math.round(muW),
+                sigmaW: Math.round(sigmaW),
+                sigmaImpact: Math.round(-3.2 * sigmaW),
+                services: Math.round(services),
+                debtImpact: Math.round(-debtImpact),
+                aleaImpact: Math.round(-aleaImpact),
+                mobilityBonus: Math.round(mobilityBonus)
+            };
+        }
+
+        // ============================================
+        // MISE À JOUR INTERFACE
+        // ============================================
+        function updateSimulation() {
+            // Mettre à jour les affichages des valeurs
+            document.getElementById('gdpValue').textContent = parseInt(document.getElementById('gdpSlider').value).toLocaleString() + ' $';
+            document.getElementById('giniValue').textContent = document.getElementById('giniSlider').value;
+            document.getElementById('debtValue').textContent = document.getElementById('debtSlider').value + '%';
+            document.getElementById('healthValue').textContent = document.getElementById('healthSlider').value + '%';
+            document.getElementById('educValue').textContent = document.getElementById('educSlider').value + '%';
+            document.getElementById('mobilityValue').textContent = document.getElementById('mobilitySlider').value + '%';
+            document.getElementById('aleaValue').textContent = document.getElementById('aleaSlider').value + '%';
+
+            // Calculer URM
+            const result = calculateURM();
+
+            // Mettre à jour le score principal
+            const scoreEl = document.getElementById('urmScore');
+            const scoreK = (result.urm / 1000).toFixed(0);
+            scoreEl.textContent = (result.urm >= 0 ? '+' : '') + scoreK + 'k€';
+            scoreEl.className = 'text-6xl font-bold text-center mb-4 ' + (result.urm >= 0 ? 'text-green-600' : 'text-red-600');
+
+            // Mettre à jour la carte de résultat
+            const card = document.getElementById('resultCard');
+            card.classList.remove('positive', 'negative');
+            card.classList.add(result.urm >= 0 ? 'positive' : 'negative');
+
+            // Interprétation
+            const interpEl = document.getElementById('urmInterpretation');
+            if (result.urm > 200000) {
+                interpEl.innerHTML = '<span class="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 px-4 py-2 rounded-full">🏆 Excellent ! Modèle optimal</span>';
+            } else if (result.urm > 0) {
+                interpEl.innerHTML = '<span class="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 px-4 py-2 rounded-full">✅ Situation favorable</span>';
+            } else if (result.urm > -200000) {
+                interpEl.innerHTML = '<span class="bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 px-4 py-2 rounded-full">⚠️ Situation précaire</span>';
+            } else {
+                interpEl.innerHTML = '<span class="bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 px-4 py-2 rounded-full">❌ Situation critique</span>';
+            }
+
+            // Décomposition
+            document.getElementById('muW').textContent = formatMoney(result.muW);
+            document.getElementById('sigmaImpact').textContent = formatMoney(result.sigmaImpact);
+            document.getElementById('servicesS').textContent = formatMoney(result.services);
+            document.getElementById('debtImpact').textContent = formatMoney(result.debtImpact);
+            document.getElementById('aleaImpact').textContent = formatMoney(result.aleaImpact);
+            document.getElementById('mobilityBonus').textContent = formatMoney(result.mobilityBonus);
+            document.getElementById('totalURM').textContent = formatMoney(result.urm);
+            document.getElementById('totalURM').className = 'text-lg font-bold ' + (result.urm >= 0 ? 'text-green-600' : 'text-red-600');
+
+            // Comparaison
+            document.getElementById('compYou').textContent = (result.urm >= 0 ? '+' : '') + scoreK + 'k€';
+            const dkUrm = 237000;
+            const percentage = Math.max(0, Math.min(100, ((result.urm + 800000) / (dkUrm + 800000)) * 100));
+            document.getElementById('compYouBar').style.width = percentage + '%';
+
+            // Mettre à jour le graphique
+            updateChart(result);
+        }
+
+        function formatMoney(value) {
+            const prefix = value >= 0 ? '+' : '';
+            return prefix + value.toLocaleString() + '€';
+        }
+
+        // ============================================
+        // GRAPHIQUE
+        // ============================================
+        function updateChart(result) {
+            const ctx = document.getElementById('impactChart').getContext('2d');
+            
+            if (impactChart) impactChart.destroy();
+            
+            impactChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Patrimoine μ(W)', 'Inégalités σ(W)', 'Services S', 'Dette Dₚ', 'Aléa A', 'Mobilité M'],
+                    datasets: [{
+                        label: 'Impact sur URM (€)',
+                        data: [
+                            result.muW,
+                            result.sigmaImpact,
+                            result.services,
+                            result.debtImpact,
+                            result.aleaImpact,
+                            result.mobilityBonus
+                        ],
+                        backgroundColor: [
+                            'rgba(34, 197, 94, 0.7)',
+                            'rgba(239, 68, 68, 0.7)',
+                            'rgba(59, 130, 246, 0.7)',
+                            'rgba(239, 68, 68, 0.7)',
+                            'rgba(249, 115, 22, 0.7)',
+                            'rgba(34, 197, 94, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgb(34, 197, 94)',
+                            'rgb(239, 68, 68)',
+                            'rgb(59, 130, 246)',
+                            'rgb(239, 68, 68)',
+                            'rgb(249, 115, 22)',
+                            'rgb(34, 197, 94)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => (ctx.raw >= 0 ? '+' : '') + ctx.raw.toLocaleString() + '€'
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            grid: {
+                                color: (ctx) => ctx.tick.value === 0 ? '#ef4444' : 'rgba(0,0,0,0.1)'
+                            },
+                            ticks: {
+                                callback: (value) => (value / 1000) + 'k€'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ============================================
+        // SCÉNARIOS
+        // ============================================
+        function loadScenario(scenarioId) {
+            const scenario = SCENARIOS[scenarioId];
+            if (!scenario) return;
+
+            // Mettre à jour les sliders
+            document.getElementById('gdpSlider').value = scenario.gdp;
+            document.getElementById('giniSlider').value = scenario.gini;
+            document.getElementById('debtSlider').value = scenario.debt;
+            document.getElementById('healthSlider').value = scenario.health;
+            document.getElementById('educSlider').value = scenario.education;
+            document.getElementById('mobilitySlider').value = scenario.mobility;
+            document.getElementById('aleaSlider').value = scenario.alea;
+
+            // Mettre en surbrillance le scénario sélectionné
+            document.querySelectorAll('.scenario-card').forEach(card => card.classList.remove('selected'));
+            event.target.closest('.scenario-card').classList.add('selected');
+
+            // Recalculer
+            updateSimulation();
+        }
+
+        function resetSimulation() {
+            document.getElementById('gdpSlider').value = 45000;
+            document.getElementById('giniSlider').value = 32;
+            document.getElementById('debtSlider').value = 98;
+            document.getElementById('healthSlider').value = 11.2;
+            document.getElementById('educSlider').value = 5.5;
+            document.getElementById('mobilitySlider').value = 45;
+            document.getElementById('aleaSlider').value = 25;
+            
+            document.querySelectorAll('.scenario-card').forEach(card => card.classList.remove('selected'));
+            
+            updateSimulation();
+        }
+
+        // ============================================
+        // PARTAGE & EXPORT
+        // ============================================
+        function shareResult() {
+            const result = calculateURM();
+            const scoreK = (result.urm / 1000).toFixed(0);
+            const text = `🧮 Mon score URM simulé : ${result.urm >= 0 ? '+' : ''}${scoreK}k€\n\nDécouvrez le modèle qui prouve mathématiquement pourquoi les pays nordiques ont le meilleur système économique pour les ménages.`;
+            const url = encodeURIComponent(window.location.href);
+            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${url}`, '_blank');
+        }
+
+        function exportPDF() {
+            alert('Fonctionnalité PDF en développement. Pour l\'instant, vous pouvez utiliser Ctrl+P pour imprimer cette page.');
+        }
+
+        // ============================================
+        // THEME
+        // ============================================
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+            const icon = document.getElementById('themeIcon');
+            icon.className = document.documentElement.classList.contains('dark') ? 'fas fa-sun' : 'fas fa-moon';
+        }
+
+        function toggleMobileMenu() {
+            document.getElementById('mobileMenu').classList.toggle('hidden');
+        }
+
+        // ============================================
+        // INITIALISATION
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            updateSimulation();
+        });
+    </script>
+</body>
+</html>
