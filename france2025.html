@@ -7,66 +7,23 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        'france-blue': '#0055A4',
-                        'france-red': '#EF4135'
-                    }
-                }
-            }
-        }
-    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        .math {
-            font-family: 'Times New Roman', serif;
-            font-style: italic;
+        body { 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
+            letter-spacing: -0.02em;
+            font-weight: 400;
         }
+        .math { font-family: 'KaTeX', 'Times New Roman', serif; }
+        .font-serif { font-family: 'Playfair Display', serif; }
         
-        .gradient-text {
-            background: linear-gradient(135deg, #0055A4, #EF4135, #ffffff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .formula-box {
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-            border: 2px solid #cbd5e1;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
-
-        .dark .formula-box {
-            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-            border: 2px solid #475569;
-        }
-
-        .negative-result {
-            background: linear-gradient(135deg, #fee2e2, #fca5a5);
-            border-left: 6px solid #dc2626;
-        }
-
-        .dark .negative-result {
-            background: linear-gradient(135deg, #7f1d1d, #991b1b);
-            border-left: 6px solid #ef4444;
-        }
-
-        .country-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .country-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-        }
-        
-        /* Menu navigation styles */
         .nav-link {
             position: relative;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
+            letter-spacing: 0.02em;
         }
         
         .nav-link::after {
@@ -75,74 +32,105 @@
             bottom: -2px;
             left: 50%;
             width: 0;
-            height: 2px;
-            background: linear-gradient(90deg, #3b82f6, #ef4444);
-            transition: all 0.3s ease;
-            transform: translateX(-50%);    
+            height: 1px;
+            background: #1a1a1a;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateX(-50%);
+        }
+        
+        .dark .nav-link::after {
+            background: #ffffff;
         }
         
         .nav-link:hover::after {
-            width: 80%;
+            width: 100%;
         }
         
-        /* Amélioration du backdrop blur */
         nav {
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(0,0,0,0.05);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-bottom: 1px solid rgba(0,0,0,0.08);
         }
         
         .dark nav {
-            border-bottom-color: rgba(255,255,255,0.05);
+            border-bottom-color: rgba(255,255,255,0.08);
+        }
+        
+        .luxury-gradient {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+        }
+        
+        .dark .luxury-gradient {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+        }
+        
+        .accent-line {
+            background: linear-gradient(90deg, transparent, #1a1a1a, transparent);
+            height: 1px;
+        }
+        
+        .dark .accent-line {
+            background: linear-gradient(90deg, transparent, #ffffff, transparent);
+        }
+        
+        .country-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .country-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
         }
     </style>
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+<body class="bg-stone-50 dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 antialiased">
 
     <!-- Navigation -->
-    <nav class="fixed top-0 w-full z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-b border-gray-200 dark:border-gray-700 transition-all duration-300">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="flex items-center justify-between h-16">
+    <nav class="fixed top-0 w-full z-50 bg-white/98 dark:bg-neutral-900/98 backdrop-blur-md border-b border-neutral-200/50 dark:border-neutral-800/50 transition-all duration-500">
+        <div class="max-w-7xl mx-auto px-8">
+            <div class="flex items-center justify-between h-20">
                 <!-- Logo/Titre -->
-                <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 bg-gradient-to-r from-red-600 to-blue-600 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-flag text-white text-xl"></i>
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-neutral-900 dark:bg-white rounded-lg flex items-center justify-center transition-transform hover:scale-105">
+                        <i class="fas fa-flag text-white dark:text-neutral-900 text-xl"></i>
                     </div>
                     <div class="hidden md:block">
-                        <h1 class="text-xl font-bold text-gray-900 dark:text-white">France 2025</h1>
-                        <p class="text-xs text-gray-600 dark:text-gray-400">Analyse URM v3.0</p>
+                        <h1 class="text-xl font-serif font-bold text-neutral-900 dark:text-white tracking-tight">France 2025</h1>
+                        <p class="text-xs text-neutral-500 dark:text-neutral-400 tracking-wide uppercase">Analyse URM v3.0</p>
                     </div>
                 </div>
                 
                 <!-- Menu principal -->
-                <div class="hidden lg:flex items-center space-x-4">
-                    <a href="index.html" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 px-3 py-2 rounded-lg transition-colors">🏠 Accueil</a>
-                    <a href="france2025.html" class="text-blue-600 dark:text-blue-400 font-semibold px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/30">🇫🇷 France</a>
-                    <a href="calculateur.html" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 px-3 py-2 rounded-lg transition-colors">🌍 Calculateur</a>
-                    <a href="simulateur.html" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 px-3 py-2 rounded-lg transition-colors">🎛️ Simulateur</a>
-                    <a href="comparateur.html" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 px-3 py-2 rounded-lg transition-colors">⚖️ Comparateur</a>
-                    <a href="classement.html" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 px-3 py-2 rounded-lg transition-colors">🏆 Classement</a>
-                    <a href="carte.html" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 px-3 py-2 rounded-lg transition-colors">🗺️ Carte</a>
-                    <a href="timeline.html" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 px-3 py-2 rounded-lg transition-colors">📅 Timeline</a>
+                <div class="hidden lg:flex items-center space-x-1">
+                    <a href="index.html" class="nav-link text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white transition-colors px-4 py-2">Accueil</a>
+                    <a href="france2025.html" class="nav-link text-neutral-900 dark:text-white font-medium px-4 py-2 rounded-lg">France</a>
+                    <a href="calculateur.html" class="nav-link text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white transition-colors px-4 py-2">Calculateur</a>
+                    <a href="simulateur.html" class="nav-link text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white transition-colors px-4 py-2">Simulateur</a>
+                    <a href="comparateur.html" class="nav-link text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white transition-colors px-4 py-2">Comparateur</a>
+                    <a href="classement.html" class="nav-link text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white transition-colors px-4 py-2">Classement</a>
+                    <a href="carte.html" class="nav-link text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white transition-colors px-4 py-2">Carte</a>
+                    <a href="timeline.html" class="nav-link text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white transition-colors px-4 py-2">Timeline</a>
                     
                     <!-- Dropdown Plus -->
                     <div class="relative group">
-                        <button class="text-gray-700 dark:text-gray-300 hover:text-blue-600 px-3 py-2 rounded-lg transition-colors flex items-center">
-                            Plus <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                        <button class="text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white px-4 py-2 rounded-lg transition-colors flex items-center font-medium">
+                            Plus <i class="fas fa-chevron-down ml-2 text-xs"></i>
                         </button>
-                        <div class="absolute top-full right-0 mt-1 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                            <a href="quiz.html" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-t-xl">🎯 Quiz</a>
-                            <a href="export.html" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">📥 Export</a>
-                            <a href="ressources.html" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">📚 Ressources</a>
-                            <a href="methodologie.html" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">📖 Méthodologie</a>
-                            <a href="contact.html" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-b-xl">📧 Contact</a>
+                        <div class="absolute top-full right-0 mt-2 w-56 bg-white/98 dark:bg-neutral-800/98 backdrop-blur-xl rounded-2xl shadow-2xl border border-neutral-200/50 dark:border-neutral-700/50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                            <div class="p-2">
+                                <a href="quiz.html" class="block px-4 py-3 hover:bg-neutral-100 dark:hover:bg-neutral-700/50 rounded-xl transition-all">Quiz</a>
+                                <a href="export.html" class="block px-4 py-3 hover:bg-neutral-100 dark:hover:bg-neutral-700/50 rounded-xl transition-all">Export</a>
+                                <a href="ressources.html" class="block px-4 py-3 hover:bg-neutral-100 dark:hover:bg-neutral-700/50 rounded-xl transition-all">Ressources</a>
+                                <a href="methodologie.html" class="block px-4 py-3 hover:bg-neutral-100 dark:hover:bg-neutral-700/50 rounded-xl transition-all">Méthodologie</a>
+                                <a href="contact.html" class="block px-4 py-3 hover:bg-neutral-100 dark:hover:bg-neutral-700/50 rounded-xl transition-all">Contact</a>
+                            </div>
                         </div>
                     </div>
                 </div>
                 
                 <!-- Actions rapides -->
                 <div class="hidden md:flex items-center space-x-3">
-                    <button onclick="toggleDarkMode()" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors" title="Mode sombre/clair">
+                    <button onclick="toggleDarkMode()" class="p-2.5 rounded-xl bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-all hover:scale-105" title="Mode sombre/clair">
                         <i class="fas fa-moon"></i>
                     </button>
                 </div>

@@ -7,6 +7,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -22,7 +25,41 @@
         }
     </script>
     <style>
+        body { 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
+            letter-spacing: -0.02em;
+            font-weight: 400;
+        }
         .math { font-family: 'Times New Roman', serif; font-style: italic; }
+        .font-serif { font-family: 'Playfair Display', serif; }
+        
+        /* Navigation luxe */
+        .nav-link {
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
+            letter-spacing: 0.02em;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            width: 0;
+            height: 1px;
+            background: #1a1a1a;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateX(-50%);
+        }
+        
+        .dark .nav-link::after {
+            background: #ffffff;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
         
         .slider-container input[type="range"] {
             -webkit-appearance: none;
@@ -51,30 +88,30 @@
         }
         
         .result-card {
-            transition: all 0.5s ease;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         .result-card.positive {
-            background: linear-gradient(135deg, #dcfce7, #bbf7d0);
-            border-color: #22c55e;
+            background: linear-gradient(135deg, #f5f5f4, #e7e5e4);
+            border-color: #a8a29e;
         }
         
         .result-card.negative {
-            background: linear-gradient(135deg, #fee2e2, #fecaca);
-            border-color: #ef4444;
+            background: linear-gradient(135deg, #fafaf9, #f5f5f4);
+            border-color: #d6d3d1;
         }
         
         .dark .result-card.positive {
-            background: linear-gradient(135deg, #14532d, #166534);
+            background: linear-gradient(135deg, #292524, #1c1917);
         }
         
         .dark .result-card.negative {
-            background: linear-gradient(135deg, #7f1d1d, #991b1b);
+            background: linear-gradient(135deg, #1c1917, #0a0a0a);
         }
         
         @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
-            50% { box-shadow: 0 0 40px rgba(59, 130, 246, 0.6); }
+            0%, 100% { box-shadow: 0 0 20px rgba(23, 23, 23, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(23, 23, 23, 0.6); }
         }
         
         .pulse-glow {
@@ -82,11 +119,11 @@
         }
         
         .comparison-bar {
-            transition: width 0.8s ease-out;
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         .scenario-card {
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         .scenario-card:hover {
@@ -95,51 +132,66 @@
         }
         
         .scenario-card.selected {
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+            border-color: #1a1a1a;
+            box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.3);
+        }
+        
+        .dark .scenario-card.selected {
+            border-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Luxury gradient */
+        .luxury-gradient {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+        }
+        
+        .dark .luxury-gradient {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
         }
     </style>
 </head>
-<body class="bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 min-h-screen">
+</head>
+<body class="bg-stone-50 dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 min-h-screen antialiased">
 
     <!-- Navigation -->
-    <nav class="fixed top-0 w-full z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-b border-gray-200 dark:border-gray-700">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="flex items-center justify-between h-16">
-                <a href="index.html" class="flex items-center space-x-2">
-                    <div class="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-calculator text-white text-lg"></i>
+    <nav id="mainNav" class="fixed top-0 w-full z-50 bg-white/98 dark:bg-neutral-900/98 backdrop-blur-md border-b border-neutral-200/50 dark:border-neutral-800/50 transition-all duration-500" style="backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);">
+        <div class="max-w-7xl mx-auto px-8">
+            <div class="flex items-center justify-between h-20">
+                <a href="index.html" class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-neutral-900 dark:bg-white rounded-2xl flex items-center justify-center transition-transform hover:scale-105">
+                        <i class="fas fa-calculator text-white dark:text-neutral-900 text-xl"></i>
                     </div>
-                    <span class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent hidden sm:block">URM Model</span>
+                    <span class="text-xl font-serif font-bold text-neutral-900 dark:text-neutral-100 hidden sm:block">URM Model</span>
                 </a>
                 
                 <!-- Menu Desktop -->
                 <div class="hidden lg:flex items-center space-x-1">
-                    <a href="index.html" class="px-3 py-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition text-sm">🏠 Accueil</a>
-                    <a href="france2025.html" class="px-3 py-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition text-sm">🇫🇷 France</a>
-                    <a href="calculateur.html" class="px-3 py-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition text-sm">🌍 Calculateur</a>
-                    <a href="classement.html" class="px-3 py-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition text-sm">🏆 Classement</a>
-                    <a href="carte.html" class="px-3 py-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition text-sm">🗺️ Carte</a>
-                    <a href="simulateur.html" class="px-3 py-2 rounded-lg bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 transition text-sm">🎛️ Simulateur</a>
-                    <a href="comparateur.html" class="px-3 py-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition text-sm">⚖️ Comparateur</a>
-                    <a href="timeline.html" class="px-3 py-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition text-sm">📅 Timeline</a>
+                    <a href="index.html" class="nav-link px-4 py-2 rounded-lg text-neutral-700 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-neutral-100 transition text-sm">Accueil</a>
+                    <a href="france2025.html" class="nav-link px-4 py-2 rounded-lg text-neutral-700 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-neutral-100 transition text-sm">France</a>
+                    <a href="calculateur.html" class="nav-link px-4 py-2 rounded-lg text-neutral-700 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-neutral-100 transition text-sm">Calculateur</a>
+                    <a href="classement.html" class="nav-link px-4 py-2 rounded-lg text-neutral-700 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-neutral-100 transition text-sm">Classement</a>
+                    <a href="carte.html" class="nav-link px-4 py-2 rounded-lg text-neutral-700 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-neutral-100 transition text-sm">Carte</a>
+                    <a href="simulateur.html" class="nav-link px-4 py-2 rounded-lg bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 transition text-sm">Simulateur</a>
+                    <a href="comparateur.html" class="nav-link px-4 py-2 rounded-lg text-neutral-700 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-neutral-100 transition text-sm">Comparateur</a>
+                    <a href="timeline.html" class="nav-link px-4 py-2 rounded-lg text-neutral-700 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-neutral-100 transition text-sm">Timeline</a>
                     <div class="relative group">
-                        <button class="px-3 py-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition text-sm">Plus ▼</button>
-                        <div class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
-                            <a href="quiz.html" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-t-xl">🎯 Quiz</a>
-                            <a href="export.html" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">📥 Export</a>
-                            <a href="ressources.html" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">📚 Ressources</a>
-                            <a href="methodologie.html" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">📖 Méthodologie</a>
-                            <a href="contact.html" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-b-xl">📧 Contact</a>
+                        <button class="nav-link px-4 py-2 rounded-lg text-neutral-700 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-neutral-100 transition text-sm">Plus ▼</button>
+                        <div class="absolute right-0 mt-2 w-48 bg-white dark:bg-neutral-800 rounded-2xl shadow-xl border border-neutral-200/50 dark:border-neutral-700/50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                            <a href="quiz.html" class="block px-4 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-700 rounded-t-2xl">Quiz</a>
+                            <a href="export.html" class="block px-4 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-700">Export</a>
+                            <a href="ressources.html" class="block px-4 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-700">Ressources</a>
+                            <a href="methodologie.html" class="block px-4 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-700">Méthodologie</a>
+                            <a href="contact.html" class="block px-4 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-700 rounded-b-2xl">Contact</a>
                         </div>
                     </div>
                 </div>
                 
                 <div class="flex items-center space-x-2">
-                    <button onclick="toggleTheme()" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:text-blue-600 transition">
+                    <button onclick="toggleTheme()" class="p-2 rounded-lg bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 transition">
                         <i id="themeIcon" class="fas fa-moon"></i>
                     </button>
-                    <button onclick="toggleMobileMenu()" class="lg:hidden p-2 rounded-lg text-gray-600 dark:text-gray-400">
+                    <button onclick="toggleMobileMenu()" class="lg:hidden p-2 rounded-lg text-neutral-600 dark:text-neutral-400">
                         <i class="fas fa-bars text-xl"></i>
                     </button>
                 </div>
@@ -147,33 +199,33 @@
         </div>
         
         <!-- Menu Mobile -->
-        <div id="mobileMenu" class="hidden lg:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 px-4 py-3 space-y-1 max-h-96 overflow-y-auto">
-            <a href="index.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🏠 Accueil</a>
-            <a href="france2025.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🇫🇷 France 2025</a>
-            <a href="calculateur.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🌍 Calculateur</a>
-            <a href="classement.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🏆 Classement</a>
-            <a href="carte.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🗺️ Carte</a>
-            <a href="simulateur.html" class="block px-3 py-2 rounded-lg bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400">🎛️ Simulateur</a>
-            <a href="comparateur.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">⚖️ Comparateur</a>
-            <a href="timeline.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">📅 Timeline</a>
-            <a href="quiz.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🎯 Quiz</a>
-            <a href="export.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">📥 Export</a>
-            <a href="ressources.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">📚 Ressources</a>
-            <a href="methodologie.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">📖 Méthodologie</a>
-            <a href="contact.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">📧 Contact</a>
+        <div id="mobileMenu" class="hidden lg:hidden bg-white dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800 px-4 py-3 space-y-1 max-h-96 overflow-y-auto">
+            <a href="index.html" class="block px-3 py-2 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800">Accueil</a>
+            <a href="france2025.html" class="block px-3 py-2 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800">France 2025</a>
+            <a href="calculateur.html" class="block px-3 py-2 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800">Calculateur</a>
+            <a href="classement.html" class="block px-3 py-2 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800">Classement</a>
+            <a href="carte.html" class="block px-3 py-2 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800">Carte</a>
+            <a href="simulateur.html" class="block px-3 py-2 rounded-lg bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100">Simulateur</a>
+            <a href="comparateur.html" class="block px-3 py-2 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800">Comparateur</a>
+            <a href="timeline.html" class="block px-3 py-2 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800">Timeline</a>
+            <a href="quiz.html" class="block px-3 py-2 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800">Quiz</a>
+            <a href="export.html" class="block px-3 py-2 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800">Export</a>
+            <a href="ressources.html" class="block px-3 py-2 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800">Ressources</a>
+            <a href="methodologie.html" class="block px-3 py-2 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800">Méthodologie</a>
+            <a href="contact.html" class="block px-3 py-2 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800">Contact</a>
         </div>
     </nav>
 
     <!-- Header -->
-    <header class="pt-24 pb-12 bg-gradient-to-r from-purple-600 via-pink-600 to-red-600 text-white">
-        <div class="max-w-6xl mx-auto px-6 text-center">
-            <h1 class="text-4xl md:text-5xl font-bold mb-4">
+    <header class="pt-24 pb-12 luxury-gradient text-white">
+        <div class="max-w-6xl mx-auto px-8 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold font-serif mb-4">
                 🧮 Simulateur Personnel URM
             </h1>
             <p class="text-xl opacity-90 mb-6">
                 Testez différents scénarios et voyez comment les politiques économiques affectent VOTRE bien-être
             </p>
-            <div class="bg-white/20 backdrop-blur-md rounded-xl px-6 py-4 inline-block">
+            <div class="bg-neutral-900/20 backdrop-blur-md rounded-2xl px-8 py-4 inline-block">
                 <span class="text-lg font-medium">
                     <i class="fas fa-lightbulb mr-2"></i>
                     Modifiez les curseurs pour simuler différentes situations économiques
@@ -191,39 +243,39 @@
                 <div class="lg:col-span-2 space-y-6">
                     
                     <!-- Scénarios Prédéfinis -->
-                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6">
-                        <h2 class="text-2xl font-bold mb-4">
-                            <i class="fas fa-magic mr-2 text-purple-500"></i>
+                    <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-xl p-8 border border-neutral-200/50 dark:border-neutral-800/50">
+                        <h2 class="text-2xl font-bold font-serif mb-4">
+                            <i class="fas fa-magic mr-2 text-neutral-700 dark:text-neutral-300"></i>
                             Scénarios Prédéfinis
                         </h2>
                         <div class="grid md:grid-cols-4 gap-4">
-                            <div class="scenario-card cursor-pointer bg-blue-50 dark:bg-blue-900/30 border-2 border-blue-200 dark:border-blue-700 rounded-xl p-4 text-center" onclick="loadScenario('denmark')">
+                            <div class="scenario-card cursor-pointer bg-neutral-50 dark:bg-neutral-800 border-2 border-neutral-200/50 dark:border-neutral-700/50 rounded-2xl p-4 text-center" onclick="loadScenario('denmark')">
                                 <div class="text-3xl mb-2">🇩🇰</div>
                                 <div class="font-bold">Danemark</div>
-                                <div class="text-sm text-green-600">Modèle idéal</div>
+                                <div class="text-sm text-neutral-600 dark:text-neutral-400">Modèle idéal</div>
                             </div>
-                            <div class="scenario-card cursor-pointer bg-red-50 dark:bg-red-900/30 border-2 border-red-200 dark:border-red-700 rounded-xl p-4 text-center" onclick="loadScenario('france')">
+                            <div class="scenario-card cursor-pointer bg-neutral-50 dark:bg-neutral-800 border-2 border-neutral-200/50 dark:border-neutral-700/50 rounded-2xl p-4 text-center" onclick="loadScenario('france')">
                                 <div class="text-3xl mb-2">🇫🇷</div>
                                 <div class="font-bold">France 2025</div>
-                                <div class="text-sm text-yellow-600">Situation actuelle</div>
+                                <div class="text-sm text-neutral-600 dark:text-neutral-400">Situation actuelle</div>
                             </div>
-                            <div class="scenario-card cursor-pointer bg-gray-50 dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-xl p-4 text-center" onclick="loadScenario('usa')">
+                            <div class="scenario-card cursor-pointer bg-neutral-50 dark:bg-neutral-800 border-2 border-neutral-200/50 dark:border-neutral-700/50 rounded-2xl p-4 text-center" onclick="loadScenario('usa')">
                                 <div class="text-3xl mb-2">🇺🇸</div>
                                 <div class="font-bold">États-Unis</div>
-                                <div class="text-sm text-red-600">Ultra-capitalisme</div>
+                                <div class="text-sm text-neutral-600 dark:text-neutral-400">Ultra-capitalisme</div>
                             </div>
-                            <div class="scenario-card cursor-pointer bg-yellow-50 dark:bg-yellow-900/30 border-2 border-yellow-200 dark:border-yellow-700 rounded-xl p-4 text-center" onclick="loadScenario('utopia')">
+                            <div class="scenario-card cursor-pointer bg-neutral-50 dark:bg-neutral-800 border-2 border-neutral-200/50 dark:border-neutral-700/50 rounded-2xl p-4 text-center" onclick="loadScenario('utopia')">
                                 <div class="text-3xl mb-2">🌟</div>
                                 <div class="font-bold">Utopie</div>
-                                <div class="text-sm text-purple-600">Scénario optimal</div>
+                                <div class="text-sm text-neutral-600 dark:text-neutral-400">Scénario optimal</div>
                             </div>
                         </div>
                     </div>
                     
                     <!-- Paramètres Économiques -->
-                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6">
-                        <h2 class="text-2xl font-bold mb-6">
-                            <i class="fas fa-sliders-h mr-2 text-blue-500"></i>
+                    <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-xl p-8 border border-neutral-200/50 dark:border-neutral-800/50">
+                        <h2 class="text-2xl font-bold font-serif mb-6">
+                            <i class="fas fa-sliders-h mr-2 text-neutral-700 dark:text-neutral-300"></i>
                             Paramètres Économiques
                         </h2>
                         
@@ -347,120 +399,120 @@
                 <div class="space-y-6">
                     
                     <!-- Score URM Principal -->
-                    <div id="resultCard" class="result-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 border-4 border-gray-200 dark:border-gray-700 pulse-glow">
-                        <h2 class="text-xl font-bold mb-4 text-center">
-                            <i class="fas fa-trophy mr-2 text-yellow-500"></i>
+                    <div id="resultCard" class="result-card bg-white dark:bg-neutral-900 rounded-2xl shadow-xl p-8 border-4 border-neutral-200/50 dark:border-neutral-800/50 pulse-glow">
+                        <h2 class="text-xl font-bold font-serif mb-4 text-center">
+                            <i class="fas fa-trophy mr-2 text-neutral-700 dark:text-neutral-300"></i>
                             Votre Score URM
                         </h2>
-                        <div id="urmScore" class="text-6xl font-bold text-center mb-4 text-green-600">
+                        <div id="urmScore" class="text-6xl font-bold text-center mb-4 text-neutral-900 dark:text-neutral-100">
                             +127k€
                         </div>
                         <div id="urmInterpretation" class="text-center text-lg">
-                            <span class="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 px-4 py-2 rounded-full">
+                            <span class="bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 px-4 py-2 rounded-full">
                                 ✅ Situation favorable
                             </span>
                         </div>
                     </div>
                     
                     <!-- Décomposition -->
-                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6">
-                        <h3 class="text-lg font-bold mb-4">
-                            <i class="fas fa-chart-pie mr-2 text-blue-500"></i>
+                    <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-xl p-8 border border-neutral-200/50 dark:border-neutral-800/50">
+                        <h3 class="text-lg font-bold font-serif mb-4">
+                            <i class="fas fa-chart-pie mr-2 text-neutral-700 dark:text-neutral-300"></i>
                             Décomposition
                         </h3>
                         <div class="space-y-3" id="decomposition">
                             <div class="flex justify-between items-center">
                                 <span class="text-sm">Patrimoine médian μ(W)</span>
-                                <span id="muW" class="font-bold text-green-600">+360 000€</span>
+                                <span id="muW" class="font-bold text-neutral-900 dark:text-neutral-100">+360 000€</span>
                             </div>
                             <div class="flex justify-between items-center">
                                 <span class="text-sm">Impact inégalités −3.2×σ(W)</span>
-                                <span id="sigmaImpact" class="font-bold text-red-600">−156 800€</span>
+                                <span id="sigmaImpact" class="font-bold text-neutral-600 dark:text-neutral-400">−156 800€</span>
                             </div>
                             <div class="flex justify-between items-center">
                                 <span class="text-sm">Services publics S</span>
-                                <span id="servicesS" class="font-bold text-green-600">+16 700€</span>
+                                <span id="servicesS" class="font-bold text-neutral-900 dark:text-neutral-100">+16 700€</span>
                             </div>
                             <div class="flex justify-between items-center">
                                 <span class="text-sm">Impact dette −1.6×Dₚ</span>
-                                <span id="debtImpact" class="font-bold text-red-600">−156 800€</span>
+                                <span id="debtImpact" class="font-bold text-neutral-600 dark:text-neutral-400">−156 800€</span>
                             </div>
                             <div class="flex justify-between items-center">
                                 <span class="text-sm">Impact aléa −2.1×A×σ(W)</span>
-                                <span id="aleaImpact" class="font-bold text-red-600">−25 725€</span>
+                                <span id="aleaImpact" class="font-bold text-neutral-600 dark:text-neutral-400">−25 725€</span>
                             </div>
                             <div class="flex justify-between items-center">
                                 <span class="text-sm">Bonus mobilité +80k×M</span>
-                                <span id="mobilityBonus" class="font-bold text-green-600">+36 000€</span>
+                                <span id="mobilityBonus" class="font-bold text-neutral-900 dark:text-neutral-100">+36 000€</span>
                             </div>
-                            <hr class="my-3 border-gray-300 dark:border-gray-600">
+                            <hr class="my-3 border-neutral-300 dark:border-neutral-700">
                             <div class="flex justify-between items-center text-lg font-bold">
                                 <span>TOTAL URM</span>
-                                <span id="totalURM" class="text-blue-600">+127 375€</span>
+                                <span id="totalURM" class="text-neutral-900 dark:text-neutral-100">+127 375€</span>
                             </div>
                         </div>
                     </div>
                     
                     <!-- Comparaison Pays -->
-                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6">
-                        <h3 class="text-lg font-bold mb-4">
-                            <i class="fas fa-flag mr-2 text-purple-500"></i>
+                    <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-xl p-8 border border-neutral-200/50 dark:border-neutral-800/50">
+                        <h3 class="text-lg font-bold font-serif mb-4">
+                            <i class="fas fa-flag mr-2 text-neutral-700 dark:text-neutral-300"></i>
                             Comparaison
                         </h3>
                         <div class="space-y-3">
                             <div>
                                 <div class="flex justify-between text-sm mb-1">
                                     <span>🇩🇰 Danemark</span>
-                                    <span class="text-green-600 font-bold">+237k€</span>
+                                    <span class="text-neutral-900 dark:text-neutral-100 font-bold">+237k€</span>
                                 </div>
-                                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
-                                    <div class="comparison-bar bg-green-500 h-3 rounded-full" style="width: 100%"></div>
+                                <div class="w-full bg-neutral-200 dark:bg-neutral-800 rounded-full h-3">
+                                    <div class="comparison-bar bg-neutral-900 dark:bg-neutral-100 h-3 rounded-full" style="width: 100%"></div>
                                 </div>
                             </div>
                             <div>
                                 <div class="flex justify-between text-sm mb-1">
                                     <span>🎯 Votre Simulation</span>
-                                    <span id="compYou" class="text-blue-600 font-bold">+127k€</span>
+                                    <span id="compYou" class="text-neutral-900 dark:text-neutral-100 font-bold">+127k€</span>
                                 </div>
-                                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
-                                    <div id="compYouBar" class="comparison-bar bg-blue-500 h-3 rounded-full" style="width: 54%"></div>
+                                <div class="w-full bg-neutral-200 dark:bg-neutral-800 rounded-full h-3">
+                                    <div id="compYouBar" class="comparison-bar bg-neutral-700 dark:bg-neutral-300 h-3 rounded-full" style="width: 54%"></div>
                                 </div>
                             </div>
                             <div>
                                 <div class="flex justify-between text-sm mb-1">
                                     <span>🇫🇷 France 2025</span>
-                                    <span class="text-yellow-600 font-bold">−727k€</span>
+                                    <span class="text-neutral-600 dark:text-neutral-400 font-bold">−727k€</span>
                                 </div>
-                                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
-                                    <div class="comparison-bar bg-red-500 h-3 rounded-full" style="width: 0%"></div>
+                                <div class="w-full bg-neutral-200 dark:bg-neutral-800 rounded-full h-3">
+                                    <div class="comparison-bar bg-neutral-400 h-3 rounded-full" style="width: 0%"></div>
                                 </div>
                             </div>
                             <div>
                                 <div class="flex justify-between text-sm mb-1">
                                     <span>🇺🇸 États-Unis</span>
-                                    <span class="text-red-600 font-bold">−558k€</span>
+                                    <span class="text-neutral-600 dark:text-neutral-400 font-bold">−558k€</span>
                                 </div>
-                                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
-                                    <div class="comparison-bar bg-red-400 h-3 rounded-full" style="width: 0%"></div>
+                                <div class="w-full bg-neutral-200 dark:bg-neutral-800 rounded-full h-3">
+                                    <div class="comparison-bar bg-neutral-400 h-3 rounded-full" style="width: 0%"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     
                     <!-- Actions -->
-                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6">
-                        <h3 class="text-lg font-bold mb-4">
-                            <i class="fas fa-share-alt mr-2 text-green-500"></i>
+                    <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-xl p-8 border border-neutral-200/50 dark:border-neutral-800/50">
+                        <h3 class="text-lg font-bold font-serif mb-4">
+                            <i class="fas fa-share-alt mr-2 text-neutral-700 dark:text-neutral-300"></i>
                             Actions
                         </h3>
                         <div class="space-y-3">
-                            <button onclick="shareResult()" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-lg transition-colors">
+                            <button onclick="shareResult()" class="w-full bg-neutral-900 dark:bg-neutral-100 hover:bg-neutral-800 dark:hover:bg-neutral-200 text-white dark:text-neutral-900 font-bold py-3 px-4 rounded-lg transition-all">
                                 <i class="fab fa-twitter mr-2"></i>Partager sur Twitter
                             </button>
-                            <button onclick="exportPDF()" class="w-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 font-bold py-3 px-4 rounded-lg transition-colors">
+                            <button onclick="exportPDF()" class="w-full bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700 font-bold py-3 px-4 rounded-lg transition-all">
                                 <i class="fas fa-file-pdf mr-2"></i>Exporter en PDF
                             </button>
-                            <button onclick="resetSimulation()" class="w-full border-2 border-gray-300 dark:border-gray-600 hover:border-red-500 hover:text-red-500 font-bold py-3 px-4 rounded-lg transition-colors">
+                            <button onclick="resetSimulation()" class="w-full border-2 border-neutral-300/50 dark:border-neutral-700/50 hover:border-neutral-900 dark:hover:border-neutral-100 hover:text-neutral-900 dark:hover:text-neutral-100 font-bold py-3 px-4 rounded-lg transition-all">
                                 <i class="fas fa-undo mr-2"></i>Réinitialiser
                             </button>
                         </div>
@@ -471,11 +523,11 @@
     </section>
 
     <!-- Graphique Évolution -->
-    <section class="py-12 bg-gray-100 dark:bg-gray-900">
-        <div class="max-w-6xl mx-auto px-6">
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8">
-                <h2 class="text-2xl font-bold mb-6 text-center">
-                    <i class="fas fa-chart-line mr-2 text-blue-500"></i>
+    <section class="py-12 bg-neutral-100 dark:bg-neutral-950">
+        <div class="max-w-6xl mx-auto px-8">
+            <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-xl p-8 border border-neutral-200/50 dark:border-neutral-800/50">
+                <h2 class="text-2xl font-bold font-serif mb-6 text-center">
+                    <i class="fas fa-chart-line mr-2 text-neutral-700 dark:text-neutral-300"></i>
                     Impact de Chaque Paramètre sur l'URM
                 </h2>
                 <canvas id="impactChart" height="300"></canvas>
@@ -485,13 +537,13 @@
 
     <!-- Explication de la Formule -->
     <section class="py-12">
-        <div class="max-w-4xl mx-auto px-6">
-            <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl shadow-xl p-8">
-                <h2 class="text-2xl font-bold mb-6 text-center">
+        <div class="max-w-4xl mx-auto px-8">
+            <div class="luxury-gradient text-white rounded-2xl shadow-xl p-8 border border-neutral-800/50">
+                <h2 class="text-2xl font-bold font-serif mb-6 text-center">
                     <i class="fas fa-calculator mr-2"></i>
                     Formule URM v3.0
                 </h2>
-                <div class="bg-white/10 backdrop-blur-md rounded-xl p-6 mb-6">
+                <div class="bg-neutral-900/30 backdrop-blur-md rounded-2xl p-8 mb-6 border border-neutral-700/50">
                     <div class="text-center text-2xl font-bold math">
                         URM = μ(W) − 3.2×σ(W) + S − 1.6×D<sub>p</sub> − 2.1×A×σ(W) + 80 000×M
                     </div>
