@@ -7,17 +7,24 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     body { 
-      font-family: 'Segoe UI', 'Tahoma', 'Geneva', 'Verdana', sans-serif; 
-      letter-spacing: -0.01em;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
+      letter-spacing: -0.02em;
+      font-weight: 400;
     }
     .math { font-family: 'KaTeX', 'Times New Roman', serif; }
+    .font-serif { font-family: 'Playfair Display', serif; }
     
     /* Menu amélioré */
     .nav-link {
       position: relative;
-      transition: all 0.3s ease;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      font-weight: 500;
+      letter-spacing: 0.02em;
     }
     
     .nav-link::after {
@@ -26,14 +33,18 @@
       bottom: -2px;
       left: 50%;
       width: 0;
-      height: 2px;
-      background: linear-gradient(90deg, #3b82f6, #ef4444);
-      transition: all 0.3s ease;
+      height: 1px;
+      background: #1a1a1a;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       transform: translateX(-50%);
     }
     
+    .dark .nav-link::after {
+      background: #ffffff;
+    }
+    
     .nav-link:hover::after {
-      width: 80%;
+      width: 100%;
     }
     
     /* Animation pour le badge NOUVEAU */
@@ -48,206 +59,219 @@
     
     /* Amélioration du backdrop blur */
     #mainNav {
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(0,0,0,0.05);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid rgba(0,0,0,0.08);
     }
     
     .dark #mainNav {
-      border-bottom-color: rgba(255,255,255,0.05);
+      border-bottom-color: rgba(255,255,255,0.08);
+    }
+    
+    /* Styles luxe */
+    .luxury-gradient {
+      background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    }
+    
+    .dark .luxury-gradient {
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+    }
+    
+    .accent-line {
+      background: linear-gradient(90deg, transparent, #1a1a1a, transparent);
+      height: 1px;
+    }
+    
+    .dark .accent-line {
+      background: linear-gradient(90deg, transparent, #ffffff, transparent);
     }
   </style>
 </head>
-<body class="bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 min-h-screen">
+<body class="bg-stone-50 dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 min-h-screen antialiased">
 
   <!-- Menu Navigation -->
-  <nav id="mainNav" class="fixed top-0 w-full z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-b border-gray-200 dark:border-gray-700 transition-all duration-300">
-    <div class="max-w-7xl mx-auto px-6">
-      <div class="flex items-center justify-between h-16">
+  <nav id="mainNav" class="fixed top-0 w-full z-50 bg-white/98 dark:bg-neutral-900/98 backdrop-blur-md border-b border-neutral-200/50 dark:border-neutral-800/50 transition-all duration-500">
+    <div class="max-w-7xl mx-auto px-8">
+      <div class="flex items-center justify-between h-20">
         <!-- Logo/Titre -->
-        <div class="flex items-center space-x-3">
-          <div class="w-10 h-10 bg-gradient-to-r from-blue-600 to-red-600 rounded-lg flex items-center justify-center">
-            <i class="fas fa-calculator text-white text-xl"></i>
+        <div class="flex items-center space-x-4">
+          <div class="w-12 h-12 bg-neutral-900 dark:bg-white rounded-lg flex items-center justify-center transition-transform hover:scale-105">
+            <i class="fas fa-calculator text-white dark:text-neutral-900 text-xl"></i>
           </div>
           <div class="hidden md:block">
-            <h1 class="text-xl font-bold text-gray-900 dark:text-white">URM Model</h1>
-            <p class="text-xs text-gray-600 dark:text-gray-400">Utilité Réelle des Ménages</p>
+            <h1 class="text-xl font-serif font-bold text-neutral-900 dark:text-white tracking-tight">URM Model</h1>
+            <p class="text-xs text-neutral-500 dark:text-neutral-400 tracking-wide uppercase">Utilité Réelle des Ménages</p>
           </div>
         </div>
 
         <!-- Menu Desktop -->
-        <div class="hidden lg:flex items-center space-x-4">
-          <a href="index.html" class="nav-link text-blue-600 dark:text-blue-400 font-semibold px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/30">🏠 Accueil</a>
-          <a href="france2025.html" class="nav-link text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors px-3 py-2">🇫🇷 France</a>
-          <a href="calculateur.html" class="nav-link text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors px-3 py-2">🌍 Calculateur</a>
-          <a href="simulateur.html" class="nav-link text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors px-3 py-2">🎛️ Simulateur</a>
-          <a href="comparateur.html" class="nav-link text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors px-3 py-2">⚖️ Comparateur</a>
-          <a href="classement.html" class="nav-link text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors px-3 py-2">🏆 Classement</a>
-          <a href="carte.html" class="nav-link text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors px-3 py-2">🗺️ Carte</a>
-          <a href="timeline.html" class="nav-link text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors px-3 py-2">📅 Timeline</a>
+        <div class="hidden lg:flex items-center space-x-1">
+          <a href="index.html" class="nav-link text-neutral-900 dark:text-white font-medium px-4 py-2 rounded-lg">Accueil</a>
+          <a href="france2025.html" class="nav-link text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white transition-colors px-4 py-2">France</a>
+          <a href="calculateur.html" class="nav-link text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white transition-colors px-4 py-2">Calculateur</a>
+          <a href="simulateur.html" class="nav-link text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white transition-colors px-4 py-2">Simulateur</a>
+          <a href="comparateur.html" class="nav-link text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white transition-colors px-4 py-2">Comparateur</a>
+          <a href="classement.html" class="nav-link text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white transition-colors px-4 py-2">Classement</a>
+          <a href="carte.html" class="nav-link text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white transition-colors px-4 py-2">Carte</a>
+          <a href="timeline.html" class="nav-link text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white transition-colors px-4 py-2">Timeline</a>
           
-          <!-- Dropdown Plus -->
+          <!-- Dropdown Plus -->S
           <div class="relative group">
-            <button class="text-gray-700 dark:text-gray-300 hover:text-blue-600 px-3 py-2 rounded-lg transition-colors flex items-center">
-              Plus <i class="fas fa-chevron-down ml-1 text-xs"></i>
+            <button class="text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white px-4 py-2 rounded-lg transition-colors flex items-center font-medium">
+              Plus <i class="fas fa-chevron-down ml-2 text-xs"></i>
             </button>
-            <div class="absolute top-full right-0 mt-1 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-              <a href="quiz.html" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-t-xl">🎯 Quiz</a>
-              <a href="export.html" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">📥 Export</a>
-              <a href="ressources.html" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">📚 Ressources</a>
-              <a href="methodologie.html" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">📖 Méthodologie</a>
-              <a href="contact.html" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-b-xl">📧 Contact</a>
+            <div class="absolute top-full right-0 mt-2 w-56 bg-white/98 dark:bg-neutral-800/98 backdrop-blur-xl rounded-2xl shadow-2xl border border-neutral-200/50 dark:border-neutral-700/50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+              <div class="p-2">
+                <a href="quiz.html" class="block px-4 py-3 hover:bg-neutral-100 dark:hover:bg-neutral-700/50 rounded-xl transition-all">Quiz</a>
+                <a href="export.html" class="block px-4 py-3 hover:bg-neutral-100 dark:hover:bg-neutral-700/50 rounded-xl transition-all">Export</a>
+                <a href="ressources.html" class="block px-4 py-3 hover:bg-neutral-100 dark:hover:bg-neutral-700/50 rounded-xl transition-all">Ressources</a>
+                <a href="methodologie.html" class="block px-4 py-3 hover:bg-neutral-100 dark:hover:bg-neutral-700/50 rounded-xl transition-all">Méthodologie</a>
+                <a href="contact.html" class="block px-4 py-3 hover:bg-neutral-100 dark:hover:bg-neutral-700/50 rounded-xl transition-all">Contact</a>
+              </div>
             </div>
           </div>
         </div>
 
         <!-- Boutons action -->
         <div class="hidden md:flex items-center space-x-3">
-          <button onclick="toggleTheme()" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors" title="Mode sombre/clair">
+          <button onclick="toggleTheme()" class="p-2.5 rounded-xl bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-all hover:scale-105" title="Mode sombre/clair">
             <i id="themeIcon" class="fas fa-moon"></i>
           </button>
-          <button onclick="shareTwitter()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+          <button onclick="shareTwitter()" class="bg-neutral-900 dark:bg-white hover:bg-neutral-800 dark:hover:bg-neutral-100 text-white dark:text-neutral-900 px-6 py-2.5 rounded-xl font-medium transition-all hover:scale-105">
             <i class="fab fa-twitter mr-2"></i>Partager
           </button>
         </div>
 
         <!-- Menu Mobile Burger -->
-        <button id="mobileMenuBtn" class="lg:hidden p-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" onclick="toggleMobileMenu()">
+        <button id="mobileMenuBtn" class="lg:hidden p-2.5 rounded-xl text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all" onclick="toggleMobileMenu()">
           <i class="fas fa-bars"></i>
         </button>
       </div>
     </div>
 
     <!-- Menu Mobile -->
-    <div id="mobileMenu" class="lg:hidden hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 px-4 py-3 space-y-1 max-h-96 overflow-y-auto">
-      <a href="index.html" class="block px-3 py-2 rounded-lg bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400">🏠 Accueil</a>
-      <a href="france2025.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🇫🇷 France 2025</a>
-      <a href="calculateur.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🌍 Calculateur</a>
-      <a href="classement.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🏆 Classement</a>
-      <a href="carte.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🗺️ Carte</a>
-      <a href="simulateur.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🎛️ Simulateur</a>
-      <a href="comparateur.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">⚖️ Comparateur</a>
-      <a href="timeline.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">📅 Timeline</a>
-      <a href="quiz.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🎯 Quiz</a>
-      <a href="export.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">📥 Export</a>
-      <a href="ressources.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">📚 Ressources</a>
-      <a href="methodologie.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">📖 Méthodologie</a>
-      <a href="contact.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">📧 Contact</a>
+    <div id="mobileMenu" class="lg:hidden hidden bg-white/98 dark:bg-neutral-900/98 backdrop-blur-xl border-t border-neutral-200/50 dark:border-neutral-800/50 px-6 py-4 space-y-1 max-h-96 overflow-y-auto">
+      <a href="index.html" class="block px-4 py-3 rounded-xl bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 font-medium">Accueil</a>
+      <a href="france2025.html" class="block px-4 py-3 rounded-xl hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all">France 2025</a>
+      <a href="calculateur.html" class="block px-4 py-3 rounded-xl hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all">Calculateur</a>
+      <a href="classement.html" class="block px-4 py-3 rounded-xl hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all">Classement</a>
+      <a href="carte.html" class="block px-4 py-3 rounded-xl hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all">Carte</a>
+      <a href="simulateur.html" class="block px-4 py-3 rounded-xl hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all">Simulateur</a>
+      <a href="comparateur.html" class="block px-4 py-3 rounded-xl hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all">Comparateur</a>
+      <a href="timeline.html" class="block px-4 py-3 rounded-xl hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all">Timeline</a>
+      <a href="quiz.html" class="block px-4 py-3 rounded-xl hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all">Quiz</a>
+      <a href="export.html" class="block px-4 py-3 rounded-xl hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all">Export</a>
+      <a href="ressources.html" class="block px-4 py-3 rounded-xl hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all">Ressources</a>
+      <a href="methodologie.html" class="block px-4 py-3 rounded-xl hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all">Méthodologie</a>
+      <a href="contact.html" class="block px-4 py-3 rounded-xl hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all">Contact</a>
     </div>
   </nav>
 
   <!-- Header -->
-  <header id="intro" class="bg-gradient-to-r from-blue-700 to-red-700 text-white shadow-2xl pt-16">
-    <div class="max-w-6xl mx-auto px-6 py-12 text-center">
-      <h1 class="text-4xl md:text-6xl font-bold mb-6">
-        Le Modèle Mathématique qui a <span class="text-yellow-300">Toujours Raison</span>
+  <header id="intro" class="luxury-gradient text-white shadow-2xl pt-20">
+    <div class="max-w-5xl mx-auto px-8 py-24 text-center">
+      <div class="accent-line mb-12 opacity-20"></div>
+      <h1 class="text-5xl md:text-7xl font-serif font-bold mb-8 tracking-tight leading-tight">
+        Le Modèle Mathématique qui a <span class="italic font-light">Toujours Raison</span>
       </h1>
-      <p class="text-xl md:text-2xl opacity-95">
-        Pourquoi le modèle danois/nordique est objectivement le meilleur pour les ménages<br>
-        <span class="text-lg italic">…et pourquoi tous les autres perdent (même les USA et la Chine)</span>
+      <p class="text-xl md:text-2xl opacity-90 font-light leading-relaxed max-w-3xl mx-auto">
+        Pourquoi le modèle danois/nordique est objectivement le meilleur pour les ménages
+      </p>
+      <p class="text-base md:text-lg opacity-70 mt-4 font-light italic">
+        …et pourquoi tous les autres perdent (même les USA et la Chine)
       </p>
       
       <!-- Boutons CTA -->
-      <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-        <button onclick="scrollToSection('analyses')" class="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-3 px-8 rounded-lg transition-colors">
-          <i class="fas fa-play mr-2"></i>Voir les Analyses
+      <div class="mt-12 flex flex-col sm:flex-row gap-4 justify-center">
+        <button onclick="scrollToSection('analyses')" class="bg-white hover:bg-neutral-100 text-neutral-900 font-medium py-4 px-10 rounded-xl transition-all hover:scale-105 shadow-lg">
+          Voir les Analyses
         </button>
-        <button onclick="scrollToSection('formula')" class="bg-white/20 hover:bg-white/30 backdrop-blur-md text-white font-bold py-3 px-8 rounded-lg transition-colors border border-white/30">
-          <i class="fas fa-calculator mr-2"></i>Découvrir la Formule
+        <button onclick="scrollToSection('formula')" class="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white font-medium py-4 px-10 rounded-xl transition-all hover:scale-105 border border-white/20">
+          Découvrir la Formule
         </button>
       </div>
+      <div class="accent-line mt-12 opacity-20"></div>
     </div>
   </header>
 
   <!-- Message personnel -->
-  <section class="bg-gradient-to-b from-red-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20 py-16">
-    <div class="max-w-6xl mx-auto px-6">
-      <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8 md:p-12 border-l-8 border-red-500">
-        <div class="flex items-start space-x-6">
-          <div class="w-16 h-16 bg-red-500 rounded-full flex items-center justify-center flex-shrink-0">
-            <i class="fas fa-fire text-white text-2xl"></i>
+  <section class="bg-gradient-to-b from-neutral-100 to-white dark:from-neutral-900/50 dark:to-neutral-950 py-20">
+    <div class="max-w-5xl mx-auto px-8">
+      <div class="bg-white dark:bg-neutral-900 rounded-3xl shadow-2xl p-12 md:p-16 border border-neutral-200/50 dark:border-neutral-800/50">
+        <div class="space-y-8">
+          <div>
+            <h2 class="text-4xl md:text-5xl font-serif font-bold mb-6 text-neutral-900 dark:text-white">Une démonstration sans appel</h2>
+            <div class="accent-line my-6"></div>
           </div>
-          <div class="flex-1">
-            <h2 class="text-4xl font-bold mb-6 text-red-700 dark:text-red-300">🔥 J'en ai MARRE d'expliquer !</h2>
+          
+          <div class="prose prose-lg max-w-none dark:prose-invert">
+            <p class="text-xl leading-relaxed text-neutral-600 dark:text-neutral-300">
+              Des années de débats stériles sur les systèmes économiques. Des arguments sans fondement. Des « oui mais » à l'infini.
+            </p>
             
-            <div class="prose prose-lg max-w-none dark:prose-invert">
-              <p class="text-xl leading-relaxed mb-6">
-                <strong>Voilà des ANNÉES</strong> que j'entends les mêmes débats stériles, les mêmes arguments bidons, 
-                les mêmes "oui mais" sans fin sur les systèmes économiques...
-              </p>
-              
-              <div class="bg-red-100 dark:bg-red-900/30 p-6 rounded-xl border-l-4 border-red-500 mb-6">
-                <h3 class="text-2xl font-bold mb-4 text-red-800 dark:text-red-200">💢 Le ras-le-bol des faux débats :</h3>
-                <ul class="space-y-3 text-lg">
-                  <li><strong>"Les impôts danois sont trop élevés !"</strong> → Faux, taux effectif 38% vs 43% France</li>
-                  <li><strong>"Le modèle US crée plus de richesse !"</strong> → Oui, mais pour 5% de la population</li>
-                  <li><strong>"La France est socialiste !"</strong> → N'importe quoi, on a un capitalisme dysfonctionnel</li>
-                  <li><strong>"Les nordiques, c'est petit, ça marche pas ailleurs !"</strong> → L'Allemagne 83M habitants dit bonjour</li>
-                  <li><strong>"Le PIB américain prouve que..."</strong> → Le PIB ne mesure PAS le bien-être des gens !</li>
+            <div class="bg-neutral-50 dark:bg-neutral-800/50 p-8 rounded-2xl border-l-2 border-neutral-900 dark:border-white my-8">
+              <h3 class="text-2xl font-serif font-bold mb-6 text-neutral-900 dark:text-white">Les idées reçues démenties</h3>
+              <ul class="space-y-4 text-lg text-neutral-700 dark:text-neutral-300">
+                <li><strong>« Les impôts danois sont trop élevés »</strong> → Taux effectif 38% vs 43% en France</li>
+                <li><strong>« Le modèle US crée plus de richesse »</strong> → Pour 5% de la population uniquement</li>
+                <li><strong>« Les nordiques, c'est trop petit »</strong> → L'Allemagne (83M habitants) applique le même modèle</li>
+                <li><strong>« Le PIB américain prouve que... »</strong> → Le PIB ne mesure pas le bien-être réel</li>
+              </ul>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-8 my-8">
+              <div class="bg-white dark:bg-neutral-800 p-6 rounded-2xl border border-neutral-200 dark:border-neutral-700">
+                <h4 class="font-bold text-neutral-900 dark:text-white mb-4 text-lg">Ce qui fonctionne</h4>
+                <ul class="space-y-2 text-neutral-600 dark:text-neutral-300">
+                  <li>• Social-démocratie nordique</li>
+                  <li>• Services publics universels</li>
+                  <li>• Syndicats puissants</li>
+                  <li>• Fiscalité équilibrée</li>
+                  <li>• État providence + marché libre</li>
                 </ul>
               </div>
-              
-              <div class="bg-blue-100 dark:bg-blue-900/30 p-6 rounded-xl border-l-4 border-blue-500 mb-6">
-                <h3 class="text-2xl font-bold mb-4 text-blue-800 dark:text-blue-200">🎯 Alors j'ai créé ce modèle pour PROUVER une bonne fois pour toutes :</h3>
-                <div class="grid md:grid-cols-2 gap-6 text-lg">
-                  <div>
-                    <h4 class="font-bold text-green-600 mb-2">✅ CE QUI MARCHE :</h4>
-                    <ul class="space-y-1">
-                      <li>• Social-démocratie nordique</li>
-                      <li>• Services publics universels</li>
-                      <li>• Syndicats puissants</li>
-                      <li>• Fiscalité progressive équilibrée</li>
-                      <li>• État providence + marché libre</li>
-                    </ul>
-                  </div>
-                  <div>
-                    <h4 class="font-bold text-red-600 mb-2">❌ CE QUI ÉCHOUE :</h4>
-                    <ul class="space-y-1">
-                      <li>• Capitalisme sauvage (USA)</li>
-                      <li>• Socialisme d'État (Chine)</li>
-                      <li>• Corporatisme français rigide</li>
-                      <li>• Modèle inégalitaire</li>
-                      <li>• Dette publique excessive</li>
-                    </ul>
-                  </div>
+              <div class="bg-white dark:bg-neutral-800 p-6 rounded-2xl border border-neutral-200 dark:border-neutral-700">
+                <h4 class="font-bold text-neutral-900 dark:text-white mb-4 text-lg">Ce qui échoue</h4>
+                <ul class="space-y-2 text-neutral-600 dark:text-neutral-300">
+                  <li>• Capitalisme non régulé (USA)</li>
+                  <li>• Socialisme d'État (Chine)</li>
+                  <li>• Corporatisme rigide (France)</li>
+                  <li>• Inégalités excessives</li>
+                  <li>• Dette publique démesurée</li>
+                </ul>
+              </div>
+            </div>
+            
+            <div class="bg-neutral-900 dark:bg-white p-8 rounded-2xl my-8">
+              <h3 class="text-2xl font-serif font-bold mb-6 text-white dark:text-neutral-900">La preuve par les mathématiques</h3>
+              <p class="text-lg mb-6 text-neutral-200 dark:text-neutral-700">
+                Ce modèle URM n'est pas une opinion. C'est une démonstration mathématique basée sur 30 ans de données réelles, prédisant avec <strong>96% de précision</strong> le bien-être des ménages.
+              </p>
+              <div class="grid md:grid-cols-3 gap-4 text-center">
+                <div class="bg-white/10 dark:bg-neutral-900/50 p-4 rounded-xl backdrop-blur">
+                  <div class="text-3xl font-bold text-white dark:text-neutral-900">🇩🇰 +415k€</div>
+                  <div class="text-sm text-neutral-300 dark:text-neutral-600 mt-2">Danemark</div>
+                </div>
+                <div class="bg-white/10 dark:bg-neutral-900/50 p-4 rounded-xl backdrop-blur">
+                  <div class="text-3xl font-bold text-white dark:text-neutral-900">🇫🇷 +165k€</div>
+                  <div class="text-sm text-neutral-300 dark:text-neutral-600 mt-2">France</div>
+                </div>
+                <div class="bg-white/10 dark:bg-neutral-900/50 p-4 rounded-xl backdrop-blur">
+                  <div class="text-3xl font-bold text-white dark:text-neutral-900">🇺🇸 -558k€</div>
+                  <div class="text-sm text-neutral-300 dark:text-neutral-600 mt-2">USA</div>
                 </div>
               </div>
-              
-              <div class="bg-yellow-100 dark:bg-yellow-900/30 p-6 rounded-xl border-l-4 border-yellow-500 mb-6">
-                <h3 class="text-2xl font-bold mb-4 text-yellow-800 dark:text-yellow-200">🔬 La PREUVE par les MATHS :</h3>
-                <p class="text-lg mb-4">
-                  Ce modèle URM n'est pas une opinion. C'est une <strong>démonstration mathématique</strong> 
-                  basée sur 30 ans de données réelles qui prédit avec <strong>96% de précision</strong> 
-                  le bonheur et le bien-être des ménages.
-                </p>
-                <div class="bg-white dark:bg-gray-700 p-4 rounded-lg">
-                  <div class="text-center text-3xl font-bold mb-4">RÉSULTATS IRRÉFUTABLES :</div>
-                  <div class="grid md:grid-cols-3 gap-4 text-center">
-                    <div class="bg-green-100 dark:bg-green-800 p-3 rounded">
-                      <div class="text-2xl font-bold text-green-600">🇩🇰 +415k€</div>
-                      <div class="text-sm">Danemark (modèle nordique)</div>
-                    </div>
-                    <div class="bg-yellow-100 dark:bg-yellow-800 p-3 rounded">
-                      <div class="text-2xl font-bold text-yellow-600">🇫🇷 +165k€</div>
-                      <div class="text-sm">France (peut mieux faire)</div>
-                    </div>
-                    <div class="bg-red-100 dark:bg-red-800 p-3 rounded">
-                      <div class="text-2xl font-bold text-red-600">🇺🇸 -558k€</div>
-                      <div class="text-sm">USA (échec pour les ménages)</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <div class="bg-green-100 dark:bg-green-900/30 p-6 rounded-xl border-l-4 border-green-500">
-                <h3 class="text-2xl font-bold mb-4 text-green-800 dark:text-green-200">🏆 CONCLUSION DÉFINITIVE :</h3>
-                <p class="text-xl font-bold">
-                  Le modèle nordique (Danemark/Suède/Allemagne) ÉCRASE tous les autres systèmes 
-                  pour le bien-être réel des ménages. Point final.
-                </p>
-                <p class="text-lg mt-3">
-                  Plus besoin de débats d'opinion, plus besoin d'idéologie : 
-                  <strong>les CHIFFRES parlent</strong>, et ils sont formels.
+            </div>
+            
+            <div class="bg-neutral-50 dark:bg-neutral-800/50 p-8 rounded-2xl border-l-2 border-neutral-900 dark:border-white">
+              <h3 class="text-2xl font-serif font-bold mb-4 text-neutral-900 dark:text-white">Conclusion</h3>
+              <p class="text-xl font-medium text-neutral-700 dark:text-neutral-300">
+                Le modèle nordique surpasse tous les autres systèmes pour le bien-être réel des ménages.
+              </p>
+              <p class="text-lg mt-3 text-neutral-600 dark:text-neutral-400">
+                Les chiffres parlent d'eux-mêmes. Plus besoin d'idéologie.
+              </p>
+            </div>
                 </p>
               </div>
             </div>
@@ -324,75 +348,75 @@
   </section>
 
   <!-- Résultats 2025 -->
-  <section id="results" class="py-16">
-    <div class="max-w-5xl mx-auto px-6">
-      <h2 class="text-4xl font-bold text-center mb-12">Résultats Réels 2025 (calculés avec la formule)</h2>
-      <div class="overflow-x-auto">
+  <section id="results" class="py-20">
+    <div class="max-w-5xl mx-auto px-8">
+      <h2 class="text-4xl md:text-5xl font-serif font-bold text-center mb-16 text-neutral-900 dark:text-white">Résultats Réels 2025</h2>
+      <div class="overflow-x-auto bg-white dark:bg-neutral-900 rounded-2xl shadow-xl border border-neutral-200/50 dark:border-neutral-800/50">
         <table class="w-full text-left border-collapse">
           <thead>
-            <tr class="bg-gray-800 text-white">
-              <th class="p-4">Pays</th>
-              <th class="p-4">Patrimoine médian</th>
-              <th class="p-4">Risque (σ)</th>
-              <th class="p-4">Services</th>
-              <th class="p-4">Dette % PIB</th>
-              <th class="p-4 text-2xl font-bold">URM Finale</th>
+            <tr class="bg-neutral-900 dark:bg-white text-white dark:text-neutral-900">
+              <th class="p-4 font-medium">Pays</th>
+              <th class="p-4 font-medium">Patrimoine médian</th>
+              <th class="p-4 font-medium">Risque (σ)</th>
+              <th class="p-4 font-medium">Services</th>
+              <th class="p-4 font-medium">Dette % PIB</th>
+              <th class="p-4 text-xl font-bold">URM Finale</th>
             </tr>
           </thead>
-          <tbody class="text-lg">
-            <tr class="bg-green-50 dark:bg-green-900">
-              <td class="p-4 font-bold text-green-700 dark:text-green-300">Danemark</td>
-              <td class="p-4">560 k€</td>
-              <td class="p-4">50 k€</td>
-              <td class="p-4">15 k€/an</td>
-              <td class="p-4">30 %</td>
-              <td class="p-4 text-3xl font-bold text-green-600">+415 000 €</td>
+          <tbody class="text-base">
+            <tr class="border-b border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-800/50">
+              <td class="p-4 font-semibold text-neutral-900 dark:text-white">Danemark</td>
+              <td class="p-4 text-neutral-600 dark:text-neutral-300">560 k€</td>
+              <td class="p-4 text-neutral-600 dark:text-neutral-300">50 k€</td>
+              <td class="p-4 text-neutral-600 dark:text-neutral-300">15 k€/an</td>
+              <td class="p-4 text-neutral-600 dark:text-neutral-300">30%</td>
+              <td class="p-4 text-2xl font-bold text-neutral-900 dark:text-white">+415 000€</td>
             </tr>
-            <tr class="bg-blue-50 dark:bg-blue-900">
-              <td class="p-4 font-bold">Allemagne</td>
-              <td class="p-4">510 k€</td>
-              <td class="p-4">70 k€</td>
-              <td class="p-4">12 k€</td>
-              <td class="p-4">65 %</td>
-              <td class="p-4 text-2xl font-bold text-blue-600">+292 000 €</td>
+            <tr class="border-b border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-800/50">
+              <td class="p-4 font-semibold text-neutral-900 dark:text-white">Allemagne</td>
+              <td class="p-4 text-neutral-600 dark:text-neutral-300">510 k€</td>
+              <td class="p-4 text-neutral-600 dark:text-neutral-300">70 k€</td>
+              <td class="p-4 text-neutral-600 dark:text-neutral-300">12 k€</td>
+              <td class="p-4 text-neutral-600 dark:text-neutral-300">65%</td>
+              <td class="p-4 text-xl font-bold text-neutral-900 dark:text-white">+292 000€</td>
             </tr>
-            <tr>
-              <td class="p-4">Japon</td>
-              <td class="p-4">320 k€</td>
-              <td class="p-4">60 k€</td>
-              <td class="p-4">10 k€</td>
-              <td class="p-4">250 %</td>
-              <td class="p-4 text-xl">+120 000 €</td>
+            <tr class="border-b border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-800/50">
+              <td class="p-4 font-semibold text-neutral-900 dark:text-white">Japon</td>
+              <td class="p-4 text-neutral-600 dark:text-neutral-300">320 k€</td>
+              <td class="p-4 text-neutral-600 dark:text-neutral-300">60 k€</td>
+              <td class="p-4 text-neutral-600 dark:text-neutral-300">10 k€</td>
+              <td class="p-4 text-neutral-600 dark:text-neutral-300">250%</td>
+              <td class="p-4 text-lg font-bold text-neutral-700 dark:text-neutral-400">+120 000€</td>
             </tr>
-            <tr class="bg-orange-50 dark:bg-orange-900">
-              <td class="p-4">Chine</td>
-              <td class="p-4">380 k€</td>
-              <td class="p-4">200 k€</td>
-              <td class="p-4">3 k€</td>
-              <td class="p-4">80 %</td>
-              <td class="p-4 text-xl text-orange-600">-232 000 €</td>
+            <tr class="border-b border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-800/50">
+              <td class="p-4 font-semibold text-neutral-900 dark:text-white">Chine</td>
+              <td class="p-4 text-neutral-600 dark:text-neutral-300">380 k€</td>
+              <td class="p-4 text-neutral-600 dark:text-neutral-300">200 k€</td>
+              <td class="p-4 text-neutral-600 dark:text-neutral-300">3 k€</td>
+              <td class="p-4 text-neutral-600 dark:text-neutral-300">80%</td>
+              <td class="p-4 text-lg font-bold text-neutral-600 dark:text-neutral-500">-232 000€</td>
             </tr>
-            <tr class="bg-red-100 dark:bg-red-900">
-              <td class="p-4 font-bold text-red-700">États-Unis</td>
-              <td class="p-4">420 k€</td>
-              <td class="p-4">300 k€</td>
-              <td class="p-4">2 k€</td>
-              <td class="p-4">130 %</td>
-              <td class="p-4 text-3xl font-bold text-red-600">-558 000 €</td>
+            <tr class="hover:bg-neutral-50 dark:hover:bg-neutral-800/50">
+              <td class="p-4 font-semibold text-neutral-900 dark:text-white">États-Unis</td>
+              <td class="p-4 text-neutral-600 dark:text-neutral-300">420 k€</td>
+              <td class="p-4 text-neutral-600 dark:text-neutral-300">300 k€</td>
+              <td class="p-4 text-neutral-600 dark:text-neutral-300">2 k€</td>
+              <td class="p-4 text-neutral-600 dark:text-neutral-300">130%</td>
+              <td class="p-4 text-2xl font-bold text-neutral-600 dark:text-neutral-500">-558 000€</td>
             </tr>
           </tbody>
         </table>
       </div>
-      <p class="text-center mt-2xl text-center mt-8 italic text-gray-600 dark:text-gray-400">
+      <p class="text-center mt-8 italic text-neutral-600 dark:text-neutral-400">
         Corrélation URM ↔ Satisfaction de vie (Gallup 2024) = <strong>0,96</strong>
       </p>
     </div>
   </section>
 
   <!-- Navigation interactive -->
-  <section id="analyses" class="py-16 bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
-    <div class="max-w-6xl mx-auto px-6">
-      <h2 class="text-4xl font-bold text-center mb-12">Analyses Interactives Complètes</h2>
+  <section id="analyses" class="py-20 luxury-gradient text-white">
+    <div class="max-w-6xl mx-auto px-8">
+      <h2 class="text-4xl md:text-5xl font-serif font-bold text-center mb-16">Analyses Interactives Complètes</h2>
       <div class="grid md:grid-cols-3 gap-8 text-center">
         <button onclick="showSection('comparison')" id="btn-comparison" class="bg-white/20 hover:bg-white/30 backdrop-blur-md rounded-xl p-8 transition-all duration-300 transform hover:scale-105 border border-white/20">
           <i class="fas fa-table text-5xl mb-4"></i>
